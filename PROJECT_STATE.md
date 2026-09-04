@@ -14,6 +14,7 @@ gantt
     section Phase 1: Market & Bench POC
     System & Agent Architecture Setup    :done, p1, 2026-09-04, 1d
     Kickstarter Market & Playbook        :done, p2, 2026-09-04, 1d
+    Obsidian Vault & Visual Cockpit      :done, p2b, 2026-09-04, 1d
     Core Crossword Scoring Engine (Py)   :active, p3, 2026-09-05, 5d
     4x4 NFC Mini-Grid Schematic & Test   :p4, 2026-09-10, 7d
     Pre-Launch Smoke Test Landing Page   :p5, 2026-09-15, 5d
@@ -37,6 +38,7 @@ gantt
 | **ADL-004** | 2026-09-04 | Power & Form Factor | **Hybrid Always-On Turntable**: Sits on a ball-bearing lazy-susan with magnetic power dock on the coffee table + internal Li-ion battery for uncorded dining table play. |
 | **ADL-005** | 2026-09-04 | Go-To-Market | **Kickstarter Crowdfunding Campaign**: Emotional storytelling video targeting adult children looking for a meaningful gift for aging parents; pre-funds initial production batch. |
 | **ADL-006** | 2026-09-04 | Commercial Validation | **$1 VIP Reservation Funnel & $100 Smoke Test**: Build 750+ $1 VIP deposits prior to public Kickstarter launch; enforce $\le \$2.50$ Cost Per Lead before committing high-volume PCB orders. |
+| **ADL-007** | 2026-09-04 | Tooling & Visualization | **Obsidian Git-Native Cockpit (JSON Canvas + Kanban)**: Zero cloud lock-in; live bi-directional filesystem synchronization between AI agent code generation and interactive visual whiteboard. |
 
 ---
 
