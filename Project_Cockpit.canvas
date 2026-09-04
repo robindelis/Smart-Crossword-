@@ -1,24 +1,194 @@
 {
   "nodes": [
-    {"id": "group-comm", "type": "group", "x": -1720, "y": -920, "width": 930, "height": 680, "color": "2", "label": "Marketing & Sales"},
-    {"id": "group-hw", "type": "group", "x": 560, "y": -640, "width": 930, "height": 680, "color": "5", "label": "Circuit Board & Hardware"},
-    {"id": "group-fw", "type": "group", "x": 560, "y": 320, "width": 930, "height": 680, "color": "4", "label": "Code & Mobile App"},
-    {"id": "group-state", "type": "group", "x": -1880, "y": 320, "width": 1880, "height": 1240, "color": "6", "label": "Tasks & Project State"},
-    {"id": "node-script", "type": "file", "file": "commercial/kickstarter_video_script.md", "x": -1230, "y": -860, "width": 410, "height": 580, "color": "2"},
-    {"id": "node-market", "type": "file", "file": "commercial/market_analysis.md", "x": -1690, "y": -860, "width": 420, "height": 580, "color": "2"},
-    {"id": "node-orchestrator", "type": "file", "file": "AGENTS.md", "x": -520, "y": -540, "width": 420, "height": 450, "color": "1"},
-    {"id": "node-tasks", "type": "file", "file": "Project_Tasks.md", "x": -440, "y": 380, "width": 410, "height": 580, "color": "3"},
-    {"id": "node-project-state", "type": "file", "file": "PROJECT_STATE.md", "x": -1800, "y": 380, "width": 1120, "height": 1040, "color": "6"},
-    {"id": "node-hw-agent", "type": "file", "file": ".agents/agents/hardware.md", "x": 590, "y": -580, "width": 420, "height": 580, "color": "5"},
-    {"id": "node-hw-specs", "type": "text", "text": "## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 µH per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring", "x": 1040, "y": -580, "width": 420, "height": 380, "color": "5"},
-    {"id": "node-fw-agent", "type": "file", "file": ".agents/agents/firmware.md", "x": 590, "y": 380, "width": 420, "height": 580, "color": "4"},
-    {"id": "node-mobile-agent", "type": "file", "file": ".agents/agents/mobile_cloud.md", "x": 1040, "y": 380, "width": 420, "height": 580, "color": "4"}
+    {
+      "id": "group-comm",
+      "type": "group",
+      "x": -1720,
+      "y": -920,
+      "width": 930,
+      "height": 680,
+      "color": "2",
+      "label": "Marketing & Sales"
+    },
+    {
+      "id": "group-hw",
+      "type": "group",
+      "x": 560,
+      "y": -640,
+      "width": 930,
+      "height": 680,
+      "color": "5",
+      "label": "Circuit Board & Hardware"
+    },
+    {
+      "id": "group-fw",
+      "type": "group",
+      "x": 560,
+      "y": 320,
+      "width": 1560,
+      "height": 860,
+      "color": "4",
+      "label": "Code, Architecture & Mobile App"
+    },
+    {
+      "id": "group-state",
+      "type": "group",
+      "x": -1880,
+      "y": 320,
+      "width": 1880,
+      "height": 1240,
+      "color": "6",
+      "label": "Tasks & Project State"
+    },
+    {
+      "id": "node-script",
+      "type": "file",
+      "file": "commercial/kickstarter_video_script.md",
+      "x": -1230,
+      "y": -860,
+      "width": 410,
+      "height": 580,
+      "color": "2"
+    },
+    {
+      "id": "node-market",
+      "type": "file",
+      "file": "commercial/market_analysis.md",
+      "x": -1690,
+      "y": -860,
+      "width": 420,
+      "height": 580,
+      "color": "2"
+    },
+    {
+      "id": "node-orchestrator",
+      "type": "file",
+      "file": "AGENTS.md",
+      "x": -520,
+      "y": -540,
+      "width": 420,
+      "height": 450,
+      "color": "1"
+    },
+    {
+      "id": "node-tasks",
+      "type": "file",
+      "file": "Project_Tasks.md",
+      "x": -440,
+      "y": 380,
+      "width": 410,
+      "height": 580,
+      "color": "3"
+    },
+    {
+      "id": "node-project-state",
+      "type": "file",
+      "file": "PROJECT_STATE.md",
+      "x": -1800,
+      "y": 380,
+      "width": 1120,
+      "height": 1040,
+      "color": "6"
+    },
+    {
+      "id": "node-hw-agent",
+      "type": "file",
+      "file": ".agents/agents/hardware.md",
+      "x": 590,
+      "y": -580,
+      "width": 420,
+      "height": 580,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-specs",
+      "type": "text",
+      "text": "## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 \u00b5H per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring",
+      "x": 1040,
+      "y": -580,
+      "width": 420,
+      "height": 380,
+      "color": "5"
+    },
+    {
+      "id": "node-fw-agent",
+      "type": "file",
+      "file": ".agents/agents/firmware.md",
+      "x": 590,
+      "y": 380,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "node-mobile-agent",
+      "type": "file",
+      "file": ".agents/agents/mobile_cloud.md",
+      "x": 1040,
+      "y": 380,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "node-sw-arch",
+      "type": "file",
+      "file": "Software_Architecture.md",
+      "x": 1490,
+      "y": 380,
+      "width": 580,
+      "height": 760,
+      "color": "4"
+    }
   ],
   "edges": [
-    {"id": "edge-orch-comm", "fromNode": "node-orchestrator", "fromSide": "left", "toNode": "node-script", "toSide": "right", "label": "Plans launch"},
-    {"id": "edge-orch-hw", "fromNode": "node-orchestrator", "fromSide": "right", "toNode": "node-hw-agent", "toSide": "left", "label": "Hardware rules"},
-    {"id": "edge-orch-state", "fromNode": "node-orchestrator", "fromSide": "bottom", "toNode": "node-tasks", "toSide": "top", "label": "Task updates"},
-    {"id": "edge-hw-fw", "fromNode": "node-hw-agent", "fromSide": "bottom", "toNode": "node-fw-agent", "toSide": "top", "label": "Tile readings"},
-    {"id": "edge-fw-mobile", "fromNode": "node-fw-agent", "fromSide": "right", "toNode": "node-mobile-agent", "toSide": "left", "label": "Sends move to phone"}
+    {
+      "id": "edge-orch-comm",
+      "fromNode": "node-orchestrator",
+      "fromSide": "left",
+      "toNode": "node-script",
+      "toSide": "right",
+      "label": "Plans launch"
+    },
+    {
+      "id": "edge-orch-hw",
+      "fromNode": "node-orchestrator",
+      "fromSide": "right",
+      "toNode": "node-hw-agent",
+      "toSide": "left",
+      "label": "Hardware rules"
+    },
+    {
+      "id": "edge-orch-state",
+      "fromNode": "node-orchestrator",
+      "fromSide": "bottom",
+      "toNode": "node-tasks",
+      "toSide": "top",
+      "label": "Task updates"
+    },
+    {
+      "id": "edge-hw-fw",
+      "fromNode": "node-hw-agent",
+      "fromSide": "bottom",
+      "toNode": "node-fw-agent",
+      "toSide": "top",
+      "label": "Tile readings"
+    },
+    {
+      "id": "edge-fw-mobile",
+      "fromNode": "node-fw-agent",
+      "fromSide": "right",
+      "toNode": "node-mobile-agent",
+      "toSide": "left",
+      "label": "Sends move to phone"
+    },
+    {
+      "id": "edge-fw-arch",
+      "fromNode": "node-fw-agent",
+      "fromSide": "bottom",
+      "toNode": "node-sw-arch",
+      "toSide": "left",
+      "label": "Architecture & Files"
+    }
   ]
 }
