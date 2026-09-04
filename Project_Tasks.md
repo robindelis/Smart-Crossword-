@@ -1,37 +1,36 @@
-# Project Tasks (Visual Kanban Board)
+# Project Tasks
 
 ## 📋 Backlog
 
-- [ ] Design high-voltage ESD protection for USB-C & magnetic charging pins
-- [ ] Source 250mm ball-bearing lazy-susan turntable rings on Alibaba / McMaster
-- [ ] Select 40mm 4Ω 3W speaker chamber with bass reflex port for warm resonance
-- [ ] Benchmark LVGL UI rendering frame rate on 480x854 IPS SPI/RGB display
-- [ ] Establish family leaderboard schema in SQLite / PostgreSQL
-- [ ] Model injection-molded tile trays & velvet storage pouch in Fusion 360
+- [ ] Add static electric protection to the magnetic charging port
+- [ ] Buy 250mm turntable bearings to test smooth rotation
+- [ ] Pick a 40mm speaker with good bass for clear voice audio
+- [ ] Test screen speed with the graphics library on the display
+- [ ] Design simple database for player stats and scores
+- [ ] 3D model the tile trays and storage pouch
 
-## ⏳ In Progress (Phase 1: Market & Bench POC)
+## ⏳ In Progress (Phase 1: Test Board & Code)
 
-- [ ] Write reference Python Crossword Engine & Trie dictionary validator (`firmware/` & `tests/`)
-  - [ ] Implement interlocking placement validator (orthogonal line, connectivity)
-  - [ ] Implement premium square multiplier score calculation (Double/Triple letter & word)
-  - [ ] Load NASPA Word List (NWL2023) into compressed in-memory Trie
-- [ ] Design 4x4 NFC Mini-Grid Schematic & Test PCB (`hardware/`)
-  - [ ] ST25R3916 / PN532 matching circuit to 74HC4067 multiplexer
-  - [ ] Planar coil geometry calculation (1.5µH, 3 turns, 0.2mm trace/space)
-  - [ ] Test tag reading through 2.5mm hardwood veneer
-- [ ] Build 1-Page Pre-Launch Smoke Test Landing Page (`software/`)
-  - [ ] Hero section with video render and emotional tagline
-  - [ ] $1 VIP reservation Stripe checkout integration
-  - [ ] Email capture & automated welcome email sequence
+- [ ] Write the Python game engine (`firmware/` & `tests/`)
+  - [ ] Check words connect properly in straight lines
+  - [ ] Add double/triple letter and word score calculations
+  - [ ] Load official Scrabble word list (NWL2023) into memory
+- [ ] Design the 4x4 test circuit board in KiCad (`hardware/`)
+  - [ ] Wire NFC chip to 16-channel multiplexer switch
+  - [ ] Size the antenna coils (1.5µH, 3 turns)
+  - [ ] Test reading tags through 2.5mm wood
+- [ ] Build 1-page test website (`software/`)
+  - [ ] Show product photo and plain-language explanation
+  - [ ] Add $1 pre-order Stripe button
+  - [ ] Collect emails and send automated confirmation
 
 ## ✅ Done
 
-- [x] Comprehensive commercial market analysis & competitor teardown (`commercial/market_analysis.md`)
-- [x] Pre-launch $1 VIP reservation playbook & Meta ad templates (`commercial/prelaunch_playbook.md`)
-- [x] Full scene-by-scene Kickstarter campaign video script (`commercial/kickstarter_video_script.md`)
-- [x] Multi-agent orchestration framework & directives (`AGENTS.md`)
-- [x] Specialist fleet personas configured (`.agents/agents/`)
-- [x] Living memory & architectural failure modes documented (`.agents/agents/wise.md`)
-- [x] Active roadmap & architectural decision records initialized (`PROJECT_STATE.md`)
-- [x] Git repository initialized and configured on `main` branch
-- [x] Obsidian vault & visual JSON Canvas cockpit initialized
+- [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
+- [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
+- [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)
+- [x] Agent team setup and rules (`AGENTS.md`)
+- [x] Core rules and technical limits recorded (`.agents/agents/wise.md`)
+- [x] Project state and decision log (`PROJECT_STATE.md`)
+- [x] Git repo initialized on main
+- [x] Obsidian vault and visual board setup (`Project_Cockpit.canvas`)
