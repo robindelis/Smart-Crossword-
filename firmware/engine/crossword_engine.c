@@ -1,9 +1,69 @@
 #include "crossword_engine.h"
 
-/* Standard Scrabble letter scores (A-Z) */
-static const int LETTER_VALUES[26] = {
+/* Standard Scrabble letter scores (A-Z) per language */
+static const int LETTER_VALUES_EN[26] = {
     1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
 };
+
+static const int LETTER_VALUES_FR[26] = {
+    1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10
+};
+
+static const int LETTER_VALUES_NL[26] = {
+    1, 3, 5, 2, 1, 4, 3, 4, 1, 4, 3, 3, 3, 1, 1, 3, 10, 2, 2, 2, 4, 4, 5, 8, 8, 4
+};
+
+static const int LETTER_VALUES_DE[26] = {
+    1, 3, 4, 1, 1, 4, 2, 2, 1, 6, 4, 2, 3, 1, 2, 4, 10, 1, 1, 1, 1, 6, 3, 8, 10, 3
+};
+
+static const int LETTER_VALUES_ES[26] = {
+    1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 8, 1, 3, 1, 1, 3, 5, 1, 1, 1, 1, 4, 8, 8, 4, 10
+};
+
+static GameLanguage g_current_language = LANG_EN;
+static int g_custom_letter_values[256] = {0};
+
+void engine_set_language(GameLanguage lang) {
+    if (lang >= 0 && lang < LANG_COUNT) {
+        g_current_language = lang;
+    }
+}
+
+GameLanguage engine_get_language(void) {
+    return g_current_language;
+}
+
+void engine_set_custom_letter_value(char letter, int value) {
+    g_custom_letter_values[(unsigned char)letter] = value;
+}
+
+int engine_get_letter_value(char letter) {
+    unsigned char uc = (unsigned char)letter;
+    if (g_custom_letter_values[uc] > 0) {
+        return g_custom_letter_values[uc];
+    }
+    
+    /* Extended characters (Latin-1 / UTF-8 single-byte representation) */
+    if (uc == 0xC4 || uc == 0xE4) return 6; /* Ä / ä (German) */
+    if (uc == 0xD6 || uc == 0xF6) return 8; /* Ö / ö (German) */
+    if (uc == 0xDC || uc == 0xFC) return 6; /* Ü / ü (German) */
+    if (uc == 0xD1 || uc == 0xF1) return 8; /* Ñ / ñ (Spanish) */
+
+    if (letter >= 'a' && letter <= 'z') letter -= 32;
+    if (letter >= 'A' && letter <= 'Z') {
+        int idx = letter - 'A';
+        switch (g_current_language) {
+            case LANG_FR: return LETTER_VALUES_FR[idx];
+            case LANG_NL: return LETTER_VALUES_NL[idx];
+            case LANG_DE: return LETTER_VALUES_DE[idx];
+            case LANG_ES: return LETTER_VALUES_ES[idx];
+            case LANG_EN:
+            default:      return LETTER_VALUES_EN[idx];
+        }
+    }
+    return 0;
+}
 
 /* Official Scrabble bonus square matrix (15x15)
    0: None, 1: DLS, 2: TLS, 3: DWS, 4: TWS */
@@ -35,7 +95,15 @@ static const char* BUILTIN_WORDS[] = {
     "OW", "OX", "OY", "PA", "PE", "PEACH", "PI", "PLAY", "PO", "QI", "RE", "SH", "SI", "SO", "TA",
     "TI", "TO", "UH", "UM", "UN", "UP", "US", "UT", "WE", "WO", "XI", "XU", "YA", "YE", "YO", "ZA",
     "BREEZE", "GARDEN", "HOME", "LOVE", "QUIET", "QUARTZ", "SMART", "BOARD", "GAME", "WORD", "WORDS",
-    "FAMILY", "GRANDMA", "GRANDPA", "TOUCH", "TILES", "RACK", "SCORE", "DOUBLE", "TRIPLE", "LETTER"
+    "FAMILY", "GRANDMA", "GRANDPA", "TOUCH", "TILES", "RACK", "SCORE", "DOUBLE", "TRIPLE", "LETTER",
+    /* French */
+    "BONJOUR", "MERCI", "MAISON", "CHAT", "CHIEN", "AMOUR", "TABLE", "JEU", "FAMILLE",
+    /* Dutch */
+    "DANK", "HUIS", "KAT", "HOND", "FIETS", "SPEL", "MOEDER", "VADER", "BOEK",
+    /* German */
+    "DANKE", "HAUS", "KATZE", "HUND", "SPIEL", "BUCH", "ZEIT", "MUTTER", "VATER",
+    /* Spanish */
+    "HOLA", "GRACIAS", "CASA", "GATO", "PERRO", "JUEGO", "LIBRO", "AMIGO", "MADRE", "PADRE"
 };
 static const int BUILTIN_WORDS_COUNT = sizeof(BUILTIN_WORDS) / sizeof(BUILTIN_WORDS[0]);
 
@@ -56,14 +124,6 @@ BonusType engine_get_bonus(int row, int col) {
         return BONUS_NONE;
     }
     return (BonusType)BONUS_GRID[row][col];
-}
-
-int engine_get_letter_value(char letter) {
-    if (letter >= 'a' && letter <= 'z') letter -= 32;
-    if (letter >= 'A' && letter <= 'Z') {
-        return LETTER_VALUES[letter - 'A'];
-    }
-    return 0;
 }
 
 static int str_compare(const char* s1, const char* s2) {

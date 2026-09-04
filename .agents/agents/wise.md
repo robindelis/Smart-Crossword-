@@ -18,7 +18,9 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 * **Wood Permittivity & Enclosure Depth**: Dry hardwood has a relative permittivity ($\epsilon_r$) between 2.0 and 4.0. Antenna matching networks must be tuned with the actual wooden veneer/composite top plate installed—never bare in open air.
 
 ### 3. Crossword Game Engine Invariants
-* **Strict Dictionary Integrity**: The engine must support standard competitive lexicons (NASPA Word List / NWL for North America, Collins CSW for International). Dictionary queries must run against an embedded Trie structure in local flash ($\le 15\text{ms}$ per lookup) without cloud dependencies.
+* **Strict Dictionary Integrity**: The engine must support standard competitive lexicons (NASPA Word List / ENABLE1 for English, ODS8 for French, OpenTaal for Dutch, Scrabble DE for German, FISE for Spanish). Dictionary queries must run against an embedded index in local flash ($\le 15\text{ms}$ per lookup) without cloud dependencies.
+* **Multi-Language Tile Sets & Point Values**: Letter score values, bag tile distributions, and special characters differ fundamentally by language (e.g., French W=10, Dutch C=5, German Ä=6/Ö=8/Ü=6, Spanish Ñ=8/Q=5). The referee engine and physical tile sets must enforce official tournament scoring per language, never using English point values for other languages.
+* **Localized Audio Voice Referee**: Move confirmations and referee announcements must be spoken in the active game language with proper pronunciation at a calm, respectful pace.
 * **Immutable Tile UID Mapping**: Every physical tile's NFC UID is strictly bound to one letter and point value. In-game blank tiles must prompt the player via the console to assign their designated letter before word scoring is finalized.
 
 ### 4. Commercial & Crowdfunding Invariants

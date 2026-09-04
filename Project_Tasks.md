@@ -25,9 +25,12 @@
 - [x] Portable C crossword game engine (`firmware/engine/crossword_engine.c`)
   - [x] Move rules: straight line, continuity, connectivity, center star requirement
   - [x] Official 15x15 bonus multipliers (Double/Triple letter & word, Bingo +50)
+  - [x] Multi-language support (English, French, Dutch, German, Spanish)
+  - [x] Official tournament dictionaries downloaded & integrated (2.1M total words)
+  - [x] Language-specific tile bags & letter scoring tables
   - [x] Native C test suite with 100% pass rate (`tests/test_engine.c`)
 - [x] WebAssembly compilation via clang (`software/web/engine.wasm`)
-- [x] Interactive web prototype with voice speech announcements (`software/web/index.html`)
+- [x] Interactive web prototype with multi-language selector & localized voice referee (`software/web/index.html`)
 - [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
 - [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
 - [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)

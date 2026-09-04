@@ -41,10 +41,11 @@ gantt
 | **ADL-006** | 2026-09-04 | Checking Demand | **$1 pre-order deposits**: Get 750 $1 deposits and keep ad cost under $2.50 per email before ordering production boards. |
 | **ADL-007** | 2026-09-04 | Project Tracking | **Obsidian (Canvas & Task list)**: Keeps all notes and tasks in simple Markdown files on your computer with a visual whiteboard. |
 | **ADL-008** | 2026-09-04 | Game Engine Architecture | **Portable C Shared Core (WebAssembly + ESP32)**: Write core Scrabble rule checks and scoring once in clean C with zero OS dependencies; compiles to `engine.wasm` for web and compiles directly to ESP-IDF firmware for the physical board. |
+| **ADL-009** | 2026-09-04 | Multi-Language Support | **5 Official Tournament Languages**: Built-in support for English (ENABLE1, 168k words), French (ODS8, 402k words), Dutch (OpenTaal, 337k words), German (Scrabble DE, 590k words), and Spanish (FISE, 635k words), with official tile distributions, language-specific letter scoring, and localized voice synthesis referee announcements. |
 
 ---
 
 ## Next Tasks
 1. Design the 4x4 test circuit board in KiCad (`hardware/`).
 2. Build the 1-page test website with $1 pre-order button (`software/`).
-3. Connect live Wasm function exports to `software/web/app.js` and expand dictionary list.
+3. Connect physical NFC multiplexing bench driver to C engine.

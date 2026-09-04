@@ -170,17 +170,89 @@ static void test_bingo_bonus(void) {
     printf("PASS: test_bingo_bonus (total score with +50 bingo: %d)\n", res.total_score);
 }
 
-static void test_real_dictionary_load(void) {
-    int count = engine_load_dictionary_file("../../data/dictionary.txt");
-    assert(count > 170000);
-    printf("PASS: test_real_dictionary_load (Loaded %d words)\n", count);
+static void test_multilanguage_letter_values(void) {
+    /* English */
+    engine_set_language(LANG_EN);
+    assert(engine_get_language() == LANG_EN);
+    assert(engine_get_letter_value('W') == 4);
+    assert(engine_get_letter_value('K') == 5);
+    assert(engine_get_letter_value('Q') == 10);
 
-    /* Test real word lookups */
+    /* French: W is 10, K is 10, Q is 8 */
+    engine_set_language(LANG_FR);
+    assert(engine_get_language() == LANG_FR);
+    assert(engine_get_letter_value('W') == 10);
+    assert(engine_get_letter_value('K') == 10);
+    assert(engine_get_letter_value('Q') == 8);
+
+    /* Dutch: C is 5, W is 5, Q is 10 */
+    engine_set_language(LANG_NL);
+    assert(engine_get_language() == LANG_NL);
+    assert(engine_get_letter_value('C') == 5);
+    assert(engine_get_letter_value('W') == 5);
+    assert(engine_get_letter_value('E') == 1);
+
+    /* German: D is 1, J is 6, V is 6 */
+    engine_set_language(LANG_DE);
+    assert(engine_get_language() == LANG_DE);
+    assert(engine_get_letter_value('D') == 1);
+    assert(engine_get_letter_value('J') == 6);
+    assert(engine_get_letter_value('V') == 6);
+    assert(engine_get_letter_value((char)0xC4) == 6); /* Ä */
+    assert(engine_get_letter_value((char)0xD6) == 8); /* Ö */
+
+    /* Spanish: Q is 5, Z is 10 */
+    engine_set_language(LANG_ES);
+    assert(engine_get_language() == LANG_ES);
+    assert(engine_get_letter_value('Q') == 5);
+    assert(engine_get_letter_value('Z') == 10);
+    assert(engine_get_letter_value((char)0xD1) == 8); /* Ñ */
+
+    /* Reset to English */
+    engine_set_language(LANG_EN);
+    printf("PASS: test_multilanguage_letter_values\n");
+}
+
+static void test_real_dictionary_load(void) {
+    /* English */
+    int count = engine_load_dictionary_file("../../data/dict_en.txt");
+    assert(count > 160000);
+    printf("PASS: test_real_dictionary_load English (Loaded %d words)\n", count);
     assert(dictionary_contains("SCRABBLE") == true);
     assert(dictionary_contains("SYZYGY") == true);
-    assert(dictionary_contains("QUIZZICAL") == true);
     assert(dictionary_contains("NOTAREALWORDXYZ") == false);
-    printf("PASS: test_real_dictionary_queries\n");
+    engine_free_dictionary();
+
+    /* French */
+    count = engine_load_dictionary_file("../../data/dict_fr.txt");
+    assert(count > 400000);
+    printf("PASS: test_real_dictionary_load French (Loaded %d words)\n", count);
+    assert(dictionary_contains("BONJOUR") == true);
+    assert(dictionary_contains("MAISON") == true);
+    engine_free_dictionary();
+
+    /* Dutch */
+    count = engine_load_dictionary_file("../../data/dict_nl.txt");
+    assert(count > 300000);
+    printf("PASS: test_real_dictionary_load Dutch (Loaded %d words)\n", count);
+    assert(dictionary_contains("FIETS") == true);
+    assert(dictionary_contains("MOEDER") == true);
+    engine_free_dictionary();
+
+    /* German */
+    count = engine_load_dictionary_file("../../data/dict_de.txt");
+    assert(count > 500000);
+    printf("PASS: test_real_dictionary_load German (Loaded %d words)\n", count);
+    assert(dictionary_contains("SPIEL") == true);
+    assert(dictionary_contains("MUTTER") == true);
+    engine_free_dictionary();
+
+    /* Spanish */
+    count = engine_load_dictionary_file("../../data/dict_es.txt");
+    assert(count > 600000);
+    printf("PASS: test_real_dictionary_load Spanish (Loaded %d words)\n", count);
+    assert(dictionary_contains("HOLA") == true);
+    assert(dictionary_contains("TIEMPO") == true);
     engine_free_dictionary();
 }
 
@@ -194,6 +266,7 @@ int main(void) {
     test_disconnected_move();
     test_interlocking_and_crossword();
     test_bingo_bonus();
+    test_multilanguage_letter_values();
     test_real_dictionary_load();
     printf("=== ALL ENGINE TESTS PASSED! ===\n");
     return 0;

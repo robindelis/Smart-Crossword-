@@ -14,6 +14,13 @@
         <p class="subtitle">Hardware & Game Engine Prototype (Portable C + WebAssembly)</p>
       </div>
       <div class="header-right">
+        <select id="select-language" class="lang-select" title="Game Language">
+          <option value="en" selected>🇬🇧 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="nl">🇳🇱 Nederlands</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
         <button id="btn-audio-toggle" class="btn btn-secondary">🔊 Voice: On</button>
         <button id="btn-new-game" class="btn btn-secondary">New Game</button>
       </div>
@@ -48,7 +55,7 @@
               <span class="player-pts" id="player-1-score">0</span>
             </div>
             <div class="player-score" id="player-2-box">
-              <span class="player-name">Sarah (Phone)</span>
+              <span class="player-name" id="player-2-name">Sarah (Phone)</span>
               <span class="player-pts" id="player-2-score">0</span>
             </div>
           </div>
@@ -59,6 +66,7 @@
           <h2>Move Referee</h2>
           <div id="console-status" class="status-msg info">Place tiles covering center star (H8) to start.</div>
           <div id="move-details" class="move-details">
+            <div class="detail-row"><span>Dictionary:</span> <strong id="detail-dict-count">Loading...</strong></div>
             <div class="detail-row"><span>Words Formed:</span> <strong id="detail-words">-</strong></div>
             <div class="detail-row"><span>Points Earned:</span> <strong id="detail-points">0</strong></div>
             <div class="detail-row"><span>Bonus Applied:</span> <span id="detail-bonus">None</span></div>

@@ -53,8 +53,21 @@ typedef struct {
     bool is_bingo; /* +50 points bonus if 7 tiles played */
 } MoveResult;
 
+/* Language options */
+typedef enum {
+    LANG_EN = 0,
+    LANG_FR = 1,
+    LANG_NL = 2,
+    LANG_DE = 3,
+    LANG_ES = 4,
+    LANG_COUNT = 5
+} GameLanguage;
+
 /* API Functions */
 void engine_init(void);
+void engine_set_language(GameLanguage lang);
+GameLanguage engine_get_language(void);
+void engine_set_custom_letter_value(char letter, int value);
 BonusType engine_get_bonus(int row, int col);
 int engine_get_letter_value(char letter);
 bool dictionary_contains(const char* word);
