@@ -21,6 +21,11 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 * **Strict Dictionary Integrity**: The engine must support standard competitive lexicons (NASPA Word List / NWL for North America, Collins CSW for International). Dictionary queries must run against an embedded Trie structure in local flash ($\le 15\text{ms}$ per lookup) without cloud dependencies.
 * **Immutable Tile UID Mapping**: Every physical tile's NFC UID is strictly bound to one letter and point value. In-game blank tiles must prompt the player via the console to assign their designated letter before word scoring is finalized.
 
+### 4. Commercial & Crowdfunding Invariants
+* **The "Buyer vs. User" Dichotomy**: Marketing messages must target the *Buyer* (the 28–48 year old adult child looking for a meaningful gift to stay close to family), never positioning the product as a patronizing "elderly assistive gadget."
+* **The 24-Hour Funding Threshold**: Never launch the Kickstarter campaign without at least 600–800 pre-launch VIP deposit holders ($1 refundable reservation). The project MUST cross 100% funding within the first 24 hours to trigger Kickstarter's internal recommendation algorithms.
+* **The $100 Smoke Test Gate**: No custom 15x15 PCB manufacturing orders or high-volume tooling may be committed before running a micro-spend ad test demonstrating Cost Per Lead $\le \$2.50$.
+
 ---
 
 ## Known Failure Modes & Mitigations Log
@@ -31,6 +36,7 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 | **FAIL-002** | UX | Senior gets confused when grandchild plays | Audio announcement too fast or quiet | Multi-sensory cue: 1) gentle chime, 2) voice announcement at conversational pace, 3) persistent visual board diagram on screen until tiles are placed. |
 | **FAIL-003** | Power | Battery drains unexpectedly in 1 day | Display and Wi-Fi kept at full power | Aggressive sleep states: Wi-Fi uses long DTIM intervals; display dims to ambient clock mode after 3 minutes of inactivity. |
 | **FAIL-004** | Commercial | BOM exceeds $100 ceiling | Custom molded parts or overpriced discrete NFC ICs | Standardize on off-the-shelf lazy-susan turntable bearings, standard wood sheet CNC routing, and multiplexed single-chip NFC transceiver. |
+| **FAIL-005** | Commercial | Cold launch death on Kickstarter | Launching without pre-launch VIP reservation list | Enforce 750+ $1 VIP reservation leads before launching publicly; guarantee 100% funding within 24 hours. |
 
 ---
 
