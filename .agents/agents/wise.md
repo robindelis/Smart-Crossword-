@@ -45,6 +45,7 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 | **FAIL-003** | Power | Battery drains unexpectedly in 1 day | Display and Wi-Fi kept at full power | Aggressive sleep states: Wi-Fi uses long DTIM intervals; display dims to ambient clock mode after 3 minutes of inactivity. |
 | **FAIL-004** | Commercial | BOM exceeds $100 ceiling | Custom molded parts or overpriced discrete NFC ICs | Standardize on off-the-shelf lazy-susan turntable bearings, standard wood sheet CNC routing, and multiplexed single-chip NFC transceiver. |
 | **FAIL-005** | Commercial | Cold launch death on Kickstarter | Launching without pre-launch VIP reservation list | Enforce 750+ $1 VIP reservation leads before launching publicly; guarantee 100% funding within 24 hours. |
+| **FAIL-006** | Architecture | Anagram ambiguity & rack complexity with Hall sensors | Board Hall sensors only detect 1/0 presence, losing letter identity; rack RFID adds batteries/cables | Keep full-grid 15x15 RFID on board so every letter is uniquely identified; keep player racks 100% passive wood. |
 
 ---
 

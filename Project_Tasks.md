@@ -11,17 +11,25 @@
 
 ## ⏳ In Progress (Phase 1: Test Board & Code)
 
-- [ ] Design the 4x4 test circuit board in KiCad (`hardware/`)
-  - [ ] Wire NFC chip to 16-channel multiplexer switch
-  - [ ] Size the antenna coils (1.5µH, 3 turns)
-  - [ ] Test reading tags through 2.5mm wood
 - [ ] Build 1-page test website (`software/`)
   - [ ] Show product photo and plain-language explanation
   - [ ] Add $1 pre-order Stripe button
   - [ ] Collect emails and send automated confirmation
+- [ ] Bench test 4x4 circuit board
+  - [ ] Order PCB prototype from JLCPCB
+  - [ ] Verify reading tags through 2.0mm–2.5mm hardwood
+  - [ ] Verify 16-channel scan latency (<40ms)
 
 ## ✅ Done
 
+- [x] Design 4x4 test circuit board in KiCad (`hardware/kicad/test_grid_4x4/`)
+  - [x] Sized planar spiral coils (17.5mm, 7 turns, L=1.26µH, 19mm pitch)
+  - [x] Resonant LC tank (100pF C0G capacitors, 3.3Ω damping resistors for Q=25)
+  - [x] 16-channel analog multiplexer (CD74HC4067) with address control
+  - [x] ESP32 host controller header (J1 2x10) and NFC transceiver header (J2 1x10)
+  - [x] SMA 50Ω coaxial test port (J3) for oscilloscope/VNA bench testing
+  - [x] 4-layer PCB layout with GND keepouts under coils to preserve Q
+  - [x] KiCad project, schematic, board layout, and 3D preview render verified
 - [x] Portable C crossword game engine (`firmware/engine/crossword_engine.c`)
   - [x] Move rules: straight line, continuity, connectivity, center star requirement
   - [x] Official 15x15 bonus multipliers (Double/Triple letter & word, Bingo +50)

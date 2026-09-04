@@ -1,10 +1,20 @@
 {
   "nodes": [
     {
+      "id": "group-hw",
+      "type": "group",
+      "x": 480,
+      "y": -140,
+      "width": 3250,
+      "height": 920,
+      "color": "5",
+      "label": "Circuit Board, RFID & Hardware"
+    },
+    {
       "id": "group-fw",
       "type": "group",
-      "x": 560,
-      "y": 320,
+      "x": 5360,
+      "y": -5680,
       "width": 3500,
       "height": 2720,
       "color": "4",
@@ -21,6 +31,16 @@
       "label": "Commercial, Marketing & Launch"
     },
     {
+      "id": "group-ideas",
+      "type": "group",
+      "x": 260,
+      "y": -2220,
+      "width": 2080,
+      "height": 1360,
+      "color": "3",
+      "label": "Ideas & Feature Backlog"
+    },
+    {
       "id": "group-state",
       "type": "group",
       "x": -1880,
@@ -31,36 +51,6 @@
       "label": "Tasks & Project State"
     },
     {
-      "id": "group-hw",
-      "type": "group",
-      "x": 560,
-      "y": -640,
-      "width": 2380,
-      "height": 920,
-      "color": "5",
-      "label": "Circuit Board, RFID & Hardware"
-    },
-    {
-      "id": "node-orchestrator",
-      "type": "file",
-      "file": "AGENTS.md",
-      "x": -520,
-      "y": -540,
-      "width": 420,
-      "height": 450,
-      "color": "1"
-    },
-    {
-      "id": "node-tasks",
-      "type": "file",
-      "file": "Project_Tasks.md",
-      "x": -440,
-      "y": 380,
-      "width": 410,
-      "height": 580,
-      "color": "3"
-    },
-    {
       "id": "node-project-state",
       "type": "file",
       "file": "PROJECT_STATE.md",
@@ -69,16 +59,6 @@
       "width": 1120,
       "height": 1040,
       "color": "6"
-    },
-    {
-      "id": "node-hw-agent",
-      "type": "file",
-      "file": ".agents/agents/hardware.md",
-      "x": 590,
-      "y": -580,
-      "width": 420,
-      "height": 580,
-      "color": "5"
     },
     {
       "id": "node-market",
@@ -101,66 +81,6 @@
       "color": "2"
     },
     {
-      "id": "node-hw-specs",
-      "type": "text",
-      "text": "## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 \u00b5H per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring",
-      "x": 1040,
-      "y": -580,
-      "width": 420,
-      "height": 380,
-      "color": "5"
-    },
-    {
-      "id": "node-fw-agent",
-      "type": "file",
-      "file": ".agents/agents/firmware.md",
-      "x": 590,
-      "y": 380,
-      "width": 420,
-      "height": 580,
-      "color": "4"
-    },
-    {
-      "id": "node-mobile-agent",
-      "type": "file",
-      "file": ".agents/agents/mobile_cloud.md",
-      "x": 1040,
-      "y": 380,
-      "width": 420,
-      "height": 580,
-      "color": "4"
-    },
-    {
-      "id": "node-sw-arch",
-      "type": "file",
-      "file": "Software_Architecture.md",
-      "x": 1490,
-      "y": 380,
-      "width": 2450,
-      "height": 2620,
-      "color": "4"
-    },
-    {
-      "id": "node-rfid-strat",
-      "type": "file",
-      "file": "RFID_Detection_Strategy.md",
-      "x": 1490,
-      "y": -580,
-      "width": 810,
-      "height": 820,
-      "color": "5"
-    },
-    {
-      "id": "node-lexicons",
-      "type": "file",
-      "file": "Multi_Language_Lexicons.md",
-      "x": 590,
-      "y": 1000,
-      "width": 870,
-      "height": 1900,
-      "color": "4"
-    },
-    {
       "id": "node-playbook",
       "type": "file",
       "file": "commercial/prelaunch_playbook.md",
@@ -171,24 +91,144 @@
       "color": "2"
     },
     {
-      "id": "group-ideas",
-      "type": "group",
-      "x": -1880,
-      "y": -480,
-      "width": 1280,
-      "height": 760,
-      "color": "3",
-      "label": "Ideas & Feature Backlog"
+      "id": "node-tasks",
+      "type": "file",
+      "file": "Project_Tasks.md",
+      "x": -580,
+      "y": 420,
+      "width": 410,
+      "height": 580,
+      "color": "3"
     },
     {
       "id": "node-ideas",
       "type": "file",
       "file": "Project_Ideas_Backlog.md",
-      "x": -1850,
-      "y": -440,
-      "width": 1220,
-      "height": 680,
+      "x": 380,
+      "y": -2100,
+      "width": 1780,
+      "height": 1150,
       "color": "3"
+    },
+    {
+      "id": "node-orchestrator",
+      "type": "file",
+      "file": "AGENTS.md",
+      "x": -120,
+      "y": -650,
+      "width": 420,
+      "height": 450,
+      "color": "1"
+    },
+    {
+      "id": "node-hw-agent",
+      "type": "file",
+      "file": ".agents/agents/hardware.md",
+      "x": 510,
+      "y": -80,
+      "width": 420,
+      "height": 580,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-specs",
+      "type": "text",
+      "text": "## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 \u00b5H per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring",
+      "x": 960,
+      "y": -80,
+      "width": 420,
+      "height": 380,
+      "color": "5"
+    },
+    {
+      "id": "node-rfid-strat",
+      "type": "file",
+      "file": "RFID_Detection_Strategy.md",
+      "x": 1410,
+      "y": -80,
+      "width": 810,
+      "height": 2080,
+      "color": "5"
+    },
+    {
+      "id": "node-hall-eval",
+      "type": "file",
+      "file": "Hall_Effect_vs_RFID_Evaluation.md",
+      "x": 2260,
+      "y": -80,
+      "width": 1020,
+      "height": 2080,
+      "color": "5"
+    },
+    {
+      "id": "node-fw-agent",
+      "type": "file",
+      "file": ".agents/agents/firmware.md",
+      "x": 5390,
+      "y": -5620,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "node-mobile-agent",
+      "type": "file",
+      "file": ".agents/agents/mobile_cloud.md",
+      "x": 5840,
+      "y": -5620,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "node-sw-arch",
+      "type": "file",
+      "file": "Software_Architecture.md",
+      "x": 6290,
+      "y": -5620,
+      "width": 2450,
+      "height": 2620,
+      "color": "4"
+    },
+    {
+      "id": "node-lexicons",
+      "type": "file",
+      "file": "Multi_Language_Lexicons.md",
+      "x": 5390,
+      "y": -5000,
+      "width": 870,
+      "height": 1900,
+      "color": "4"
+    },
+    {
+      "id": "node-rfid-schem",
+      "type": "file",
+      "file": "RFID_Multiplexing_and_Coil_Schematics.md",
+      "x": 3340,
+      "y": -80,
+      "width": 1020,
+      "height": 2920,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-kicad-4x4",
+      "type": "file",
+      "file": "hardware/kicad/test_grid_4x4/README.md",
+      "x": 2330,
+      "y": -580,
+      "width": 680,
+      "height": 820,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-3d-render",
+      "type": "file",
+      "file": "hardware/kicad/test_grid_4x4/test_grid_4x4_3d_iso.png",
+      "x": 3040,
+      "y": -580,
+      "width": 740,
+      "height": 820,
+      "color": "5"
     }
   ],
   "edges": [
@@ -249,6 +289,14 @@
       "label": "Antenna & Sensor Design"
     },
     {
+      "id": "edge-rfid-hall",
+      "fromNode": "node-rfid-strat",
+      "fromSide": "right",
+      "toNode": "node-hall-eval",
+      "toSide": "left",
+      "label": "Hall vs RFID Trade-off"
+    },
+    {
       "id": "edge-fw-lexicons",
       "fromNode": "node-fw-agent",
       "fromSide": "bottom",
@@ -279,6 +327,30 @@
       "toNode": "node-playbook",
       "toSide": "left",
       "label": "Pre-launch strategy"
+    },
+    {
+      "id": "edge-rfid-schem",
+      "fromNode": "node-rfid-strat",
+      "fromSide": "bottom",
+      "toNode": "node-rfid-schem",
+      "toSide": "left",
+      "label": "Coil Schematics & 225 Mux Tree"
+    },
+    {
+      "id": "edge-rfid-kicad",
+      "fromNode": "node-rfid-strat",
+      "fromSide": "right",
+      "toNode": "node-hw-kicad-4x4",
+      "toSide": "left",
+      "label": "KiCad 4x4 Prototype"
+    },
+    {
+      "id": "edge-kicad-3d",
+      "fromNode": "node-hw-kicad-4x4",
+      "fromSide": "right",
+      "toNode": "node-hw-3d-render",
+      "toSide": "left",
+      "label": "3D Board Preview"
     }
   ]
 }
