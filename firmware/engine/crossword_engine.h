@@ -58,6 +58,8 @@ void engine_init(void);
 BonusType engine_get_bonus(int row, int col);
 int engine_get_letter_value(char letter);
 bool dictionary_contains(const char* word);
+int engine_load_dictionary_file(const char* filepath);
+void engine_free_dictionary(void);
 
 /* Validate a move against current board, calculate score without modifying board */
 MoveErrorCode engine_validate_move(

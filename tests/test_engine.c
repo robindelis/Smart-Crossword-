@@ -170,6 +170,20 @@ static void test_bingo_bonus(void) {
     printf("PASS: test_bingo_bonus (total score with +50 bingo: %d)\n", res.total_score);
 }
 
+static void test_real_dictionary_load(void) {
+    int count = engine_load_dictionary_file("../../data/dictionary.txt");
+    assert(count > 170000);
+    printf("PASS: test_real_dictionary_load (Loaded %d words)\n", count);
+
+    /* Test real word lookups */
+    assert(dictionary_contains("SCRABBLE") == true);
+    assert(dictionary_contains("SYZYGY") == true);
+    assert(dictionary_contains("QUIZZICAL") == true);
+    assert(dictionary_contains("NOTAREALWORDXYZ") == false);
+    printf("PASS: test_real_dictionary_queries\n");
+    engine_free_dictionary();
+}
+
 int main(void) {
     printf("=== Starting Crossword Engine Tests ===\n");
     engine_init();
@@ -180,6 +194,7 @@ int main(void) {
     test_disconnected_move();
     test_interlocking_and_crossword();
     test_bingo_bonus();
+    test_real_dictionary_load();
     printf("=== ALL ENGINE TESTS PASSED! ===\n");
     return 0;
 }

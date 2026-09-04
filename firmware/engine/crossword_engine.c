@@ -74,10 +74,94 @@ static int str_compare(const char* s1, const char* s2) {
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
 
+#ifndef __wasm__
+#include <stdio.h>
+#include <stdlib.h>
+static char** g_file_words = 0;
+static int g_file_words_count = 0;
+static char* g_dict_buffer = 0;
+
+int engine_load_dictionary_file(const char* filepath) {
+    FILE* f = fopen(filepath, "rb");
+    if (!f) return -1;
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (sz <= 0) { fclose(f); return -1; }
+
+    engine_free_dictionary();
+
+    g_dict_buffer = (char*)malloc(sz + 2);
+    if (!g_dict_buffer) { fclose(f); return -1; }
+    size_t read_bytes = fread(g_dict_buffer, 1, sz, f);
+    fclose(f);
+    g_dict_buffer[read_bytes] = '\0';
+
+    int count = 0;
+    for (size_t i = 0; i < read_bytes; i++) {
+        if (g_dict_buffer[i] == '\n') count++;
+    }
+    count += 2;
+
+    g_file_words = (char**)malloc(count * sizeof(char*));
+    if (!g_file_words) return -1;
+
+    int idx = 0;
+    char* p = g_dict_buffer;
+    while (*p) {
+        while (*p == '\r' || *p == '\n' || *p == ' ') p++;
+        if (!*p) break;
+        g_file_words[idx++] = p;
+        while (*p && *p != '\r' && *p != '\n') {
+            if (*p >= 'a' && *p <= 'z') *p -= 32;
+            p++;
+        }
+        if (*p) {
+            *p = '\0';
+            p++;
+        }
+    }
+    g_file_words_count = idx;
+    return g_file_words_count;
+}
+
+void engine_free_dictionary(void) {
+    if (g_dict_buffer) {
+        free(g_dict_buffer);
+        g_dict_buffer = 0;
+    }
+    if (g_file_words) {
+        free(g_file_words);
+        g_file_words = 0;
+    }
+    g_file_words_count = 0;
+}
+#else
+int engine_load_dictionary_file(const char* filepath) {
+    (void)filepath;
+    return -1;
+}
+void engine_free_dictionary(void) {}
+#endif
+
 bool dictionary_contains(const char* word) {
     if (g_custom_dict_fn) {
         return g_custom_dict_fn(word);
     }
+#ifndef __wasm__
+    if (g_file_words && g_file_words_count > 0) {
+        int low = 0;
+        int high = g_file_words_count - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int cmp = str_compare(word, g_file_words[mid]);
+            if (cmp == 0) return true;
+            if (cmp < 0) high = mid - 1;
+            else low = mid + 1;
+        }
+        return false;
+    }
+#endif
     /* Simple linear search over baseline built-in list */
     for (int i = 0; i < BUILTIN_WORDS_COUNT; i++) {
         if (str_compare(BUILTIN_WORDS[i], word) == 0) {

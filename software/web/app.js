@@ -39,6 +39,30 @@ const DICTIONARY = new Set([
   "FAMILY", "GRANDMA", "GRANDPA", "TOUCH", "TILES", "RACK", "SCORE", "DOUBLE", "TRIPLE", "LETTER"
 ]);
 
+let isDictionaryLoaded = false;
+
+async function loadRealDictionary() {
+  const statusEl = document.getElementById("console-status");
+  try {
+    const res = await fetch("dictionary.txt");
+    const text = await res.text();
+    const lines = text.split(/\r?\n/);
+    for (let i = 0; i < lines.length; i++) {
+      const w = lines[i].trim();
+      if (w.length >= 2 && w.length <= 15) {
+        DICTIONARY.add(w);
+      }
+    }
+    isDictionaryLoaded = true;
+    if (statusEl) {
+      statusEl.innerText = `Ready (${DICTIONARY.size.toLocaleString()} words loaded). Place tiles covering center star (H8).`;
+    }
+    console.log(`Loaded ${DICTIONARY.size} words.`);
+  } catch (err) {
+    console.warn("Could not load dictionary.txt, using built-in word list", err);
+  }
+}
+
 // Full English Scrabble tile distribution (100 tiles)
 const TILE_BAG_DISTRIBUTION = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXYYZ";
 
@@ -579,3 +603,4 @@ playerRack[4] = 'O';
 buildBoardDOM();
 renderRack();
 updateBoardView();
+loadRealDictionary();
