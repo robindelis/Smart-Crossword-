@@ -230,24 +230,165 @@ const player2ScoreEl = document.getElementById("player-2-score");
 const player2NameEl = document.getElementById("player-2-name");
 const selectLangEl = document.getElementById("select-language");
 
-// Audio Speech Announcement with language auto-detection
-function speak(text) {
-  if (!voiceEnabled || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
+// Web Audio Engine (Zero-dependency synthesized audio for all browsers)
+let audioCtx = null;
+let hasUserInteracted = false;
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = currentLang.speechLocale;
-  utterance.rate = 0.92;
-  utterance.pitch = 1.0;
-
-  const voices = window.speechSynthesis.getVoices();
-  const prefix = currentLang.speechLocale.split("-")[0];
-  const matchedVoice = voices.find(v => v.lang && v.lang.startsWith(prefix));
-  if (matchedVoice) {
-    utterance.voice = matchedVoice;
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtxClass) {
+      audioCtx = new AudioCtxClass();
+    }
   }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
 
-  window.speechSynthesis.speak(utterance);
+// Ensure audio is unlocked on first user interaction
+function unlockAudio() {
+  hasUserInteracted = true;
+  getAudioContext();
+  if (window.speechSynthesis && window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
+  }
+}
+document.addEventListener("click", unlockAudio, { passive: true });
+document.addEventListener("keydown", unlockAudio, { passive: true });
+
+// 1. Tactile Wooden Tile Placement Sound ("Clack")
+function playTileSound() {
+  if (!voiceEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  // Natural wood impact: pitch drop from 280Hz down to 90Hz
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(280, now);
+  osc.frequency.exponentialRampToValueAtTime(90, now + 0.04);
+
+  gain.gain.setValueAtTime(0.35, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.05);
+}
+
+// 2. Friendly Valid Word Chime (C5 - E5 - G5 warm arpeggio)
+function playSuccessSound() {
+  if (!voiceEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+  const now = ctx.currentTime;
+
+  notes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const start = now + i * 0.07;
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.25, start + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    osc.stop(start + 0.36);
+  });
+}
+
+// 3. Soft Alert Thud for Invalid Moves
+function playErrorSound() {
+  if (!voiceEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sawtooth";
+  osc.frequency.setValueAtTime(140, now);
+  osc.frequency.exponentialRampToValueAtTime(90, now + 0.16);
+
+  gain.gain.setValueAtTime(0.18, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.18);
+}
+
+// 4. Smooth Swoosh when Recalling Tiles
+function playSwooshSound() {
+  if (!voiceEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(400, now);
+  osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
+
+  gain.gain.setValueAtTime(0.15, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.12);
+}
+
+// Audio Speech Announcement with language auto-detection & browser resume
+function speak(text) {
+  if (!voiceEnabled) return;
+  unlockAudio();
+
+  if (!window.speechSynthesis) return;
+
+  try {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = currentLang.speechLocale;
+    utterance.rate = 0.92;
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const prefix = currentLang.speechLocale.split("-")[0];
+    const matchedVoice = voices.find(v => v.lang && v.lang.startsWith(prefix));
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.warn("SpeechSynthesis error:", err);
+  }
 }
 
 function formatString(template, vars) {
@@ -399,6 +540,7 @@ function handleCellClick(r, c) {
     const p = currentPlacements[existingPlacementIdx];
     playerRack[p.rackIndex] = p.letter;
     currentPlacements.splice(existingPlacementIdx, 1);
+    playTileSound();
     updateBoardView();
     renderRack();
     return;
@@ -411,6 +553,7 @@ function handleCellClick(r, c) {
     playerRack[selectedRackIndex] = null;
     currentPlacements.push({ row: r, col: c, letter, rackIndex: selectedRackIndex });
     selectedRackIndex = null;
+    playTileSound();
     updateBoardView();
     renderRack();
   }
@@ -645,9 +788,12 @@ document.getElementById("btn-submit").addEventListener("click", () => {
   if (!result.ok) {
     statusEl.className = "status-msg error";
     statusEl.innerText = result.msg;
+    playErrorSound();
     speak(result.msg);
     return;
   }
+
+  playSuccessSound();
 
   currentPlacements.forEach(p => {
     boardState[p.row][p.col] = p.letter;
@@ -694,6 +840,7 @@ document.getElementById("btn-recall").addEventListener("click", () => {
   });
   currentPlacements = [];
   selectedRackIndex = null;
+  playSwooshSound();
   renderRack();
   updateBoardView();
   statusEl.className = "status-msg info";
@@ -714,8 +861,30 @@ document.getElementById("btn-shuffle").addEventListener("click", () => {
 
 document.getElementById("btn-audio-toggle").addEventListener("click", (e) => {
   voiceEnabled = !voiceEnabled;
-  e.target.innerText = voiceEnabled ? "🔊 Voice: On" : "🔇 Voice: Off";
+  e.target.innerText = voiceEnabled ? "🔊 Audio: On" : "🔇 Audio: Off";
+  if (voiceEnabled) {
+    playSuccessSound();
+  }
 });
+
+const testAudioBtn = document.getElementById("btn-test-audio");
+if (testAudioBtn) {
+  testAudioBtn.addEventListener("click", () => {
+    unlockAudio();
+    playSuccessSound();
+    const testPhrases = {
+      en: "Audio test: sound is working properly.",
+      fr: "Test audio : le son fonctionne parfaitement.",
+      nl: "Audiotest: het geluid werkt perfect.",
+      de: "Audiotest: Der Ton funktioniert einwandfrei.",
+      es: "Prueba de audio: el sonido funciona correctamente."
+    };
+    const phrase = testPhrases[currentLangKey] || testPhrases.en;
+    statusEl.className = "status-msg success";
+    statusEl.innerText = "🔔 Testing sound: playing chime and voice announcement...";
+    setTimeout(() => speak(phrase), 350);
+  });
+}
 
 document.getElementById("btn-simulate-remote").addEventListener("click", () => {
   const isBoardEmpty = boardState.every(row => row.every(cell => cell === null));
@@ -789,7 +958,9 @@ function resetGame() {
   buildBoardDOM();
   renderRack();
   updateBoardView();
-  speak(currentLang.strings.voiceNewGame);
+  if (hasUserInteracted) {
+    speak(currentLang.strings.voiceNewGame);
+  }
 }
 
 document.getElementById("btn-new-game").addEventListener("click", () => {
