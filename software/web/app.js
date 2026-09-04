@@ -50,12 +50,12 @@ const LANGUAGES = {
       minLenError: "Word must be at least 2 letters.",
       notInDict: "'{word}' is not in the dictionary.",
       validMove: "Valid move! You played {word} for {score} points.",
-      voiceMove: "Valid move! You played {word} for {score} points.",
+      voiceMove: "Valid move! {spelled}. {word}, for {score} points.",
       tilesRecalled: "Tiles recalled to rack.",
       newGameStarted: "New game started. Place tiles covering center star (H8).",
       voiceNewGame: "New game started. It's your turn.",
-      remoteTurn1: "{player} played {word} on center for {score} points!",
-      remoteTurn2: "{player} played {word} for {score} points!",
+      remoteTurn1: "{player} played {spelled}. {word} on center for {score} points!",
+      remoteTurn2: "{player} played {spelled}. {word} for {score} points!",
       remoteDone: "Remote move already completed. Start a new game to reset."
     }
   },
@@ -85,12 +85,12 @@ const LANGUAGES = {
       minLenError: "Un mot doit comporter au moins 2 lettres.",
       notInDict: "« {word} » n'est pas dans le dictionnaire.",
       validMove: "Coup valide ! Vous avez joué {word} pour {score} points.",
-      voiceMove: "Coup valide ! Vous avez joué {word} pour {score} points.",
+      voiceMove: "Coup valide ! {spelled}. {word}, pour {score} points.",
       tilesRecalled: "Lettres remises sur votre chevalet.",
       newGameStarted: "Nouvelle partie commencée. Placez vos lettres sur l'étoile centrale.",
       voiceNewGame: "Nouvelle partie commencée. À vous de jouer.",
-      remoteTurn1: "{player} a joué {word} au centre pour {score} points !",
-      remoteTurn2: "{player} a joué {word} pour {score} points !",
+      remoteTurn1: "{player} a joué {spelled}. {word} au centre pour {score} points !",
+      remoteTurn2: "{player} a joué {spelled}. {word} pour {score} points !",
       remoteDone: "Coup simulé déjà joué. Démarrez une nouvelle partie pour recommencer."
     }
   },
@@ -120,12 +120,12 @@ const LANGUAGES = {
       minLenError: "Een woord moet minstens 2 letters bevatten.",
       notInDict: "'{word}' staat niet in het woordenboek.",
       validMove: "Geldige zet! Je speelde {word} voor {score} punten.",
-      voiceMove: "Geldige zet! Je speelde {word} voor {score} punten.",
+      voiceMove: "Geldige zet! {spelled}. {word}, voor {score} punten.",
       tilesRecalled: "Letters teruggelegd op je plankje.",
       newGameStarted: "Nieuw spel gestart. Leg letters over de centrale ster.",
       voiceNewGame: "Nieuw spel gestart. Het is jouw beurt.",
-      remoteTurn1: "{player} speelde {word} op het centrum voor {score} punten!",
-      remoteTurn2: "{player} speelde {word} voor {score} punten!",
+      remoteTurn1: "{player} speelde {spelled}. {word} op het centrum voor {score} punten!",
+      remoteTurn2: "{player} speelde {spelled}. {word} voor {score} punten!",
       remoteDone: "Gesimuleerde zet is al voltooid. Start een nieuw spel om te resetten."
     }
   },
@@ -156,12 +156,12 @@ const LANGUAGES = {
       minLenError: "Ein Wort muss mindestens 2 Buchstaben haben.",
       notInDict: "„{word}“ steht nicht im Wörterbuch.",
       validMove: "Gültiger Zug! Du hast {word} für {score} Punkte gelegt.",
-      voiceMove: "Gültiger Zug! Du hast {word} für {score} Punkte gelegt.",
+      voiceMove: "Gültiger Zug! {spelled}. {word}, für {score} Punkte.",
       tilesRecalled: "Buchstaben zurück auf die Bank gelegt.",
       newGameStarted: "Neues Spiel gestartet. Lege Buchstaben über den Stern.",
       voiceNewGame: "Neues Spiel gestartet. Du bist am Zug.",
-      remoteTurn1: "{player} hat {word} in der Mitte für {score} Punkte gelegt!",
-      remoteTurn2: "{player} hat {word} für {score} Punkte gelegt!",
+      remoteTurn1: "{player} hat {spelled}. {word} in der Mitte für {score} Punkte gelegt!",
+      remoteTurn2: "{player} hat {spelled}. {word} für {score} Punkte gelegt!",
       remoteDone: "Simulierter Zug bereits abgeschlossen. Starte ein neues Spiel."
     }
   },
@@ -191,12 +191,12 @@ const LANGUAGES = {
       minLenError: "La palabra debe tener al menos 2 letras.",
       notInDict: "«{word}» no está en el diccionario.",
       validMove: "¡Jugada válida! Has colocado {word} por {score} puntos.",
-      voiceMove: "¡Jugada válida! Has colocado {word} por {score} puntos.",
+      voiceMove: "¡Jugada válida! {spelled}. {word}, por {score} puntos.",
       tilesRecalled: "Fichas devueltas al atril.",
       newGameStarted: "Nueva partida iniciada. Coloca fichas en la estrella central.",
       voiceNewGame: "Nueva partida iniciada. Es tu turno.",
-      remoteTurn1: "¡{player} colocó {word} en el centro por {score} puntos!",
-      remoteTurn2: "¡{player} colocó {word} por {score} puntos!",
+      remoteTurn1: "¡{player} colocó {spelled}. {word} en el centro por {score} puntos!",
+      remoteTurn2: "¡{player} colocó {spelled}. {word} por {score} puntos!",
       remoteDone: "Jugada remota ya realizada. Inicia una nueva partida para reiniciar."
     }
   }
@@ -360,34 +360,44 @@ function playSwooshSound() {
   osc.stop(now + 0.12);
 }
 
-// Audio Speech Announcement with language auto-detection & browser resume
+let currentPlayingAudio = null;
+
+// High-Fidelity Audio Announcement with Neural Voice & Browser Fallback
 function speak(text) {
   if (!voiceEnabled) return;
   unlockAudio();
 
-  if (!window.speechSynthesis) return;
+  // Stop any currently speaking audio
+  if (currentPlayingAudio) {
+    try {
+      currentPlayingAudio.pause();
+      currentPlayingAudio.currentTime = 0;
+    } catch (_) {}
+    currentPlayingAudio = null;
+  }
 
-  try {
-    if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-    }
-    window.speechSynthesis.cancel();
+  // 1. Primary: Server-side Neural Voice (Works on all browsers & Linux without speech-dispatcher)
+  const ttsUrl = "/api/tts?text=" + encodeURIComponent(text) + "&lang=" + currentLangKey;
+  const audio = new Audio(ttsUrl);
+  currentPlayingAudio = audio;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = currentLang.speechLocale;
-    utterance.rate = 0.92;
-    utterance.pitch = 1.0;
-
-    const voices = window.speechSynthesis.getVoices();
-    const prefix = currentLang.speechLocale.split("-")[0];
-    const matchedVoice = voices.find(v => v.lang && v.lang.startsWith(prefix));
-    if (matchedVoice) {
-      utterance.voice = matchedVoice;
-    }
-
-    window.speechSynthesis.speak(utterance);
-  } catch (err) {
-    console.warn("SpeechSynthesis error:", err);
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(err => {
+      console.warn("Server neural voice playback failed, falling back to Web Speech API:", err);
+      if (window.speechSynthesis) {
+        try {
+          if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = currentLang.speechLocale;
+          utterance.rate = 0.92;
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("Web Speech API fallback error:", e);
+        }
+      }
+    });
   }
 }
 
@@ -814,11 +824,15 @@ document.getElementById("btn-submit").addEventListener("click", () => {
   statusEl.className = "status-msg success";
   statusEl.innerText = successMsg;
 
+  const primaryWord = result.words[0].word;
+  const spelled = primaryWord.split("").join(" - ");
   const announceText = formatString(currentLang.strings.voiceMove, {
-    word: result.words[0].word,
+    word: primaryWord,
+    spelled: spelled,
     score: result.totalScore
   });
-  speak(announceText);
+  // Small delay so success chime finishes before voice begins
+  setTimeout(() => speak(announceText), 350);
 
   const emptySlots = playerRack.filter(l => l === null).length;
   const newTiles = drawTiles(emptySlots);
@@ -902,14 +916,17 @@ document.getElementById("btn-simulate-remote").addEventListener("click", () => {
     p2Score += t1.score;
     player2ScoreEl.innerText = p2Score;
     updateBoardView();
+    playSuccessSound();
+    const spelled = t1.word.split("").join(" - ");
     const msg = formatString(currentLang.strings.remoteTurn1, {
       player: currentLang.remotePlayer.split(" ")[0],
       word: t1.word,
+      spelled: spelled,
       score: t1.score
     });
     statusEl.className = "status-msg info";
     statusEl.innerText = msg;
-    speak(msg);
+    setTimeout(() => speak(msg), 350);
   } else {
     const t2 = sim.turn2;
     if (boardState[t2.branchR][t2.branchC] === t2.branchChar && boardState[t2.r][t2.c] === null) {
@@ -923,14 +940,17 @@ document.getElementById("btn-simulate-remote").addEventListener("click", () => {
       p2Score += t2.score;
       player2ScoreEl.innerText = p2Score;
       updateBoardView();
-      const msg = formatString(currentLang.strings.remoteTurn2, {
+      playSuccessSound();
+    const spelled = t2.word.split("").join(" - ");
+    const msg = formatString(currentLang.strings.remoteTurn2, {
         player: currentLang.remotePlayer.split(" ")[0],
         word: t2.word,
+        spelled: spelled,
         score: t2.score
       });
       statusEl.className = "status-msg info";
       statusEl.innerText = msg;
-      speak(msg);
+      setTimeout(() => speak(msg), 350);
     } else {
       alert(currentLang.strings.remoteDone);
     }
