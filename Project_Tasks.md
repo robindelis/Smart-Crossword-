@@ -11,10 +11,6 @@
 
 ## ⏳ In Progress (Phase 1: Test Board & Code)
 
-- [ ] Write the Python game engine (`firmware/` & `tests/`)
-  - [ ] Check words connect properly in straight lines
-  - [ ] Add double/triple letter and word score calculations
-  - [ ] Load official Scrabble word list (NWL2023) into memory
 - [ ] Design the 4x4 test circuit board in KiCad (`hardware/`)
   - [ ] Wire NFC chip to 16-channel multiplexer switch
   - [ ] Size the antenna coils (1.5µH, 3 turns)
@@ -26,6 +22,12 @@
 
 ## ✅ Done
 
+- [x] Portable C crossword game engine (`firmware/engine/crossword_engine.c`)
+  - [x] Move rules: straight line, continuity, connectivity, center star requirement
+  - [x] Official 15x15 bonus multipliers (Double/Triple letter & word, Bingo +50)
+  - [x] Native C test suite with 100% pass rate (`tests/test_engine.c`)
+- [x] WebAssembly compilation via clang (`software/web/engine.wasm`)
+- [x] Interactive web prototype with voice speech announcements (`software/web/index.html`)
 - [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
 - [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
 - [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)

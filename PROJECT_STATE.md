@@ -15,9 +15,10 @@ gantt
     Team setup & rules                   :done, p1, 2026-09-04, 1d
     Kickstarter market plan              :done, p2, 2026-09-04, 1d
     Obsidian board & tasks               :done, p2b, 2026-09-04, 1d
-    Python game engine & dictionary      :active, p3, 2026-09-05, 5d
-    4x4 test circuit board               :p4, 2026-09-10, 7d
-    1-page test website ($1 pre-orders)  :p5, 2026-09-15, 5d
+    Game engine in C & WebAssembly       :done, p3, 2026-09-04, 1d
+    Interactive web prototype            :done, p3b, 2026-09-04, 1d
+    4x4 test circuit board               :active, p4, 2026-09-05, 7d
+    1-page test website ($1 pre-orders)  :p5, 2026-09-12, 5d
     section Phase 2: Full Board & Screen
     Full 15x15 circuit board             :p6, 2026-09-20, 14d
     Screen code & speaker setup          :p7, 2026-09-27, 14d
@@ -39,10 +40,11 @@ gantt
 | **ADL-005** | 2026-09-04 | How to Launch | **Kickstarter campaign**: Sell pre-orders to adult kids looking for a gift for their parents to fund the first production run. |
 | **ADL-006** | 2026-09-04 | Checking Demand | **$1 pre-order deposits**: Get 750 $1 deposits and keep ad cost under $2.50 per email before ordering production boards. |
 | **ADL-007** | 2026-09-04 | Project Tracking | **Obsidian (Canvas & Task list)**: Keeps all notes and tasks in simple Markdown files on your computer with a visual whiteboard. |
+| **ADL-008** | 2026-09-04 | Game Engine Architecture | **Portable C Shared Core (WebAssembly + ESP32)**: Write core Scrabble rule checks and scoring once in clean C with zero OS dependencies; compiles to `engine.wasm` for web and compiles directly to ESP-IDF firmware for the physical board. |
 
 ---
 
 ## Next Tasks
-1. Write the Python game engine and dictionary checker (`firmware/` & `tests/`).
-2. Design the 4x4 test circuit board in KiCad (`hardware/`).
-3. Build the 1-page test website with $1 pre-order button (`software/`).
+1. Design the 4x4 test circuit board in KiCad (`hardware/`).
+2. Build the 1-page test website with $1 pre-order button (`software/`).
+3. Connect live Wasm function exports to `software/web/app.js` and expand dictionary list.

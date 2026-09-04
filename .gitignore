@@ -44,6 +44,7 @@ cmake-build-*/
 *.elf
 *.bin
 *.hex
+tests/test_engine
 
 # Node / Mobile
 node_modules/

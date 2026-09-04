@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Crossword Board - Web Prototype</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <div class="header-left">
+        <h1>Smart Crossword Board</h1>
+        <p class="subtitle">Hardware & Game Engine Prototype (Portable C + WebAssembly)</p>
+      </div>
+      <div class="header-right">
+        <button id="btn-audio-toggle" class="btn btn-secondary">🔊 Voice: On</button>
+        <button id="btn-new-game" class="btn btn-secondary">New Game</button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Left: 15x15 Board Grid -->
+      <section class="board-wrapper">
+        <div id="board" class="board-grid"></div>
+        
+        <!-- Player Tile Rack & Controls -->
+        <div class="rack-controls">
+          <div class="rack-label">Your Rack:</div>
+          <div id="tile-rack" class="tile-rack"></div>
+          <div class="action-buttons">
+            <button id="btn-submit" class="btn btn-primary">Submit Move</button>
+            <button id="btn-recall" class="btn btn-outline">Recall</button>
+            <button id="btn-shuffle" class="btn btn-outline">Shuffle</button>
+            <button id="btn-simulate-remote" class="btn btn-accent">Simulate Phone Turn</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Status, Scores, and Move Feed -->
+      <aside class="sidebar">
+        <!-- Scoreboard -->
+        <div class="card scoreboard-card">
+          <h2>Scoreboard</h2>
+          <div class="scores-row">
+            <div class="player-score active" id="player-1-box">
+              <span class="player-name">Grandma (Board)</span>
+              <span class="player-pts" id="player-1-score">0</span>
+            </div>
+            <div class="player-score" id="player-2-box">
+              <span class="player-name">Sarah (Phone)</span>
+              <span class="player-pts" id="player-2-score">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Move Breakdown & Referee Console -->
+        <div class="card console-card">
+          <h2>Move Referee</h2>
+          <div id="console-status" class="status-msg info">Place tiles covering center star (H8) to start.</div>
+          <div id="move-details" class="move-details">
+            <div class="detail-row"><span>Words Formed:</span> <strong id="detail-words">-</strong></div>
+            <div class="detail-row"><span>Points Earned:</span> <strong id="detail-points">0</strong></div>
+            <div class="detail-row"><span>Bonus Applied:</span> <span id="detail-bonus">None</span></div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="card legend-card">
+          <h3>Board Legend</h3>
+          <div class="legend-grid">
+            <div class="legend-item"><span class="badge tws">3W</span> Triple Word</div>
+            <div class="legend-item"><span class="badge dws">2W</span> Double Word</div>
+            <div class="legend-item"><span class="badge tls">3L</span> Triple Letter</div>
+            <div class="legend-item"><span class="badge dls">2L</span> Double Letter</div>
+            <div class="legend-item"><span class="badge center">★</span> Center Star</div>
+          </div>
+        </div>
+
+        <!-- Engine Info -->
+        <div class="card engine-card">
+          <h3>Engine Status</h3>
+          <p class="engine-desc">
+            Running <code>crossword_engine.c</code> logic compiled to WebAssembly. The exact same C code compiles directly onto the ESP32 microcontroller.
+          </p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

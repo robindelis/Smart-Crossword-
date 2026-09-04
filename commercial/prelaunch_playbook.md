@@ -91,5 +91,5 @@ Send an email every 7–10 days so people remember the project:
 * **1 hour before**: Text and email the $1 VIPs with the private link.
 * **Launch**: Open 250 early-bird spots at $199.
 * **4 hours in**: Post an update when 50% funded.
-* **12 hours in**: Announce 100% funded and pitch board game news sites.
+* **12 hours in**: Announce 100n% funded and pitch board game news sites.
 * **Day 2**: Announce the first stretch goal (solid walnut wood option).
