@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": "group-comm",
+      "type": "group",
+      "label": "🎯 Commercial & Kickstarter Strategy",
+      "x": -1160,
+      "y": -650,
+      "width": 930,
+      "height": 680,
+      "color": "2"
+    },
+    {
+      "id": "node-market",
+      "type": "file",
+      "file": "commercial/market_analysis.md",
+      "x": -1130,
+      "y": -590,
+      "width": 420,
+      "height": 580,
+      "color": "2"
+    },
+    {
+      "id": "node-script",
+      "type": "file",
+      "file": "commercial/kickstarter_video_script.md",
+      "x": -670,
+      "y": -590,
+      "width": 410,
+      "height": 580,
+      "color": "2"
+    },
+    {
+      "id": "group-hw",
+      "type": "group",
+      "label": "⚡ Electromechanical Hardware & RF",
+      "x": 230,
+      "y": -650,
+      "width": 930,
+      "height": 680,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-agent",
+      "type": "file",
+      "file": ".agents/agents/hardware.md",
+      "x": 260,
+      "y": -590,
+      "width": 420,
+      "height": 580,
+      "color": "5"
+    },
+    {
+      "id": "node-hw-specs",
+      "type": "text",
+      "text": "## 15x15 Matrix Key Invariants\n\n* **RF Frequency**: 13.56 MHz (ISO 15693 / 14443A)\n* **Target Inductance**: ~1.2 µH – 1.8 µH per coil\n* **Multiplexers**: 74HC4067 / RF switches\n* **Wood Permittivity**: $\\epsilon_r = 2.5 - 3.5$\n* **Max Veneer Thickness**: $\\le 2.5\\text{mm}$\n* **Full Scan Cycle**: $\\le 500\\text{ms}$\n* **Power**: 3.7V 3000mAh Li-ion + Mag-Dock\n* **Turntable**: 250mm ball-bearing ring",
+      "x": 710,
+      "y": -590,
+      "width": 420,
+      "height": 380,
+      "color": "5"
+    },
+    {
+      "id": "group-fw",
+      "type": "group",
+      "label": "🧠 Firmware, Logic & Mobile Cloud",
+      "x": 230,
+      "y": 140,
+      "width": 930,
+      "height": 680,
+      "color": "4"
+    },
+    {
+      "id": "node-fw-agent",
+      "type": "file",
+      "file": ".agents/agents/firmware.md",
+      "x": 260,
+      "y": 200,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "node-mobile-agent",
+      "type": "file",
+      "file": ".agents/agents/mobile_cloud.md",
+      "x": 710,
+      "y": 200,
+      "width": 420,
+      "height": 580,
+      "color": "4"
+    },
+    {
+      "id": "group-state",
+      "type": "group",
+      "label": "📜 Living State, Tasks & Memory",
+      "x": -1160,
+      "y": 140,
+      "width": 930,
+      "height": 680,
+      "color": "6"
+    },
+    {
+      "id": "node-project-state",
+      "type": "file",
+      "file": "PROJECT_STATE.md",
+      "x": -1130,
+      "y": 200,
+      "width": 420,
+      "height": 580,
+      "color": "6"
+    },
+    {
+      "id": "node-tasks",
+      "type": "file",
+      "file": "Project_Tasks.md",
+      "x": -670,
+      "y": 200,
+      "width": 410,
+      "height": 580,
+      "color": "3"
+    },
+    {
+      "id": "node-orchestrator",
+      "type": "file",
+      "file": "AGENTS.md",
+      "x": -210,
+      "y": -190,
+      "width": 420,
+      "height": 450,
+      "color": "1"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-orch-comm",
+      "fromNode": "node-orchestrator",
+      "fromSide": "left",
+      "toNode": "node-script",
+      "toSide": "right",
+      "label": "Directs Marketing"
+    },
+    {
+      "id": "edge-orch-hw",
+      "fromNode": "node-orchestrator",
+      "fromSide": "right",
+      "toNode": "node-hw-agent",
+      "toSide": "left",
+      "label": "Enforces RF Standards"
+    },
+    {
+      "id": "edge-orch-state",
+      "fromNode": "node-orchestrator",
+      "fromSide": "bottom",
+      "toNode": "node-tasks",
+      "toSide": "top",
+      "label": "Tracks Milestones"
+    },
+    {
+      "id": "edge-hw-fw",
+      "fromNode": "node-hw-agent",
+      "fromSide": "bottom",
+      "toNode": "node-fw-agent",
+      "toSide": "top",
+      "label": "NFC Scan SPI/I2C"
+    },
+    {
+      "id": "edge-fw-mobile",
+      "fromNode": "node-fw-agent",
+      "fromSide": "right",
+      "toNode": "node-mobile-agent",
+      "toSide": "left",
+      "label": "MQTT Move Sync"
+    }
+  ]
+}
