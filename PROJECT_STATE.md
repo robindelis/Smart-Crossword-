@@ -1,0 +1,43 @@
+# PROJECT_STATE.md - Smart Crossword Board
+
+## Current Project Phase
+**Phase 1: Architecture Definition & Bench Validation (4x4 Matrix POC)**
+
+---
+
+## Active Milestones & Roadmap
+
+```mermaid
+gantt
+    title Smart Crossword Board Roadmap
+    dateFormat  YYYY-MM-DD
+    section Phase 1: Bench POC
+    System & Agent Architecture Setup    :done, p1, 2026-09-04, 1d
+    Core Crossword Scoring Engine (Py)   :active, p2, 2026-09-05, 5d
+    4x4 NFC Mini-Grid Schematic & Test   :p3, 2026-09-10, 7d
+    section Phase 2: Full Hardware & UI
+    15x15 4-Layer PCB Antenna Matrix     :p4, 2026-09-17, 14d
+    Console Display UI & Audio Stage     :p5, 2026-09-24, 14d
+    section Phase 3: Cloud & Campaign
+    MQTT Sync & Mobile Companion App     :p6, 2026-10-08, 14d
+    Kickstarter Video & Landing Page     :p7, 2026-10-22, 14d
+```
+
+---
+
+## Architectural Decisions Log (ADL)
+
+| Decision ID | Date | Subject | Decision & Rationale |
+| :--- | :--- | :--- | :--- |
+| **ADL-001** | 2026-09-04 | Core Technology | **15x15 Multiplexed 13.56 MHz RFID/NFC Matrix**: Senses 100 letter tiles accurately through solid wood veneer without visible contact pins or camera towers. |
+| **ADL-002** | 2026-09-04 | User Experience | **Intergenerational Play (Senior on Physical Board <--> Family on Mobile App)**: Solves senior loneliness, cognitive preservation, and screen fatigue; high gift appeal for adult children. |
+| **ADL-003** | 2026-09-04 | Console Architecture | **Fully Standalone Console with High-Contrast Display & Audio**: Large fonts and spoken move announcements directly on the board chassis; senior never needs a smartphone to play. |
+| **ADL-004** | 2026-09-04 | Power & Form Factor | **Hybrid Always-On Turntable**: Sits on a ball-bearing lazy-susan with magnetic power dock on the coffee table + internal Li-ion battery for uncorded dining table play. |
+| **ADL-005** | 2026-09-04 | Go-To-Market | **Kickstarter Crowdfunding Campaign**: Emotional storytelling video targeting adult children looking for a meaningful gift for aging parents; pre-funds initial production batch. |
+
+---
+
+## Next Tasks
+1. Implement the reference Python Crossword Engine & Trie dictionary validator (`tests/` & `firmware/`).
+2. Design the KiCad schematic for the 4x4 NFC bench test board (ST25R3916 / PN532 + 74HC4067 multiplexer).
+3. Draft the initial Kickstarter video script & emotional landing page copy.
