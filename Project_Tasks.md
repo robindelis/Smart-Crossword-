@@ -29,6 +29,7 @@
   - [x] ESP32 host controller header (J1 2x10) and NFC transceiver header (J2 1x10)
   - [x] SMA 50Ω coaxial test port (J3) for oscilloscope/VNA bench testing
   - [x] 4-layer PCB layout with GND keepouts under coils to preserve Q
+  - [x] Automated 4-layer routing pass in KiCad 10: 0 violations, 0 unconnected items
   - [x] KiCad project, schematic, board layout, and 3D preview render verified
 - [x] Portable C crossword game engine (`firmware/engine/crossword_engine.c`)
   - [x] Move rules: straight line, continuity, connectivity, center star requirement

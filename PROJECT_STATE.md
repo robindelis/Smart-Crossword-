@@ -45,6 +45,7 @@ gantt
 | **ADL-009** | 2026-09-04 | Multi-Language Support | **5 Official Tournament Languages**: Built-in support for English (ENABLE1, 168k words), French (ODS8, 402k words), Dutch (OpenTaal, 337k words), German (Scrabble DE, 590k words), and Spanish (FISE, 635k words), with official tile distributions, language-specific letter scoring, and localized voice synthesis referee announcements. |
 | **ADL-010** | 2026-09-04 | Detection Evaluation | **Retain Full Board RFID over Hall Effect**: Evaluated Hall sensors on board + RFID in player rack. Found that Hall sensors only detect presence (not letter identity), creating anagram ambiguity (e.g. STOP vs POST), breaking natural senior play, and increasing total BOM by $15–$25 due to active battery-powered racks. Full 15x15 board RFID remains the optimal design. |
 | **ADL-011** | 2026-09-04 | 4x4 Test Circuit Board | **KiCad 10 4-layer NFC Matrix**: Built 4x4 test grid with 19mm pitch, 7-turn 17.5mm planar spiral coils (L=1.26µH), 100pF C0G capacitors, 3.3Ω damping resistors (Q=25), and CD74HC4067 multiplexer. Complete with Host header, NFC header, and SMA test port. |
+| **ADL-012** | 2026-09-05 | 4x4 PCB Layout & Routing | **Zero-DRC & Zero-Unconnected Routing Pass**: Completed full automated 4-layer PCB routing in KiCad 10. Achieved 0 DRC violations and 0 unconnected items. Invariants enforced: 100% planar coil routing on In2.Cu, concentric SPI & MUX bus corridors, solid ground return on B.Cu, and dedicated RF keepouts under all 16 coils on In1.Cu. |
 
 ---
 

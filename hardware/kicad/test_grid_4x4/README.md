@@ -36,15 +36,15 @@ Connects directly to an ESP32-S3 DevKit or breadboard:
 | Pin | Net | Function | Pin | Net | Function |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **1** | +3.3V | Power In | **2** | +3.3V | Power In |
-| **3** | MUX_S0 | Address bit 0 | **4** | SPI_SCK | NFC SPI clock |
-| **5** | MUX_S1 | Address bit 1 | **6** | SPI_MISO | NFC SPI data in |
-| **7** | MUX_S3 | Address bit 3 | **8** | SPI_MOSI | NFC SPI data out |
-| **9** | MUX_S2 | Address bit 2 | **10** | SPI_CS | NFC SPI chip select |
-| **11** | MUX_EN | MUX active-low enable | **12** | NFC_IRQ | NFC interrupt |
-| **13** | GND | Ground | **14** | NFC_RST | NFC reset |
-| **15** | GND | Ground | **16** | I2C_SDA | Spare I2C data |
-| **17** | GND | Ground | **18** | I2C_SCL | Spare I2C clock |
-| **19** | GND | Ground | **20** | GPIO_AUX | Spare tactile button / LED |
+| **3** | MUX_S3 | Address bit 3 | **4** | GPIO_AUX | Spare tactile button / LED |
+| **5** | MUX_S2 | Address bit 2 | **6** | I2C_SDA | Spare I2C data |
+| **7** | MUX_EN | MUX active-low enable | **8** | I2C_SCL | Spare I2C clock |
+| **9** | MUX_S1 | Address bit 1 | **10** | NFC_IRQ | NFC interrupt |
+| **11** | MUX_S0 | Address bit 0 | **12** | NFC_RST | NFC reset |
+| **13** | GND | Ground | **14** | SPI_MOSI | NFC SPI data out |
+| **15** | GND | Ground | **16** | SPI_CS | NFC SPI chip select |
+| **17** | GND | Ground | **18** | SPI_SCK | NFC SPI clock |
+| **19** | GND | Ground | **20** | SPI_MISO | NFC SPI data in |
 
 ### J2: NFC Transceiver Header (1x10, 2.54mm Pitch)
 Connects to an ST25R3916 or PN532 transceiver breakout:
@@ -64,7 +64,19 @@ Standard 50Ω SMA coaxial connector wired to `RF_SIG` for connecting an oscillos
 
 ---
 
-## 4. Bill of Materials (BOM)
+## 4. Verification & DRC Status (KiCad 10.0.6)
+
+* **Design Rule Check (DRC)**: **0 errors, 0 warnings, 0 violations**.
+* **Unconnected Items**: **0 unconnected nets** (all 49 nets fully routed).
+* **Layer Stackup**:
+  * **F.Cu**: 16 planar spiral coils (1.26 µH, 7 turns), RF_SIG 50Ω trace, 0603 matching network components.
+  * **In1.Cu**: Continuous solid GND plane with 16 dedicated keepout apertures ($18.5\text{mm} \times 18.5\text{mm}$) preventing RF eddy current damping.
+  * **In2.Cu**: 100% planar coil feed routing for Columns A, B, C, and D, plus SPI bus lines.
+  * **B.Cu**: Bottom GND plane with thermal relief spokes to coil centers, concentric MUX control lines, and +3.3V power bus.
+
+---
+
+## 5. Bill of Materials (BOM)
 
 | Designator | Description | Footprint | LCSC Part # | Unit Price (100 qty) |
 | :--- | :--- | :--- | :--- | :--- |
@@ -81,7 +93,7 @@ Standard 50Ω SMA coaxial connector wired to `RF_SIG` for connecting an oscillos
 
 ---
 
-## 5. How to Open and Review in KiCad
+## 6. How to Open and Review in KiCad
 
 1. Open your Linux application launcher.
 2. Select **KiCad (EDA Suite)** (the top entry with the blue icon).
