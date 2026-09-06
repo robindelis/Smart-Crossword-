@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -16,10 +17,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.crosswordcompanion.R
 import com.example.crosswordcompanion.data.AppDatabaseHelper
 import com.example.crosswordcompanion.model.UniqueUsernameGenerator
 import com.example.crosswordcompanion.model.UserProfile
@@ -105,31 +108,15 @@ fun AuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // App Wooden Tile Icon Mockup
-        Box(
+        // App Wooden Tile Icon
+        Image(
+            painter = painterResource(id = R.drawable.app_icon),
+            contentDescription = "Smart Crossword Tile Icon",
             modifier = Modifier
-                .size(72.dp)
-                .shadow(6.dp, RoundedCornerShape(12.dp))
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFFFD54F)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "S",
-                fontSize = 42.sp,
-                fontWeight = FontWeight.Black,
-                color = Color(0xFF3E2723)
-            )
-            Text(
-                text = "1",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF5D4037),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 6.dp, bottom = 4.dp)
-            )
-        }
+                .size(84.dp)
+                .shadow(8.dp, RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp))
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
