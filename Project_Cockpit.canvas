@@ -1,7 +1,7 @@
 {
 	"nodes":[
 		{"id":"group-hw","type":"group","x":480,"y":-140,"width":7680,"height":3180,"color":"5","label":"Circuit Board, RFID & Hardware"},
-		{"id":"group-procurement","type":"group","x":-4480,"y":1800,"width":3240,"height":2960,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
+		{"id":"group-procurement","type":"group","x":-4480,"y":1800,"width":3240,"height":2800,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
 		{"id":"group-state","type":"group","x":-7440,"y":-560,"width":3520,"height":2305,"color":"6","label":"Tasks & Project State"},
 		{"id":"group-cad","type":"group","x":8240,"y":-140,"width":5100,"height":3180,"color":"1","label":"Mechanical CAD, 3D Printing & Assembly"},
 		{"id":"group-fw","type":"group","x":4960,"y":-3840,"width":4600,"height":2720,"color":"4","label":"Software, Rules & Multi-Language"},
