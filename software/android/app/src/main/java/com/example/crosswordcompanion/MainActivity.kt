@@ -151,11 +151,24 @@ class MainActivity : ComponentActivity() {
                                                 Spacer(modifier = Modifier.height(16.dp))
                                                 Button(
                                                     onClick = {
+                                                        dbHelper.logoutAllUsers()
                                                         currentUser = null
                                                     },
-                                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F))
+                                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
+                                                    modifier = Modifier.fillMaxWidth()
                                                 ) {
                                                     Text("Switch Player / Sign Out")
+                                                }
+                                                Spacer(modifier = Modifier.height(10.dp))
+                                                OutlinedButton(
+                                                    onClick = {
+                                                        dbHelper.clearAllData()
+                                                        currentUser = null
+                                                    },
+                                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFC62828)),
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    Text("🗑️ Reset & Clear Local Database")
                                                 }
                                             }
                                         }

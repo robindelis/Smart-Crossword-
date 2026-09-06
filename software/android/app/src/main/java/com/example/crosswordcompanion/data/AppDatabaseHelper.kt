@@ -108,6 +108,11 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
     // User Operations
     fun saveUserProfile(profile: UserProfile, isLoggedIn: Boolean = true) {
         writableDatabase.use { db ->
+            if (isLoggedIn) {
+                // Ensure only one active user is marked as logged in
+                val resetCv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
+                db.update(TABLE_USERS, resetCv, null, null)
+            }
             val cv = ContentValues().apply {
                 put(COL_USER_ID, profile.id)
                 put(COL_USER_NAME, profile.displayName)
@@ -116,6 +121,30 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
                 put(COL_USER_LOGGED_IN, if (isLoggedIn) 1 else 0)
             }
             db.insertWithOnConflict(TABLE_USERS, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
+        }
+    }
+
+    fun logoutAllUsers() {
+        writableDatabase.use { db ->
+            val cv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
+            db.update(TABLE_USERS, cv, null, null)
+        }
+    }
+
+    fun clearAllData() {
+        writableDatabase.use { db ->
+            db.delete(TABLE_USERS, null, null)
+            db.delete(TABLE_GAMES, null, null)
+            db.delete(TABLE_FRIENDS, null, null)
+            // Re-seed initial board friend
+            val cv = ContentValues().apply {
+                put(COL_FRIEND_ID, "board_scb8492")
+                put(COL_FRIEND_NAME, "Grandma Betty (Physical Board)")
+                put(COL_FRIEND_HANDLE, "board_scb8492")
+                put(COL_FRIEND_IS_BOARD, 1)
+                put(COL_FRIEND_STATUS, "online")
+            }
+            db.insert(TABLE_FRIENDS, null, cv)
         }
     }
 
