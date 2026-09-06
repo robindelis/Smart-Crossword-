@@ -80,10 +80,11 @@ Standard 50Ω SMA coaxial connector wired to `RF_SIG` for connecting an oscillos
 
 | Designator | Description | Footprint | LCSC Part # | Unit Price (100 qty) |
 | :--- | :--- | :--- | :--- | :--- |
-| **U1** | CD74HC4067SM96 16-Ch MUX | SOIC-24 | C7406 | $0.28 |
-| **C1–C16** | 100pF 50V C0G 5% | 0603 | C14405 | $0.005 |
-| **R1–R16** | 3.3Ω 1% 1/10W | 0603 | C22971 | $0.003 |
-| **C17–C20**| 0.1µF 50V X7R 10% (Decoupling) | 0603 | C14663 | $0.003 |
+| **U1** | CD74HC4067SM96 16-Ch MUX | SOIC-24 | C496123 | $0.28 |
+| **C1–C16** | 100pF 50V C0G 5% | 0603 | C14665 | $0.005 |
+| **R1–R16** | 3.3Ω 1% 1/10W | 0603 | C22979 | $0.003 |
+| **C17** | 0.1µF 50V X7R 10% (Decoupling) | 0603 | C14663 | $0.003 |
+| **C18** | 10µF 10V X5R 10% (Decoupling) | 0805 | C15850 | $0.015 |
 | **J1** | 2x10 2.54mm Male Pin Header | THT 2x10 | C22588 | $0.15 |
 | **J2** | 1x10 2.54mm Male Pin Header | THT 1x10 | C22585 | $0.08 |
 | **J3** | SMA End Launch / Edge Female | SMA-TH | C2837267 | $0.65 |

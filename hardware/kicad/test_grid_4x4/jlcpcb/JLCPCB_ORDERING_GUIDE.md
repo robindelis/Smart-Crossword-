@@ -62,11 +62,12 @@ Set the following settings (most are default):
    * **BOM**: `bom_jlcpcb.csv`
    * **CPL**: `cpl_jlcpcb.csv`
 2. Click **"Next"**. JLCPCB will match the 5 component types:
-   * `C14405`: 100pF 50V C0G (Qty: 16) — Basic part
-   * `C22971`: 3.3Ω 1% (Qty: 16) — Basic part
+   * `C14665`: 100pF 50V C0G (Qty: 16) — Basic part (YAGEO `CC0603JRNPO9BN101`)
+   * `C22979`: 3.3Ω 1% (Qty: 16) — Basic/Standard part (UNI-ROYAL `0603WAF330KT5E`)
    * `C14663`: 0.1µF 50V X7R (Qty: 1) — Basic part
    * `C15850`: 10µF 10V X5R (Qty: 1) — Basic part
-   * `C7406`: CD74HC4067SM96 SOIC-24 (Qty: 1) — Extended part
+   * `C496123`: CD74HC4067SM96 SOIC-24 (Qty: 1) — Extended part (Texas Instruments `CD74HC4067M96`)
+   *(Note: If C496123 is out of stock on JLCPCB, uncheck U1 to hand-solder it from the Amazon DIP breakout / bare IC, while JLCPCB assembles all 32 capacitors and 16 resistors).*
 3. Click **"Next"** to review component placement on the 2D preview. All footprints are aligned centered on the pads.
 4. Click **"Save to Cart"**.
 
