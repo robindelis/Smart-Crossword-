@@ -1,7 +1,7 @@
 {
 	"nodes":[
 		{"id":"group-hw","type":"group","x":480,"y":-140,"width":7680,"height":3180,"color":"5","label":"Circuit Board, RFID & Hardware"},
-		{"id":"group-procurement","type":"group","x":-4480,"y":2400,"width":4480,"height":2000,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
+		{"id":"group-procurement","type":"group","x":-4480,"y":1800,"width":3240,"height":2960,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
 		{"id":"group-state","type":"group","x":-7440,"y":-560,"width":3520,"height":2305,"color":"6","label":"Tasks & Project State"},
 		{"id":"group-cad","type":"group","x":8240,"y":-140,"width":5100,"height":3180,"color":"1","label":"Mechanical CAD, 3D Printing & Assembly"},
 		{"id":"group-fw","type":"group","x":4960,"y":-3840,"width":4600,"height":2720,"color":"4","label":"Software, Rules & Multi-Language"},
@@ -38,9 +38,9 @@
 		{"id":"node-android-readme","type":"file","file":"software/android/README.md","x":10540,"y":-4570,"width":1600,"height":900,"color":"4"},
 		{"id":"node-lexicons","type":"file","file":"docs/Multi_Language_Lexicons.md","x":5160,"y":-3120,"width":870,"height":1900,"color":"4"},
 		{"id":"node-sw-arch","type":"file","file":"docs/Software_Architecture.md","x":6080,"y":-3840,"width":2450,"height":2620,"color":"4"},
-		{"id":"node-comp-table","type":"file","file":"docs/Component_Candidate_Comparison.md","x":-1760,"y":2480,"width":1540,"height":1840},
-		{"id":"node-loom-proto","type":"file","file":"docs/Prototype_4x4_Shopping_List.md","x":-3640,"y":1640,"width":900,"height":1280,"color":"4"},
-		{"id":"node-loom-full","type":"file","file":"docs/Production_15x15_Sourcing_List.md","x":-3400,"y":3080,"width":940,"height":1320,"color":"4"}
+		{"id":"node-loom-proto","type":"file","file":"docs/Prototype_4x4_Shopping_List.md","x":-4360,"y":1840,"width":900,"height":1280,"color":"4"},
+		{"id":"node-loom-full","type":"file","file":"docs/Production_15x15_Sourcing_List.md","x":-4380,"y":3200,"width":940,"height":1320,"color":"4"},
+		{"id":"node-comp-table","type":"file","file":"docs/Component_Candidate_Comparison.md","x":-2880,"y":1840,"width":1540,"height":2680}
 	],
 	"edges":[
 		{"id":"edge-rfid-hall","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hall-eval","toSide":"left","label":"Hall vs RFID Trade-off"},
