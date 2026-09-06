@@ -219,6 +219,37 @@ def verify_url(url: str, timeout: int = 10) -> LinkCheckResult:
         or ("a-no-js" in html[:300] and len(html) < 5000)
     )
     if is_bot_challenge:
+        # Fallback to curl with modern HTTP/2 and TLS fingerprint
+        try:
+            import subprocess
+            curl_cmd = [
+                "curl", "-sL", "--max-time", str(timeout),
+                "-A", DEFAULT_HEADERS["User-Agent"],
+                "-H", f"Accept-Language: {DEFAULT_HEADERS['Accept-Language']}",
+                "-H", "Sec-Ch-Ua: \"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"128\", \"Google Chrome\";v=\"128\"",
+                "-H", "Sec-Ch-Ua-Mobile: ?0",
+                "-H", "Sec-Ch-Ua-Platform: \"Windows\"",
+                url
+            ]
+            res = subprocess.run(curl_cmd, capture_output=True, text=True, errors='replace')
+            if res.returncode == 0 and len(res.stdout) > 5000:
+                curl_html = res.stdout
+                c_title_m = re.search(r'<title>(.*?)</title>', curl_html, re.IGNORECASE | re.DOTALL)
+                c_title = clean_html_title(c_title_m.group(1)) if c_title_m else None
+                c_is_bot = (
+                    (c_title and any(bot in c_title.lower() for bot in ["server busy", "robot check", "captcha"]))
+                    or "validateCaptcha" in curl_html
+                    or ("a-no-js" in curl_html[:300] and len(curl_html) < 5000)
+                )
+                if not c_is_bot:
+                    html = curl_html
+                    title = c_title
+                    is_bot_challenge = False
+                    status_code = 200
+        except Exception:
+            pass
+
+    if is_bot_challenge:
         return LinkCheckResult(
             url=url,
             platform=platform,

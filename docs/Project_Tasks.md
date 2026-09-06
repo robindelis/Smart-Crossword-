@@ -23,7 +23,13 @@
 
 ## ✅ Done
 
+- [x] 13.56 MHz NFC Antenna Resonance & Q-Damping Theory ([`docs/LC_Resonance_and_Antenna_Theory.md`](LC_Resonance_and_Antenna_Theory.md), [`Project_Cockpit.canvas`](../Project_Cockpit.canvas))
+  - [x] Derived coil inductance $L = 1.262\,\mu\text{H}$ using Modified Wheeler model for 17.5mm square coil (N=7)
+  - [x] Derived tuning capacitor $C = 100\,\text{pF}$ C0G with Thomson resonance formula ($109.2\,\text{pF} - 9.2\,\text{pF}$ parasitics)
+  - [x] Derived damping resistor $R = 3.3\,\Omega$ to lock loaded $Q = 25$ ($542\,\text{kHz}$ bandwidth for ISO 14443A subcarriers)
+  - [x] Added theoretical group, circuit schematic diagram, and summary cards to `Project_Cockpit.canvas`
 - [x] 4x4 Prototype PCB & Shopping List Hardware Compatibility Audit & Schematic Sync ([`hardware/kicad/test_grid_4x4/README.md`](../hardware/kicad/test_grid_4x4/README.md), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md))
+
   - [x] Verified mechanical and electrical fit for all 12 items (tiles, tags, MCU, MUX, reader, screen, audio, bearing, fasteners)
   - [x] Synchronized `test_grid_4x4.kicad_sch` to match the perfected zero-DRC layout of `test_grid_4x4.kicad_pcb`
   - [x] Documented integration notes for CD74HC4067 SOIC-24 PCBA vs Amazon DIP breakout and PN532 RF stage tap

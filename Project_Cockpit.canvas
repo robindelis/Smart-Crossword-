@@ -40,7 +40,9 @@
 		{"id":"node-comp-table","type":"file","file":"docs/Component_Candidate_Comparison.md","x":-2880,"y":1840,"width":1540,"height":2680},
 		{"id":"node-project-state","type":"file","file":"docs/PROJECT_STATE.md","x":-7260,"y":-440,"width":1120,"height":1910,"color":"6"},
 		{"id":"node-tasks","type":"file","file":"docs/Project_Tasks.md","x":-5780,"y":-340,"width":410,"height":580,"color":"3"},
-		{"id":"node-hw-specs","type":"text","text":"## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 µH per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring","x":680,"y":-100,"width":420,"height":380,"color":"5"}
+		{"id":"node-hw-specs","type":"text","text":"## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 µH per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring","x":680,"y":-100,"width":420,"height":380,"color":"5"},
+		{"id":"node-rf-theory","type":"file","file":"docs/LC_Resonance_and_Antenna_Theory.md","x":6000,"y":0,"width":1050,"height":2920,"color":"5"},
+		{"id":"node-rf-theory-summary","type":"text","text":"## R & C Resonant Selection Theory\n\n* **Carrier Frequency**: 13.56 MHz (ISO 14443A)\n* **Coil Inductance ($L$)**: **1.262 µH**\n  * *Wheeler Model*: $L = k_1 \\mu_0 \\frac{N^2 d_{\\text{avg}}}{1 + k_2 \\rho}$ (N=7 turns, 17.5mm)\n* **Tuning Capacitor ($C$)**: **100 pF** (50V C0G/NP0)\n  * *Thomson Formula*: $C_{\\text{total}} = \\frac{1}{\\omega_0^2 L} = 109.2\\,\\text{pF}$\n  * *Stray Compensation*: $C_{\\text{discrete}} = 109.2 - 9.2\\,\\text{pF} = 100\\,\\text{pF}$\n* **Damping Resistor ($R$)**: **3.3 Ω** (1% 0603)\n  * *Target Q-Factor*: $Q = 25$ ($B = 542\\,\\text{kHz}$ for 848 kHz subcarrier)\n  * *Loop Equation*: $R_{\\text{total}} = \\frac{\\omega_0 L}{Q} \\approx 4.30\\,\\Omega$\n  * $R_{\\text{damp}} = 4.30 - 0.66_{\\text{coil}} - 0.35_{\\text{mux}} = 3.29\\,\\Omega \\to \\mathbf{3.3\\,\\Omega}$","x":7120,"y":0,"width":980,"height":880,"color":"5"}
 	],
 	"edges":[
 		{"id":"edge-rfid-hall","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hall-eval","toSide":"left","label":"Hall vs RFID Trade-off"},
@@ -70,7 +72,8 @@
 		{"id":"edge-android-readme","fromNode":"node-android-companion","fromSide":"bottom","toNode":"node-android-readme","toSide":"top","label":"Companion Documentation"},
 		{"id":"edge-android-auth","fromNode":"node-android-companion","fromSide":"right","toNode":"node-android-auth-db","toSide":"left","label":"Google Auth & SQLite"},
 		{"id":"edge-android-tests","fromNode":"node-android-auth-db","fromSide":"bottom","toNode":"node-android-tests","toSide":"top","label":"Hardware & Unit Testing"},
-		{"id":"edge-android-lessons","fromNode":"node-android-readme","fromSide":"bottom","toNode":"node-android-lessons","toSide":"top","label":"Living Memory (10 Lessons)"},
-		{"id":"edge-proto-hw-compat","fromNode":"node-loom-proto","fromSide":"top","toNode":"node-hw-kicad-4x4","toSide":"bottom","label":"Shopping List & PCB Compatibility Verified"}
+		{"id":"edge-proto-hw-compat","fromNode":"node-loom-proto","fromSide":"top","toNode":"node-hw-kicad-4x4","toSide":"bottom","label":"Shopping List & PCB Compatibility Verified"},
+		{"id":"edge-schem-theory","fromNode":"node-rfid-schem","fromSide":"right","toNode":"node-rf-theory","toSide":"left","label":"L, C, R Mathematical Derivation"},
+		{"id":"edge-theory-summary","fromNode":"node-rf-theory","fromSide":"right","toNode":"node-rf-theory-summary","toSide":"left","label":"Resonant Formulas & Component Values"}
 	]
 }
