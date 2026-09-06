@@ -4,6 +4,10 @@ import com.example.crosswordcompanion.model.Board4x4
 import com.example.crosswordcompanion.model.BoardCell
 import com.example.crosswordcompanion.model.SquareType
 import com.example.crosswordcompanion.model.Tile
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStream
+import java.io.InputStreamReader
 
 data class RefereeResult(
     val isValid: Boolean,
@@ -27,10 +31,9 @@ class EnglishReferee {
         )
 
         /**
-         * Built-in English lexicon of verified tournament words (2 to 4 letters) for 4x4 grid
+         * Quick fallback words (ENABLE1 common subset) used before dictionary file loads
          */
-        private val DICTIONARY: Set<String> = setOf(
-            // 2-letter words
+        val FALLBACK_DICTIONARY: Set<String> = setOf(
             "AA", "AB", "AD", "AE", "AG", "AH", "AI", "AL", "AM", "AN", "AR", "AS", "AT", "AW", "AX", "AY",
             "BA", "BE", "BI", "BO", "BY", "DA", "DE", "DO", "ED", "EF", "EH", "EL", "EM", "EN", "ER", "ES",
             "ET", "EW", "EX", "FA", "FE", "GO", "HA", "HE", "HI", "HM", "HO", "ID", "IF", "IN", "IS", "IT",
@@ -38,7 +41,6 @@ class EnglishReferee {
             "NU", "OD", "OE", "OF", "OH", "OI", "OK", "OM", "ON", "OP", "OR", "OS", "OW", "OX", "OY", "PA",
             "PE", "PI", "PO", "QI", "RE", "SH", "SI", "SO", "TA", "TE", "TI", "TO", "UH", "UM", "UN", "UP",
             "US", "UT", "WE", "WO", "XI", "XU", "YA", "YE", "YO", "ZA",
-            // 3-letter words
             "ACT", "ADD", "AGE", "AGO", "AID", "AIM", "AIR", "ALL", "AND", "ANT", "ANY", "APE", "ARM", "ART",
             "ASK", "BAD", "BAG", "BAR", "BAT", "BAY", "BED", "BEE", "BEG", "BET", "BIG", "BIN", "BIT", "BOB",
             "BOX", "BOY", "BUS", "BUT", "BUY", "BYE", "CAN", "CAP", "CAR", "CAT", "COW", "CRY", "CUP", "CUT",
@@ -54,7 +56,6 @@ class EnglishReferee {
             "SIX", "SKI", "SKY", "SON", "SUN", "TAB", "TAG", "TAN", "TAP", "TAX", "TEA", "TEN", "THE", "TIE",
             "TIN", "TIP", "TOE", "TOP", "TOY", "TUB", "TWO", "USE", "VAN", "VET", "WAR", "WAY", "WET", "WHO",
             "WIN", "YES", "YET", "YOU", "ZIP", "ZOO",
-            // 4-letter words
             "ABLE", "ACRE", "AGED", "ALTO", "AREA", "ARMY", "AUNT", "AWAY", "BABY", "BACK", "BAKE", "BALL",
             "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BATH", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF",
             "BEER", "BELL", "BELT", "BEND", "BENT", "BEST", "BILL", "BIRD", "BITE", "BLOW", "BLUE", "BOAT",
@@ -96,16 +97,46 @@ class EnglishReferee {
             "WAKE", "WALK", "WALL", "WANT", "WARM", "WARN", "WASH", "WAVE", "WEAK", "WEAR", "WEEK", "WELL",
             "WENT", "WEST", "WHAT", "WHEN", "WHOM", "WIDE", "WIFE", "WILD", "WILL", "WIND", "WINE", "WING",
             "WIPE", "WIRE", "WISE", "WISH", "WITH", "WOOD", "WOOL", "WORD", "WORE", "WORK", "YARD", "YEAR",
-            "ZERO", "ZONE"
+            "ZERO", "ZONE", "HELLO", "HONEY", "QUIZ", "ZYGOTE", "SCRABBLE", "CROSSWORD"
         )
-
-        fun isWordValid(word: String): Boolean {
-            return DICTIONARY.contains(word.uppercase())
-        }
 
         fun getLetterScore(letter: Char): Int {
             return LETTER_SCORES[letter.uppercaseChar()] ?: 1
         }
+    }
+
+    private val dictionaryWords: HashSet<String> = HashSet(FALLBACK_DICTIONARY)
+
+    val wordCount: Int
+        get() = dictionaryWords.size
+
+    /**
+     * Loads tournament words from an InputStream (e.g. assets/dict_en.txt)
+     * Mirrors the webapp workflow: reads lines, trims, filters words of length 2..15.
+     */
+    fun loadDictionary(inputStream: InputStream): Int {
+        BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8)).use { reader ->
+            var line = reader.readLine()
+            while (line != null) {
+                val word = line.trim().uppercase()
+                if (word.length in 2..15) {
+                    dictionaryWords.add(word)
+                }
+                line = reader.readLine()
+            }
+        }
+        return dictionaryWords.size
+    }
+
+    /**
+     * Loads dictionary from a File directly (useful for tests and offline processing).
+     */
+    fun loadDictionary(file: File): Int {
+        return file.inputStream().use { loadDictionary(it) }
+    }
+
+    fun isWordValid(word: String): Boolean {
+        return dictionaryWords.contains(word.uppercase())
     }
 
     /**

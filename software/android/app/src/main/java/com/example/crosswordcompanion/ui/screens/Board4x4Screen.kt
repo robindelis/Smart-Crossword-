@@ -57,6 +57,31 @@ fun Board4x4Screen(
     }
 
     val referee = remember { EnglishReferee() }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var dictionaryCount by remember { mutableIntStateOf(referee.wordCount) }
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            try {
+                context.assets.open("dict_en.txt").use { stream ->
+                    val count = referee.loadDictionary(stream)
+                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        dictionaryCount = count
+                        if (isFirstMove && cells.none { it.tile != null }) {
+                            refereeResult = RefereeResult(
+                                false,
+                                0,
+                                emptyList(),
+                                "Ready (${java.text.NumberFormat.getIntegerInstance().format(count)} words loaded). Place tiles covering center star (★)."
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Falls back cleanly to pre-loaded ENABLE1 dictionary
+            }
+        }
+    }
 
     // Helper to evaluate uncommitted tiles
     fun updateRefereeEvaluation() {

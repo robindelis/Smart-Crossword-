@@ -159,4 +159,24 @@ class RefereeTest {
         assertFalse("Empty handle is invalid", UniqueUsernameGenerator.isValidHandle(""))
         assertFalse("Single letter handle without suffix is invalid", UniqueUsernameGenerator.isValidHandle("a"))
     }
+
+    @Test
+    fun testFullTournamentDictionaryLoading() {
+        val dictFile = java.io.File("src/main/assets/dict_en.txt")
+        assertTrue("dict_en.txt must exist in assets", dictFile.exists())
+
+        val ref = EnglishReferee()
+        val count = ref.loadDictionary(dictFile)
+        assertTrue("Loaded dictionary must contain >= 168,000 words (actual: $count)", count >= 168000)
+
+        // Test classic tournament words from ENABLE1
+        assertTrue("ZYGOTE must be valid", ref.isWordValid("ZYGOTE"))
+        assertTrue("SCRABBLE must be valid", ref.isWordValid("SCRABBLE"))
+        assertTrue("CROSSWORD must be valid", ref.isWordValid("CROSSWORD"))
+        assertTrue("QUIZ must be valid", ref.isWordValid("QUIZ"))
+        assertTrue("QI must be valid", ref.isWordValid("QI"))
+        assertTrue("ZA must be valid", ref.isWordValid("ZA"))
+        assertFalse("Nonsense word XYZABC must be invalid", ref.isWordValid("XYZABC"))
+    }
 }
+
