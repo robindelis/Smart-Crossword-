@@ -367,12 +367,12 @@ function buildProductionLoom() {
 
 // Write files
 const protoLoom = buildPrototypeLoom();
-const protoPath = path.join(__dirname, "../Prototype_4x4_Shopping_List.loom");
+const protoPath = path.join(__dirname, "../docs/Prototype_4x4_Shopping_List.loom");
 fs.writeFileSync(protoPath, protoLoom, "utf8");
 console.log(`Generated: ${protoPath}`);
 
 const prodLoom = buildProductionLoom();
-const prodPath = path.join(__dirname, "../Production_15x15_Sourcing_List.loom");
+const prodPath = path.join(__dirname, "../docs/Production_15x15_Sourcing_List.loom");
 fs.writeFileSync(prodPath, prodLoom, "utf8");
 console.log(`Generated: ${prodPath}`);
 

@@ -29,7 +29,7 @@
   - [x] Updated Production (15x15) Sourcing List with top picks across all 12 items ($67.87 BOM per unit)
   - [x] Synchronized master Procurement_Shopping_List.md with DataLoom embeds and quick-reference tables
   - [x] Validated 100% of e-commerce links via `verify_ecommerce_links.py` (FAIL-010 compliance)
-- [x] Multi-Candidate Component Sourcing & Comparison Table ([`Component_Candidate_Comparison.md`](Component_Candidate_Comparison.md), [`Project_Cockpit.canvas`](Project_Cockpit.canvas))
+- [x] Multi-Candidate Component Sourcing & Comparison Table ([`Component_Candidate_Comparison.md`](Component_Candidate_Comparison.md), [`Project_Cockpit.canvas`](../Project_Cockpit.canvas))
   - [x] Evaluated 2–4 top candidate options for all 9 components (tiles, NFC tags, readers, MCUs, multiplexers, turntables, displays, audio, fasteners)
   - [x] Verified 100% of e-commerce links live via `verify_ecommerce_links.py` (FAIL-010 compliance)
   - [x] Added comparison card and visual edges to Obsidian Canvas `group-procurement` section

@@ -34,15 +34,17 @@ A connected wooden crossword board: **older parents or grandparents play with ph
 ```
 .
 ├── AGENTS.md               # Team rules and agent list
-├── PROJECT_STATE.md        # Current phase, decisions, and roadmap
 ├── README.md               # This file
-├── Project_Tasks.md        # Task list (Kanban format)
 ├── Project_Cockpit.canvas  # Visual board for Obsidian
+├── docs/                   # Project documentation, specs, sourcing & state
+│   ├── PROJECT_STATE.md    # Current phase, decisions, and roadmap
+│   ├── Project_Tasks.md    # Task list (Kanban format)
+│   └── ...                 # RFID specs, software architecture, candidate lists
 ├── .agents/
 │   └── agents/             # Agent guidelines (hardware, code, sales, testing)
 ├── commercial/             # Market research, video script, ad templates
 ├── hardware/               # Circuit schematics and board layouts
 ├── firmware/               # Microcontroller code
-├── software/               # Cloud sync server and phone app
+├── software/               # Native Android companion app
 └── tests/                  # Test scripts and benchmarks
 ```
