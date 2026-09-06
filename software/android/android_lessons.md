@@ -49,3 +49,9 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Extended Material Icons (`androidx.compose.material:material-icons-extended`) are not included in baseline Material 3. `CenterAlignedTopAppBar` requires `@OptIn(ExperimentalMaterial3Api::class)` and uses `TopAppBarDefaults.topAppBarColors`.
   * *Reliable Mitigation*: Apply `@OptIn(ExperimentalMaterial3Api::class)` at the Composable/Activity level and use Unicode emoji or local vector drawables for lightweight icons without bloating APK size by 20+ MB.
 
+* **LESSON-AND-008 (Firebase Google Services Gradle Placement & SHA-1 Invariant)**:
+  * *Symptom/Error*: Gradle sync fails with `Unresolved reference: id` or syntax errors when pasting Google Services instructions.
+  * *Root Cause*: Firebase snippet lines (`id("com.google.gms.google-services")` or dependencies) accidentally pasted inside nested blocks such as `compileOptions { ... }`.
+  * *Reliable Mitigation*: In Kotlin DSL (`build.gradle.kts`), plugins must strictly go inside the top-level `plugins { ... }` block, and libraries inside top-level `dependencies { ... }`. Additionally, for Google Sign-In to return tokens, the debug keystore SHA-1 must be registered in the Firebase console before downloading `google-services.json`, otherwise `oauth_client` array remains empty.
+
+

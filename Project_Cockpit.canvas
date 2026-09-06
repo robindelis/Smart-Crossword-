@@ -21,6 +21,7 @@
 		{"id":"node-loom-proto","type":"file","file":"Prototype_4x4_Shopping_List.md","x":-5400,"y":2000,"width":900,"height":1840,"color":"4"},
 		{"id":"node-loom-full","type":"file","file":"Production_15x15_Sourcing_List.md","x":-4460,"y":2000,"width":940,"height":1840,"color":"4"},
 		{"id":"node-mobile-companion","type":"text","text":"## Mobile Companion App (PWA)\n\n* **Location**: `software/mobile/`\n* **Tech**: PWA (Installable on Android & iOS)\n* **Board Navigation**: Words With Friends pinch-to-zoom & pan\n* **Sync Model**: Fixed Board ID (`SCB-8492`) + Paired Friends\n* **Pacing**: Async correspondence (multi-hour / multi-day)\n* **Emotional UX**: 5–10s audio voice notes & board TTS cheers\n* **Game Referee**: C engine via WebAssembly (`engine.wasm`)\n* **Backend**: Firebase Firestore & Auth + local mock fallback\n* **Physical Board Sync**: Auto RFID detection with visual LCD guide","x":6400,"y":-2800,"width":1600,"height":700,"color":"4"},
+		{"id":"node-android-companion","type":"text","text":"## Native Android Companion App\n\n* **Location**: `software/android/`\n* **Tech**: Kotlin, Jetpack Compose, Material 3, Gradle 9.1\n* **Board**: Interactive 4x4 test grid with 2W/3W/2L/3L & rack\n* **Referee**: Tournament English referee (168k words)\n* **Auth**: 1-Tap play & Google Sign-In with Firebase\n* **Persistence**: Local-first SQLite (`AppDatabaseHelper`)\n* **Pairing**: Unique handles (`sarah#4821`, `board_scb1234`)\n* **Living Memory**: `software/android/android_lessons.md`","x":8100,"y":-2800,"width":1600,"height":700,"color":"4"},
 		{"id":"102a3e5c110a1c00","type":"file","file":"Potential_Issues.md","x":2560,"y":-2880,"width":1240,"height":1600,"color":"3"},
 		{"id":"node-comp-table","type":"file","file":"Component_Candidate_Comparison.md","x":-3480,"y":2000,"width":1540,"height":1840},
 		{"id":"node-project-state","type":"file","file":"PROJECT_STATE.md","x":-7360,"y":-500,"width":1120,"height":1040,"color":"6"},
@@ -65,6 +66,7 @@
 		{"id":"edge-sourcing-agent-doc","fromNode":"node-web-sourcing-agent","fromSide":"left","toNode":"node-sourcing","toSide":"right","label":"Live Verified Links"},
 		{"id":"edge-proto-comp","fromNode":"node-loom-proto","fromSide":"right","toNode":"node-comp-table","toSide":"left","label":"Candidate Research & Comparison"},
 		{"id":"edge-full-comp","fromNode":"node-loom-full","fromSide":"right","toNode":"node-comp-table","toSide":"left","label":"Component Trade-offs"},
-		{"id":"edge-sw-mobile","fromNode":"node-sw-arch","fromSide":"bottom","toNode":"node-mobile-companion","toSide":"top","label":"Shared C Engine & Mobile Sync"}
+		{"id":"edge-sw-mobile","fromNode":"node-sw-arch","fromSide":"bottom","toNode":"node-mobile-companion","toSide":"top","label":"Shared C Engine & Mobile Sync"},
+		{"id":"edge-sw-android","fromNode":"node-sw-arch","fromSide":"bottom","toNode":"node-android-companion","toSide":"top","label":"Native Android Companion (Kotlin & Compose)"}
 	]
 }
