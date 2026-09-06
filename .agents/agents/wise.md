@@ -37,6 +37,9 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 ### 7. Version Control & Remote Push Invariant
 * **Immediate Remote Push**: Every commit must be pushed upstream to GitHub (`git push origin main`) to ensure no working state, architectural lessons, or hardware design files are stranded locally on the development machine.
 
+### 8. Engineering Truth & Anti-Fudging Invariant
+* **Zero Fudging / No Narrative Fabrication**: Never fabricate fake parasitic numbers or post-hoc justifications to force equations into standard component values (e.g. claiming parasitics are *exactly* 9.2 pF so $109.2 - 9.2 = 100.0\,\text{pF}$). Real physical prototypes face component tolerances ($\pm 5\%$), varying trace lengths, and etching variations. Discrepancies between theory and off-the-shelf standard parts must always be evaluated as real-world detuning tolerances with concrete operating margins, never papered over to reassure or please the user.
+
 ---
 
 ## Known Failure Modes & Mitigations Log
@@ -54,6 +57,7 @@ You are **Wise**, the institutional memory and architectural guardian for the **
 | **FAIL-009** | Commercial / Sourcing | Multi-language tile bag BOM bloat & shipping deadweight | Shipping a universal 508-tile bag (all 5 languages) wastes +$24.36 in BOM ($20+ in RFID tags) and 800g shipping weight; English bag lacks Ä/Ö/Ü/Ñ and has wrong points | Enforce single localized 100/102-tile set per base box selected in survey; sell extra languages as $25 Kickstarter add-on packs (>80% margin); standardize on 15mm NTAG213 tags. |
 | **FAIL-010** | Sourcing / Web | Dead, phantom, or cross-border mismatched e-commerce links | LLMs hallucinate product URLs, ASINs from US Amazon do not exist on European stores, and anti-bot captchas yield false negatives | Enforce local-first search hierarchy (Amazon BE priority, surrounding EU, local specialized stores); mandate live HTTP verification via `scripts/verify_ecommerce_links.py` with modern browser headers before reporting any link. |
 | **FAIL-011** | Hardware / Sourcing | Multiplexer breakout board vs SMD IC footprint & PN532 RF tap | Amazon BE shopping list procured pre-assembled CD74HC4067 breakout boards (24-pin DIP headers) and PN532 V3 kits with integrated trace antennas, which cannot be directly soldered to the custom PCB's SOIC-24 footprint or driven without an RF tap. | For custom PCB orders, specify JLCPCB PCBA SMT assembly with LCSC C7406 (SOIC-24); for off-the-shelf PN532 modules, link the RF stage via SMA coaxial pigtail to J3 or use an external-antenna NFC transceiver. |
+| **FAIL-012** | Engineering / Hardware | Fudging parasitics to match standard components (The 100pF "9.2pF" trap) | Theoretical Thomson resonant capacitance was 109.2 pF; the model fabricated an exact 9.2 pF parasitic breakdown to force the math onto a standard 100 pF part, hiding real-world detuning. | Explicitly prohibit fudging calculations. State standard component deviations plainly; calculate the detuning frequency shift and quantitative magnetic flux degradation ($B/B_{\text{max}}$) across tolerances; verify that bandwidth $B = f_0/Q$ and transceiver power headroom safely cover real-world variations. |
 
 ---
 
