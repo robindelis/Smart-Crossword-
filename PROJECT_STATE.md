@@ -14,9 +14,8 @@ gantt
     section Phase 1: Test Board & Code
     Team setup & rules                   :done, p1, 2026-09-04, 1d
     Kickstarter market plan              :done, p2, 2026-09-04, 1d
-    Obsidian board & tasks               :done, p2b, 2026-09-04, 1d
-    Game engine in C & WebAssembly       :done, p3, 2026-09-04, 1d
-    Interactive web prototype            :done, p3b, 2026-09-04, 1d
+    Game engine in C                     :done, p3, 2026-09-04, 1d
+    Native Android companion prototype   :done, p3b, 2026-09-06, 1d
     4x4 test circuit board               :done, p4, 2026-09-04, 1d
     1-page test website ($1 pre-orders)  :active, p5, 2026-09-05, 5d
     Bench test 4x4 circuit board         :p5b, 2026-09-10, 5d
@@ -50,7 +49,7 @@ gantt
 | **ADL-014** | 2026-09-05 | Tile & RFID Sourcing Strategy | **15mm NTAG213 Tags & Localized Single-Language Fulfillment**: Selected 15mm NTAG213 paper stickers ($0.035 ea, CXJ RFID) over 12mm (56% larger loop area, 12–14mm read depth). Adopted custom beechwood tiles with 15.5mm × 0.8mm milled cavities (Panda/LongPack) at $2.20/set. Enforced single localized 100/102-tile bag per box selected in backer survey, with extra languages sold as $25 Kickstarter add-on packs. Total tile subsystem BOM: $6.52. |
 | **ADL-015** | 2026-09-05 | Web Sourcing & Link Verification | **Local-First Search Hierarchy & Automated Live Link Verification Engine**: Established Web Sourcing Scout (`web_sourcing`) and automated verification tool (`scripts/verify_ecommerce_links.py`). Sourcing priority order: Amazon Belgium (`amazon.com.be`) first, followed by immediate EU neighbors (France, Germany) and specialized regional platforms (Bol.com, ShopNFC). Enforced invariant FAIL-010: all cited links must be validated live with modern browser headers for HTTP 200, in-stock status, and real EUR pricing to eliminate phantom or dead links. |
 | **ADL-016** | 2026-09-06 | DataLoom Sourcing Tables & BOM Sync | **Native DataLoom Spreadsheets & Top Candidate Sync**: Generated Obsidian DataLoom (`.loom`) files validated through DataLoom's internal deserializer. Updated `Prototype_4x4_Shopping_List.md` (€69.47 allocated bench cost / €125.47 pack checkout total) and `Production_15x15_Sourcing_List.md` ($67.87 BOM per unit) with top-ranked candidates across all categories (including 3.5" touch LCD, turntable bearing, I2S DAC amp, and mini speaker). |
-| **ADL-017** | 2026-09-06 | Companion App & Cloud Sync | **Mobile PWA First with Firebase & C/WASM Engine**: Implemented cross-platform companion PWA (`software/mobile/`) enabling phone-to-board and phone-to-phone play. Features: Words With Friends style pinch-to-zoom 15x15 board, tactile wooden tile rack, 5-language C/WASM referee engine, Fixed Board IDs (`SCB-8492`) with Paired Friends, casual async multi-hour/day games, 5–10s audio voice notes, and dual tile draw modes (Casual bag draw vs. Strict LCD draw). Modular Firebase sync with zero-config local mock fallback. |
+| **ADL-017** | 2026-09-06 | PWA Retirement & Native Android Migration | **PWA Webapp Retired (Superseded by ADL-018/ADL-019)**: Evaluated webapp/PWA companion prototype. Retired in favor of full native Android companion app (Kotlin, Jetpack Compose, Room/SQLite, Google Play Services & Firebase Auth) to leverage native Bluetooth Low Energy (BLE), hardware-accelerated gestures, local-first offline SQLite, and deeper OS integration. |
 | **ADL-018** | 2026-09-06 | Native Android 4x4 Companion App | **Kotlin & Jetpack Compose 4x4 Prototype with Local-First SQLite**: Built first viable native Android app (`software/android/`) with Kotlin, Jetpack Compose, Material 3, and Gradle 9.1 / Java 25. Features: interactive 4x4 test grid with 2W, 3W, 2L, 3L bonus logic, English Scrabble referee, 1-tap Google account auth, local-first SQLite persistence (`AppDatabaseHelper`), unique username friend system (`name#1234`), and continuous learning protocol (`android_lessons.md`). |
 | **ADL-019** | 2026-09-06 | Android Firebase Google Auth & Hardware Testing | **Firebase Auth, Database Inspector, and On-Device Testing Suite**: Connected Android Companion to Firebase `smart-crossword-2177f` with Play Services OAuth Web Client ID and SHA-1 registration. Created `software/android/inspect_db.sh` for non-root ADB SQLite inspection and reset. Implemented 15 JVM unit tests (`RefereeTest`, `FirebaseConfigTest`) and 6 on-device instrumented hardware tests (`AppDatabaseDeviceTest`) verified passing on physical OnePlus 7T Pro. |
 
@@ -60,5 +59,5 @@ gantt
 1. Build the 1-page test website with $1 pre-order button (`software/`).
 2. Order 4x4 test boards from JLCPCB and assemble bench prototype.
 3. Connect physical NFC multiplexing bench driver to C engine.
-4. Field test mobile companion apps (Android native APK + PWA) against 4x4 test hardware.
+4. Field test native Android companion app (APK) against 4x4 test hardware.
 

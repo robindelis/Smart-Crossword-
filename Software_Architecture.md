@@ -1,6 +1,6 @@
 # Software Architecture & Code Overview
 
-This document explains how the software is organized, how each piece connects, and what each file does.
+This document explains how the software is organized across the physical board firmware and the native Android companion application.
 
 ---
 
@@ -14,35 +14,38 @@ graph TD
         H --- C
     end
 
-    subgraph Build["2. Compilers & Tests"]
-        MK["Makefile<br/>(Build automation)"]
+    subgraph Build["2. Compilers & Unit Tests"]
+        MK["firmware/engine/Makefile<br/>(Native GCC build)"]
         TEST["tests/test_engine.c<br/>(Automated test suite)"]
-        WASM["software/web/engine.wasm<br/>(WebAssembly binary)"]
         C -->|gcc| TEST
-        C -->|clang| WASM
+        MK --> TEST
     end
 
-    subgraph Web["3. Interactive Web Board"]
-        HTML["software/web/index.html<br/>(15x15 board & rack)"]
-        CSS["software/web/style.css<br/>(Wooden theme & fonts)"]
-        JS["software/web/app.js<br/>(Game controller & audio)"]
-        WASM --> JS
-        HTML --- JS
-        CSS --- HTML
+    subgraph Android["3. Native Android Companion App (Kotlin & Jetpack Compose)"]
+        UI["software/android/app/.../ui/<br/>(Board4x4Screen, AuthScreen, FriendsScreen)"]
+        REF["EnglishReferee.kt<br/>(Tournament referee engine)"]
+        DICT_A["assets/dict_en.txt<br/>(168,551 tournament words)"]
+        DB["AppDatabaseHelper.kt<br/>(Local SQLite persistence)"]
+        AUTH["Firebase Auth & Google Play Services<br/>(1-Tap & Google Account Sign-In)"]
+        UI --- REF
+        REF --- DICT_A
+        UI --- DB
+        UI --- AUTH
     end
 
-    subgraph Server["4. Audio & Word Server"]
-        PY["software/web/server.py<br/>(Python web server)"]
-        TTS["Neural Voice Engine<br/>(Spoken announcements)"]
-        DICT["data/dict_*.txt<br/>(2.1M words in 5 languages)"]
-        PY --> TTS
-        PY --> DICT
-        PY -->|Serves files & audio| JS
-    end
-
-    subgraph Target["5. Future Hardware Target"]
+    subgraph Board["4. Physical Wooden Board Target"]
         ESP["ESP32 Microcontroller<br/>(Physical wooden board)"]
+        NFC["15x15 RFID Matrix<br/>(CD74HC4067 multiplexers)"]
+        AUDIO["I2S DAC & Speaker<br/>(MAX98357A voice announcements)"]
         C -.->|Direct compilation| ESP
+        ESP --- NFC
+        ESP --- AUDIO
+    end
+
+    subgraph Cloud["5. Cloud & Peer Synchronization"]
+        FBASE["Firebase Cloud Firestore & FCM<br/>(Move sync & turn push notifications)"]
+        AUTH -.-> FBASE
+        ESP -.->|Wi-Fi / MQTT| FBASE
     end
 ```
 
@@ -53,56 +56,63 @@ graph TD
 ### Core Game Brain (`firmware/engine/`)
 
 * **`crossword_engine.h`**
-  * The header file that defines the contracts and rules for the whole game.
-  * Sets the board dimensions (15x15), maximum tiles per turn (7), the five supported languages (English, French, Dutch, German, Spanish), and tile placement data structures.
-  * Declares the referee functions that any platform (microcontroller or web) can call.
+  * The header file that defines the contracts and rules for the game.
+  * Sets board dimensions (15x15), maximum tiles per turn (7), supported languages (English, French, Dutch, German, Spanish), and tile placement data structures.
+  * Declares referee functions compiled directly to ESP32 firmware.
 
 * **`crossword_engine.c`**
-  * The actual referee and scoring engine, written in pure standard C with zero external operating system dependencies.
-  * Checks move validity: enforces covering the center star on turn 1, placing tiles in a single line, allowing no internal gaps, and connecting to existing tiles.
-  * Calculates official scores using language-specific letter values (e.g. French W = 10, Dutch C = 5, German Ä = 6, Spanish Ñ = 8) and board bonus squares (double/triple letter, double/triple word, and 50-point bingo bonus).
-  * Contains a fast binary search algorithm for looking up words in loaded dictionaries in less than a microsecond.
+  * The referee and scoring engine, written in pure standard C with zero operating system dependencies.
+  * Enforces turn 1 center star coverage, collinearity, internal gap rejection, and tile connectivity.
+  * Calculates official scores using language-specific letter values and bonus squares (2L, 3L, 2W, 3W, and 50-point bingo bonus).
+  * Implements microsecond binary search for looking up words in loaded tournament lexicons.
 
 * **`Makefile`**
   * The build recipe file.
   * Running `make test` compiles the C engine natively with GCC and executes all automated unit tests.
-  * Running `make wasm` compiles the exact same C code into WebAssembly (`engine.wasm`) using Clang.
 
 ---
 
 ### Automated Tests (`tests/`)
 
 * **`test_engine.c`**
-  * The automated quality control suite.
-  * Tests edge cases without needing a screen: gap detection, off-center turn 1 rejections, L-shape rejections, disconnected moves, interlocking cross-words, and bonus scoring.
-  * Loads all 5 real dictionary files and confirms that words like *HELLO*, *BONJOUR*, *FIETS*, *SPIEL*, and *HOLA* are recognized accurately.
+  * Native C automated test suite.
+  * Tests edge cases: gap detection, off-center turn 1 rejections, collinearity checks, disconnected moves, interlocking cross-words, and bonus scoring.
+  * Verifies word recognition against all 5 official dictionary files.
+
+* **`test_android_agent.py`**
+  * Verifies the Android developer agent configuration and tooling bindings.
+
+* **`test_cad_models.py`**
+  * Headless FreeCAD automated geometric validation for 3D enclosures.
 
 ---
 
-### Web Board & Simulation (`software/web/`)
+### Native Android Companion App (`software/android/`)
 
-* **`engine.wasm`**
-  * The compiled WebAssembly binary (under 10 KB).
-  * Allows the web browser to run the exact same C engine that will eventually live on the physical microcontroller chip, ensuring 100% identical rules between prototype and final hardware.
+* **`MainActivity.kt`**
+  * Root Compose activity managing navigation between tabs: 4x4 Board, Friends & Boards, and Player Account.
+  * Handles edge-to-edge layout, session lifecycle, and database resetting.
 
-* **`index.html`**
-  * The visual page structure.
-  * Lays out the 15x15 crossword grid, the player's wooden tile rack, the move referee box, the scoreboard (Grandma vs. Phone Player), and top bar controls (language picker, audio toggle, test sound, and new game).
+* **`Board4x4Screen.kt`**
+  * Interactive 4x4 hardware prototype test grid with 2W, 3W, 2L, 3L, and center star cells.
+  * Digital wooden tile rack (7 tiles), drag/tap placement, recall, shuffle, and real-time referee banner.
 
-* **`style.css`**
-  * The visual design sheet.
-  * Implements a realistic wooden board aesthetic with tactile bevels on tiles, high-contrast text for older eyes, large touch-friendly buttons, and responsive sizing.
+* **`EnglishReferee.kt`**
+  * Embedded Kotlin Scrabble referee engine.
+  * Loads 168,551 official ENABLE1 words from app assets in coroutines.
+  * Computes placement validity, bonus multiplier order, and move scores.
 
-* **`app.js`**
-  * The main frontend controller script.
-  * Coordinates board interactions: clicking tiles, placing them on squares, recalling them to the rack, and shuffling.
-  * Connects with the Web Audio synthesizer to generate realistic physical sound effects (wooden tile clack, success chimes, and alert buzzers).
-  * Automatically switches tile bags, letter point values, and referee languages when a player selects a different language.
+* **`AuthScreen.kt`**
+  * Authentication screen providing 1-tap instant guest play and Google Account sign-in via Google Play Services and Firebase Auth.
 
-* **`server.py`**
-  * The lightweight local web and audio server.
-  * Serves the HTML, CSS, JavaScript, and dictionary files to the browser.
-  * Generates high-definition neural voice audio files on the fly and streams them directly to the browser, so the referee can pronounce words and spell out letters clearly through headphones or speakers.
+* **`FriendsScreen.kt`**
+  * Friend pairing and physical board discovery using unique handles (`sarah#4821`, `board_scb8492`).
+
+* **`AppDatabaseHelper.kt`**
+  * Local SQLite persistence (`crossword_companion.db`) storing `users`, `friends`, and `games` with single-session exclusivity.
+
+* **`inspect_db.sh`**
+  * Non-root command-line inspector tool to inspect and clear on-device SQLite databases via ADB.
 
 ---
 

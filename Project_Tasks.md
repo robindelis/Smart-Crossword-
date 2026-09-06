@@ -69,8 +69,13 @@
   - [x] Official tournament dictionaries downloaded & integrated (2.1M total words)
   - [x] Language-specific tile bags & letter scoring tables
   - [x] Native C test suite with 100% pass rate (`tests/test_engine.c`)
-- [x] WebAssembly compilation via clang (`software/web/engine.wasm`)
-- [x] Interactive web prototype with multi-language selector & localized voice referee (`software/web/index.html`)
+- [x] Native Android Companion App (`software/android/`)
+  - [x] Interactive 4x4 test grid with 2W, 3W, 2L, 3L & center star bonus multipliers
+  - [x] Embedded English tournament referee with 168k dictionary in assets
+  - [x] Unique username generator (`name#1234`) and physical board pairing (`board_scb8492`)
+  - [x] Local-first SQLite database with session exclusivity and ADB inspector script
+  - [x] Firebase Authentication and Google Play Services Sign-In integration
+  - [x] 15 JVM unit tests and 6 on-device hardware instrumented tests
 - [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
 - [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
 - [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)

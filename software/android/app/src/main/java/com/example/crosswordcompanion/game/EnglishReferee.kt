@@ -112,7 +112,7 @@ class EnglishReferee {
 
     /**
      * Loads tournament words from an InputStream (e.g. assets/dict_en.txt)
-     * Mirrors the webapp workflow: reads lines, trims, filters words of length 2..15.
+     * Tournament dictionary parsing: reads lines, trims, filters words of length 2..15.
      */
     fun loadDictionary(inputStream: InputStream): Int {
         BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8)).use { reader ->

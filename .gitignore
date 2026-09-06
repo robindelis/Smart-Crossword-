@@ -46,16 +46,13 @@ cmake-build-*/
 *.hex
 tests/test_engine
 
-# Node / Mobile
-node_modules/
-.npm
+# Temporary & Logs
 .DS_Store
 *.log
 
 # Obsidian
 .obsidian/workspace*.json
 .obsidian/cache/
-software/web/audio_cache/
 
 # IDE & Android
 .idea/
