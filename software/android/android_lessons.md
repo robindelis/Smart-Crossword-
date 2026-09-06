@@ -54,4 +54,15 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Firebase snippet lines (`id("com.google.gms.google-services")` or dependencies) accidentally pasted inside nested blocks such as `compileOptions { ... }`.
   * *Reliable Mitigation*: In Kotlin DSL (`build.gradle.kts`), plugins must strictly go inside the top-level `plugins { ... }` block, and libraries inside top-level `dependencies { ... }`. Additionally, for Google Sign-In to return tokens, the debug keystore SHA-1 must be registered in the Firebase console before downloading `google-services.json`, otherwise `oauth_client` array remains empty.
 
+* **LESSON-AND-009 (Unmocked Android SDK Stubs in JVM Unit Tests)**:
+  * *Symptom/Error*: `java.lang.RuntimeException: Method getJSONObject in org.json.JSONObject not mocked.`
+  * *Root Cause*: Pure JVM unit tests (`testDebugUnitTest`) run against Android framework stubs that throw exceptions when invoked unless mocked or configured.
+  * *Reliable Mitigation*: Use standard Kotlin/Java string/regex parsing or Kotlinx serialization for JVM tests, or move framework-dependent tests to `androidTest/` (`connectedDebugAndroidTest`) to run on actual Android runtimes.
+
+* **LESSON-AND-010 (OEM Unprivileged ADB DB Cleaning)**:
+  * *Symptom/Error*: `java.lang.SecurityException: PID does not have permission android.permission.CLEAR_APP_USER_DATA`.
+  * *Root Cause*: OEM distributions (e.g. OnePlus OxygenOS) restrict `adb shell pm clear` for third-party packages on unrooted devices.
+  * *Reliable Mitigation*: Use `adb shell "run-as <package> rm -f databases/<dbname>*"` to clear local database files reliably without root permissions.
+
+
 

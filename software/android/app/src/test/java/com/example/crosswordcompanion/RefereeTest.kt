@@ -161,6 +161,60 @@ class RefereeTest {
     }
 
     @Test
+    fun testUniqueUsernameBatchGeneration() {
+        // Generate 100 handles and ensure all are valid and have standard length/format
+        val handles = (1..100).map { UniqueUsernameGenerator.generate("Player$it") }
+        assertEquals(100, handles.size)
+        handles.forEach { handle ->
+            assertTrue("Handle $handle must be valid", UniqueUsernameGenerator.isValidHandle(handle))
+            assertTrue("Handle $handle must contain #", handle.contains("#"))
+            val parts = handle.split("#")
+            assertEquals(2, parts.size)
+            assertEquals("Suffix must be 4 digits", 4, parts[1].length)
+            assertTrue("Suffix must be numeric", parts[1].all { it.isDigit() })
+        }
+    }
+
+    @Test
+    fun testAllEnglishLetterScoringValues() {
+        val expectedScores = mapOf(
+            'A' to 1, 'B' to 3, 'C' to 3, 'D' to 2, 'E' to 1,
+            'F' to 4, 'G' to 2, 'H' to 4, 'I' to 1, 'J' to 8,
+            'K' to 5, 'L' to 1, 'M' to 3, 'N' to 1, 'O' to 1,
+            'P' to 3, 'Q' to 10, 'R' to 1, 'S' to 1, 'T' to 1,
+            'U' to 1, 'V' to 4, 'W' to 4, 'X' to 8, 'Y' to 4,
+            'Z' to 10
+        )
+        expectedScores.forEach { (char, expected) ->
+            assertEquals("Score for letter $char must be $expected", expected, EnglishReferee.LETTER_SCORES[char])
+        }
+    }
+
+    @Test
+    fun testVerticalWordPlacementAndScoring() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place vertical word "TOP" at col 1, rows 0..2 covering center star at (1,1):
+        // (0,1)=NORMAL: 'T'(1) -> 1 pt
+        // (1,1)=CENTER (2L): 'O'(1)*2 -> 2 pts
+        // (2,1)=NORMAL: 'P'(3) -> 3 pts
+        // Total expected = 1 + 2 + 3 = 6 pts
+        val uncommitted = listOf(
+            BoardCell(0, 1, SquareType.NORMAL, Tile('T', 1)),
+            BoardCell(1, 1, SquareType.CENTER, Tile('O', 1)),
+            BoardCell(2, 1, SquareType.NORMAL, Tile('P', 3))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = true)
+        assertTrue("Vertical move 'TOP' must be valid", result.isValid)
+        assertEquals(listOf("TOP"), result.words)
+        assertEquals(6, result.score)
+    }
+
+    @Test
     fun testFullTournamentDictionaryLoading() {
         val dictFile = java.io.File("src/main/assets/dict_en.txt")
         assertTrue("dict_en.txt must exist in assets", dictFile.exists())
