@@ -1,0 +1,162 @@
+package com.example.crosswordcompanion
+
+import com.example.crosswordcompanion.game.EnglishReferee
+import com.example.crosswordcompanion.model.Board4x4
+import com.example.crosswordcompanion.model.BoardCell
+import com.example.crosswordcompanion.model.SquareType
+import com.example.crosswordcompanion.model.Tile
+import com.example.crosswordcompanion.model.UniqueUsernameGenerator
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class RefereeTest {
+
+    private val referee = EnglishReferee()
+
+    @Test
+    fun testFirstMoveMustCoverCenterStar() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place "GO" at row 0, col 0 and 1 (does not cover (1,1) center star)
+        val uncommitted = listOf(
+            BoardCell(0, 0, SquareType.DOUBLE_WORD, Tile('G', 2)),
+            BoardCell(0, 1, SquareType.NORMAL, Tile('O', 1))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = true)
+        assertFalse("First move without covering center star must be rejected", result.isValid)
+        assertTrue("Error message must mention center star", result.message.contains("center star"))
+    }
+
+    @Test
+    fun testValidFirstMoveCoveringCenterStarWithBonuses() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place "PLAY" at row 1, cols 0..3:
+        // (1,0)=NORMAL: 'P'(3) -> 3 pts
+        // (1,1)=CENTER (2L): 'L'(1)*2 -> 2 pts
+        // (1,2)=NORMAL: 'A'(1) -> 1 pt
+        // (1,3)=DOUBLE_LETTER (2L): 'Y'(4)*2 -> 8 pts
+        // Expected score: 3 + 2 + 1 + 8 = 14 pts
+        val uncommitted = listOf(
+            BoardCell(1, 0, SquareType.NORMAL, Tile('P', 3)),
+            BoardCell(1, 1, SquareType.CENTER, Tile('L', 1)),
+            BoardCell(1, 2, SquareType.NORMAL, Tile('A', 1)),
+            BoardCell(1, 3, SquareType.DOUBLE_LETTER, Tile('Y', 4))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = true)
+        assertTrue("Move 'PLAY' must be valid", result.isValid)
+        assertEquals("Words formed must contain PLAY", listOf("PLAY"), result.words)
+        assertEquals("Score with 2L on L and Y must be 14", 14, result.score)
+    }
+
+    @Test
+    fun testDoubleWordMultiplier() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place "AT" at row 0, cols 0..1:
+        // (0,0)=DOUBLE_WORD (2W): 'A'(1)
+        // (0,1)=NORMAL: 'T'(1)
+        // Word letter sum = 1 + 1 = 2
+        // Word multiplier = 2x
+        // Expected score = 2 * 2 = 4 pts
+        val uncommitted = listOf(
+            BoardCell(0, 0, SquareType.DOUBLE_WORD, Tile('A', 1)),
+            BoardCell(0, 1, SquareType.NORMAL, Tile('T', 1))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        // Simulate subsequent turn (isFirstMove = false)
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = false)
+        assertTrue("Move 'AT' on 2W must be valid", result.isValid)
+        assertEquals(4, result.score)
+    }
+
+    @Test
+    fun testTripleWordMultiplier() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place "WIN" at row 3, cols 1..3:
+        // (3,1)=NORMAL: 'W'(4)
+        // (3,2)=NORMAL: 'I'(1)
+        // (3,3)=TRIPLE_WORD (3W): 'N'(1)
+        // Word letter sum = 4 + 1 + 1 = 6
+        // Word multiplier = 3x
+        // Expected score = 6 * 3 = 18 pts
+        val uncommitted = listOf(
+            BoardCell(3, 1, SquareType.NORMAL, Tile('W', 4)),
+            BoardCell(3, 2, SquareType.NORMAL, Tile('I', 1)),
+            BoardCell(3, 3, SquareType.TRIPLE_WORD, Tile('N', 1))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = false)
+        assertTrue("Move 'WIN' on 3W must be valid", result.isValid)
+        assertEquals(18, result.score)
+    }
+
+    @Test
+    fun testInvalidWordRejection() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place non-existent word "XYZ" covering center star (1,1)
+        val uncommitted = listOf(
+            BoardCell(1, 0, SquareType.NORMAL, Tile('X', 8)),
+            BoardCell(1, 1, SquareType.CENTER, Tile('Y', 4)),
+            BoardCell(1, 2, SquareType.NORMAL, Tile('Z', 10))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = true)
+        assertFalse("Nonsense word 'XYZ' must be rejected", result.isValid)
+        assertTrue("Message must indicate word is not valid", result.message.contains("not a valid English word"))
+    }
+
+    @Test
+    fun testInternalGapRejection() {
+        val board = Board4x4.createDefaultLayout()
+
+        // Place tiles at (1,0) and (1,2) leaving (1,1) empty
+        val uncommitted = listOf(
+            BoardCell(1, 0, SquareType.NORMAL, Tile('A', 1)),
+            BoardCell(1, 2, SquareType.NORMAL, Tile('T', 1))
+        )
+        val updatedBoard = board.map { cell ->
+            uncommitted.find { it.row == cell.row && it.col == cell.col } ?: cell
+        }
+
+        val result = referee.evaluateMove(updatedBoard, uncommitted, isFirstMove = false)
+        assertFalse("Tiles with gap must be rejected", result.isValid)
+        assertTrue("Message must indicate gap", result.message.contains("gaps"))
+    }
+
+    @Test
+    fun testUniqueUsernameGeneratorAndValidator() {
+        val handle1 = UniqueUsernameGenerator.generate("Sarah")
+        assertTrue("Generated handle must start with sarah#", handle1.startsWith("sarah#"))
+        assertTrue("Generated handle must be valid", UniqueUsernameGenerator.isValidHandle(handle1))
+
+        val boardHandle = UniqueUsernameGenerator.generate("Board", isBoard = true)
+        assertTrue("Board handle must start with board_scb", boardHandle.startsWith("board_scb"))
+        assertTrue("Board handle must be valid", UniqueUsernameGenerator.isValidHandle(boardHandle))
+
+        assertTrue("scb-8492 format must be valid", UniqueUsernameGenerator.isValidHandle("scb-8492"))
+        assertFalse("Empty handle is invalid", UniqueUsernameGenerator.isValidHandle(""))
+        assertFalse("Single letter handle without suffix is invalid", UniqueUsernameGenerator.isValidHandle("a"))
+    }
+}

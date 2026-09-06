@@ -24,9 +24,12 @@ When assigned a task, route analysis and execution to the appropriate specialist
 | **Hardware & RF Specialist** | [.agents/agents/hardware.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/hardware.md) | 15x15 4-layer PCB antenna array design, 13.56 MHz impedance matching, analog multiplexers (74HC4067/RF switches), NFC transceiver (ST25R3916/PN532), battery/BMS circuitry, and turntable mechanical CAD. |
 | **Firmware & Core Engine** | [.agents/agents/firmware.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/firmware.md) | Embedded MCU/SBC firmware, local Trie-based crossword dictionary (NWL/CSW), tile placement rule verification, score calculator with bonus multipliers, I2S audio driver, and LVGL display UI. |
 | **Mobile & Cloud Specialist** | [.agents/agents/mobile_cloud.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/mobile_cloud.md) | iOS/Android smartphone app for children/grandchildren, real-time MQTT/WebSocket synchronization broker, push notification pipeline, and voice-note audio transmission. |
+| **Android Specialist** | [.agents/agents/android_dev.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/android_dev.md) | Native Android companion app (Kotlin, Jetpack Compose, Android Studio, Gradle, `android-cli`), BLE board discovery & Wi-Fi provisioning, Firebase Cloud Firestore/FCM sync, and offline persistence. |
 | **Emotional UX & Senior Ergonomics** | [.agents/agents/emotional_ux.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/emotional_ux.md) | Senior human factors, cognitive ergonomics, high-contrast visual readability, audible voice announcement design, warmth of physical feedback, and intergenerational ritual design. |
 | **Commercial & Kickstarter Lead** | [.agents/agents/commercial.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/commercial.md) | Crowdfunding campaign strategy, emotional storytelling video scripts, BOM tracking ($70–$100 target), supplier sourcing (JLCPCB, wood fabricators, NFC tag suppliers), and PR positioning. |
+| **Mechanical & CAD Specialist** | [.agents/agents/cad.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/cad.md) | Parametric CAD modeling in FreeCAD, headless Python automation, 3D printing enclosure design (FDM PLA/PETG), tile retention grid ergonomics, and automated geometric testing. |
 | **QA & Verification Engineer** | [.agents/agents/qa.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/qa.md) | Bench test protocols (4x4 test grid), RF signal integrity & RSSI benchmarking, tag anti-collision timing, dictionary rule fuzz testing, and end-to-end sync validation. |
+| **Web Sourcing Scout** | [.agents/agents/web_sourcing.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/web_sourcing.md) | Online e-commerce scouting, local-first search (Amazon BE priority, surrounding EU stores, specialized platforms), customer review vetting, trade-off presentation, and mandatory live link verification (FAIL-010). |
 
 ---
 
@@ -35,9 +38,9 @@ When assigned a task, route analysis and execution to the appropriate specialist
 ```mermaid
 graph TD
     A["1. Context & Consultation (Consult wise.md & emotional_ux.md)"] --> B["2. Specification & Planning (Validate BOM, RF & UX constraints)"]
-    B --> C["3. Implementation (Delegate to hardware | firmware | mobile_cloud | commercial)"]
+    B --> C["3. Implementation (Delegate to hardware | cad | firmware | mobile_cloud | commercial)"]
     C --> D["4. Verification & Bench QA (qa specialist + automated tests + bench protocols)"]
-    D --> E["5. Living Memory Update (Record new lessons in wise.md)"]
+    D --> E["5. Living Memory Update (Record new lessons in wise.md & cad_lessons.md)"]
     E --> F["6. Project State Update (Update PROJECT_STATE.md)"]
 ```
 

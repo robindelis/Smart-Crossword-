@@ -3,5 +3,6 @@
   "showLineNumber": true,
   "readableLineLength": true,
   "strictLineBreaks": false,
-  "defaultViewMode": "source"
+  "defaultViewMode": "source",
+  "alwaysUpdateLinks": true
 }

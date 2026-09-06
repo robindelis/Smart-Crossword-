@@ -17,11 +17,42 @@
   - [ ] Collect emails and send automated confirmation
 - [ ] Bench test 4x4 circuit board
   - [ ] Order PCB prototype from JLCPCB
+  - [ ] Procure test bench tiles (Amazon Belgium 200-pack B0GH7LXL2K) & 15mm NTAG213 stickers
   - [ ] Verify reading tags through 2.0mm–2.5mm hardwood
   - [ ] Verify 16-channel scan latency (<40ms)
 
 ## ✅ Done
 
+- [x] DataLoom Dynamic Procurement Spreadsheets & Candidate Sourcing Sync ([`Prototype_4x4_Shopping_List.loom`](Prototype_4x4_Shopping_List.loom), [`Production_15x15_Sourcing_List.loom`](Production_15x15_Sourcing_List.loom), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md), [`Production_15x15_Sourcing_List.md`](Production_15x15_Sourcing_List.md), [`Procurement_Shopping_List.md`](Procurement_Shopping_List.md))
+  - [x] Generated native Obsidian DataLoom (.loom) files validated with DataLoom's internal deserializer
+  - [x] Updated Prototype (4x4) Shopping List with top picks across all 12 items (€69.47 allocated / €125.47 pack checkout total)
+  - [x] Updated Production (15x15) Sourcing List with top picks across all 12 items ($67.87 BOM per unit)
+  - [x] Synchronized master Procurement_Shopping_List.md with DataLoom embeds and quick-reference tables
+  - [x] Validated 100% of e-commerce links via `verify_ecommerce_links.py` (FAIL-010 compliance)
+- [x] Multi-Candidate Component Sourcing & Comparison Table ([`Component_Candidate_Comparison.md`](Component_Candidate_Comparison.md), [`Project_Cockpit.canvas`](Project_Cockpit.canvas))
+  - [x] Evaluated 2–4 top candidate options for all 9 components (tiles, NFC tags, readers, MCUs, multiplexers, turntables, displays, audio, fasteners)
+  - [x] Verified 100% of e-commerce links live via `verify_ecommerce_links.py` (FAIL-010 compliance)
+  - [x] Added comparison card and visual edges to Obsidian Canvas `group-procurement` section
+  - [x] Benchmarked prototype bench budget (€69.47) and mass production target ($67.87)
+- [x] Web Sourcing Scout & Automated Live Link Verification Engine (`.agents/agents/web_sourcing.md`, `scripts/verify_ecommerce_links.py`)
+  - [x] Enforced local-first search hierarchy (Amazon BE priority, surrounding EU, specialized stores)
+  - [x] Real-link live validation tool with browser headers, price/stock extraction, and CI test suite (`tests/test_link_verification.py`)
+  - [x] Verified in-stock procurement options: Amazon Belgium 200-pack tiles (€6.99, ASIN: `B0GH7LXL2K`) and NTAG213 tags
+  - [x] Added FAIL-010 to living memory and ADL-015 to decisions log
+- [x] Wooden Scrabble tiles & 15mm NTAG213 RFID sourcing strategy (`commercial/tile_and_rfid_sourcing.md`)
+  - [x] Benchmarked wholesale/retail pricing (AliExpress, Alibaba, Amazon, Panda, CXJ RFID)
+  - [x] Multi-language distributions (EN 100, FR 102, DE 102, NL 102, ES 100 FISE)
+  - [x] Selected 15mm diameter NTAG213 paper stickers ($0.035 ea) over 12mm and epoxy tags
+  - [x] Enforced localized single-language bag fulfillment + $25 Kickstarter add-ons
+  - [x] Balanced $6.52 turnkey tile subsystem within $70–$100 BOM budget
+- [x] 3D CAD models for 4x4 test enclosure & NFC tiles (`hardware/cad/`)
+  - [x] FreeCAD automation specialist agent (`.agents/agents/cad.md`)
+  - [x] Base chassis tray with M3 bosses and header cutouts (`output/base_enclosure.*`)
+  - [x] Top grid faceplate with 1.2mm ribs and 1.5mm RF floor (`output/top_grid_plate.*`)
+  - [x] Prototype NFC letter tile with 15.5mm coin tag cavity (`output/nfc_tile_prototype.*`)
+  - [x] Master 3D assembly and STEP exchange (`output/assembly_4x4_prototype.*`)
+  - [x] Automated test suite with 100% pass rate (`tests/test_cad_models.py`)
+  - [x] Continuous learning log with 11 technical invariants (`hardware/cad/cad_lessons.md`)
 - [x] Design 4x4 test circuit board in KiCad (`hardware/kicad/test_grid_4x4/`)
   - [x] Sized planar spiral coils (17.5mm, 7 turns, L=1.26µH, 19mm pitch)
   - [x] Resonant LC tank (100pF C0G capacitors, 3.3Ω damping resistors for Q=25)

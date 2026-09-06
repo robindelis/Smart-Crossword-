@@ -56,3 +56,11 @@ node_modules/
 .obsidian/workspace*.json
 .obsidian/cache/
 software/web/audio_cache/
+
+# IDE & Android
+.idea/
+*.iml
+local.properties
+
+# CAD Backups
+*.FCBak

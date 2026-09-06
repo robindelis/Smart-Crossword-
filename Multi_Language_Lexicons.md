@@ -48,17 +48,24 @@ Letter scores and tile frequencies are completely localized per language:
   * 3 pts: `B`, `M`, `W`, `Z`
   * 2 pts: `G`, `H`, `L`, `O`
   * 1 pt: `E` (15), `N` (9), `S` (7), `I` (6), `R` (6), `T` (6), `U` (6), `A` (5), `D` (4)
-* **Spanish (ES - 100 tiles)**:
-  * Includes Spanish letter: `Ñ` (**8 pts**).
-  * 10 pts: `Z`
-  * 8 pts: `J`, `Ñ`, `X`
-  * 5 pts: `Q`
-  * 4 pts: `F`, `H`, `V`, `Y`
-  * 3 pts: `B`, `C`, `M`, `P`
-  * 2 pts: `D`, `G`
+* **Spanish (ES - 100 tiles - FISE International Standard)**:
+  * Includes dedicated single-square tiles for Spanish character and digraphs:
+    * `Ñ` (**8 pts**, 1 tile)
+    * `CH` (**5 pts**, 1 tile) — occupies 1 board cell
+    * `LL` (**8 pts**, 1 tile) — occupies 1 board cell
+    * `RR` (**8 pts**, 1 tile) — occupies 1 board cell
+  * 10 pts: `Z` (1)
+  * 8 pts: `J` (1), `Ñ` (1), `X` (1), `LL` (1), `RR` (1)
+  * 5 pts: `Q` (1), `CH` (1)
+  * 4 pts: `F` (1), `H` (2), `V` (1), `Y` (1)
+  * 3 pts: `B` (2), `C` (4), `M` (2), `P` (2)
+  * 2 pts: `D` (5), `G` (2)
   * 1 pt: `A` (12), `E` (12), `O` (9), `I` (6), `S` (6), `N` (5), `R` (5), `U` (5), `L` (4), `T` (4)
+  * Note: The North American Hasbro edition uses 103 tiles (drops `CH` tile and adds `K`/`W`). The Smart Crossword Board uses the official 100-tile FISE International standard adopted across Spain and Latin America.
 * **English (EN - 100 tiles)**:
-  * Standard Scrabble distribution (10 pts for `Q`, `Z`; 8 pts for `J`, `X`).
+  * Standard Scrabble distribution: 12 `E`, 9 `A`, 9 `I`, 8 `O`, 6 `N`, 6 `R`, 6 `T`, 4 `D`, 4 `L`, 4 `S`, 4 `U`, 3 `G`, 2 `B`, 2 `C`, 2 `F`, 2 `H`, 2 `M`, 2 `P`, 2 `V`, 2 `W`, 2 `Y`, 1 `J` (8 pts), 1 `K` (5 pts), 1 `Q` (10 pts), 1 `X` (8 pts), 1 `Z` (10 pts), 2 Blanks (0 pts).
+
+See [`commercial/tile_and_rfid_sourcing.md`](file:///home/robin/Smart-Crossword-Board/commercial/tile_and_rfid_sourcing.md) for the master letter-by-letter table across all 5 languages and procurement specs.
 
 ---
 

@@ -1,0 +1,51 @@
+# Living Memory: Android Companion App Lessons
+
+This document records technical invariants, Gradle/AGP compatibility rules, Jetpack Compose UI behaviors, Room SQLite architecture, and device communication lessons discovered during development of the Smart Crossword Board companion app.
+
+---
+
+## 1. Gradle, Java & Toolchain Invariants
+
+* **LESSON-AND-001 (Java 25 & Gradle 9.1 Compatibility)**:
+  * *Symptom/Error*: Android Gradle Plugin (AGP) builds may log `restricted method in java.lang.System has been called` when using cutting-edge Java 25 (`/opt/android-studio/jbr`).
+  * *Root Cause*: Java 25 enforces strict encapsulation and native access warnings for certain build tools.
+  * *Reliable Mitigation*: Gradle 9.1+ has native Java 25 support. Ensure `JAVA_HOME=/opt/android-studio/jbr` is exported, and ensure Gradle wrapper uses 9.1+ (`gradle-9.1.0-bin.zip`).
+
+* **LESSON-AND-002 (SDK XML Schema Version Invariant)**:
+  * *Symptom/Error*: `Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered.`
+  * *Root Cause*: Minor version skew between Android Studio preview components and AGP template defaults.
+  * *Reliable Mitigation*: Non-fatal build warning. Builds succeed normally with `compileSdk = 36` or `37` and `targetSdk = 36`.
+
+---
+
+## 2. Jetpack Compose & UI Invariants
+
+* **LESSON-AND-003 (Interactive Grid State Hoisting)**:
+  * *Problem*: In a 4x4 or 15x15 interactive board, triggering a recomposition of the entire board when a single cell changes causes touch jank and lost gesture focus.
+  * *Reliable Mitigation*: Hoist cell state into immutable `SnapshotStateList<BoardSquare>` or immutable data classes with `@Stable` annotations. Use `key(row, col)` in LazyVerticalGrid or Column/Row loops so only the modified square redraws.
+
+* **LESSON-AND-004 (Touch Target Sizing for Senior Ergonomics)**:
+  * *Ergonomic Invariant*: Every board tile and rack slot must meet Android accessibility guidelines: minimum touch target of **48dp x 48dp** (or use content padding around smaller cells). On vertical phone screens, a 4x4 board easily achieves 72dp x 72dp per square with tactile wooden elevation.
+
+---
+
+## 3. Local-First Room & Cloud Sync Invariants
+
+* **LESSON-AND-005 (Local-First Offline State Contract)**:
+  * *Requirement*: Senior players and phone players must never experience blank screens or blocking spinners if internet drops.
+  * *Architecture Invariant*: Room SQLite is the Single Source of Truth (SSOT). The UI observes Flow / StateFlow from Room DAOs. Cloud Firestore updates Room in the background; UI never reads directly from network endpoints.
+
+---
+
+## 4. Android Studio & Template Scaffolding Invariants
+
+* **LESSON-AND-006 (Template Scaffolding Directory Invariant)**:
+  * *Symptom/Error*: `ERROR: Cannot create template: Directory '...' is not empty`.
+  * *Root Cause*: The Google `android create` command strictly requires the target output directory to either be non-existent or completely empty.
+  * *Reliable Mitigation*: Keep output directory clean when running `android create`. Store external documentation or README files outside until initial scaffolding completes.
+
+* **LESSON-AND-007 (Material 3 TopAppBar & Icon Scoping)**:
+  * *Symptom/Error*: `Unresolved reference 'icons'` or `This material API is experimental`.
+  * *Root Cause*: Extended Material Icons (`androidx.compose.material:material-icons-extended`) are not included in baseline Material 3. `CenterAlignedTopAppBar` requires `@OptIn(ExperimentalMaterial3Api::class)` and uses `TopAppBarDefaults.topAppBarColors`.
+  * *Reliable Mitigation*: Apply `@OptIn(ExperimentalMaterial3Api::class)` at the Composable/Activity level and use Unicode emoji or local vector drawables for lightweight icons without bloating APK size by 20+ MB.
+

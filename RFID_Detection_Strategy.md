@@ -6,7 +6,7 @@ This document explains the physical sensor design that lets the wooden board det
 
 ## 1. How It Works (Passive Magnetic Induction)
 
-* **No Batteries in Tiles**: Each wooden letter tile has a 12mm passive NFC tag (NTAG213) glued into a shallow 1mm pocket underneath.
+* **No Batteries in Tiles**: Each wooden letter tile has a 15mm passive NFC tag (NTAG213) applied into a shallow 15.5mm × 0.8mm CNC cavity underneath. 15mm tags provide 56% more loop area than 12mm tags, delivering 10mm–14mm magnetic read range through 2.0mm–2.5mm hardwood.
 * **Under-Board Coils**: Under each 19mm x 19mm square on the board is an etched copper spiral antenna on a circuit board.
 * **Wireless Power**: When an antenna coil sends out a 13.56 MHz magnetic pulse, it passes through the wood into the tile. By basic electromagnetic induction (Faraday's law), this creates a small electric current that wakes up the tile's microchip.
 * **Reading the Letter**: The powered chip answers back with its unique 7-byte ID code (e.g. `04:A1:3B:5C:7F:8E:10`) by subtly varying its electrical load. The board reader detects this and looks up which letter was placed.
@@ -31,7 +31,7 @@ To keep costs low, we do not use 225 reader chips. We use **one central reader c
 
 > [!IMPORTANT]
 > **Wood Thickness Limit: Under 2.5mm**
-> 13.56 MHz coils of 15mm diameter have a magnetic read range of **6mm to 8mm**.
+> 13.56 MHz coils of 15mm–17.5mm diameter have an effective magnetic read range of **10mm to 14mm** with 15mm NTAG213 tags.
 > The wooden top plate directly above the circuit board must be **$\le 2.0\text{mm} - 2.5\text{mm}$ thick**.
 > If the wood is 4mm or thicker, tags will fail to read or drop out intermittently.
 
@@ -44,11 +44,11 @@ To keep costs low, we do not use 225 reader chips. We use **one central reader c
 | **NFC Reader** | ST25R3916 or PN532 transceiver | 1 | $3.20 |
 | **Multiplexers** | 74HC4067 16-channel switches | 4 | $1.12 |
 | **Tuning Caps** | NPO/C0G 5% ceramic capacitors | 450 | $1.80 |
-| **Tile Tags** | 12mm NTAG213 inlays ($0.065 ea) | 120 | $7.80 |
+| **Tile Tags** | 15mm NTAG213 stickers ($0.035 ea, CXJ RFID) | 102 | $3.57 |
 | **4-Layer PCB** | 15x15 coil panel (JLCPCB) | 1 | $12.00 |
-| **Total Sensor Cost** | | | **~$25.92** |
+| **Total Sensor Cost** | | | **~$21.69** |
 
-This leaves ~$55 for the ESP32 compute, screen, wood chassis, battery, and speaker to stay under the $100 ceiling.
+This leaves ~$60+ for the ESP32 compute, screen, wood chassis, battery, and speaker to stay under the $100 ceiling. See [`commercial/tile_and_rfid_sourcing.md`](file:///home/robin/Smart-Crossword-Board/commercial/tile_and_rfid_sourcing.md) for detailed supplier quotes.
 
 ---
 
