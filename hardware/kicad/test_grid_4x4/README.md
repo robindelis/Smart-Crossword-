@@ -101,3 +101,46 @@ Standard 50Ω SMA coaxial connector wired to `RF_SIG` for connecting an oscillos
 4. Browse to `hardware/kicad/test_grid_4x4/test_grid_4x4.kicad_pro`.
 5. Double-click `test_grid_4x4.kicad_sch` to view the schematic, or `test_grid_4x4.kicad_pcb` to view the board layout.
 6. In the PCB editor, press **Alt + 3** (or menu **View -> 3D Viewer**) to interact with the 3D model.
+
+---
+
+## 7. Prototype (4x4) Shopping List Compatibility & Wiring Guide
+
+This section verifies compatibility with the components procured in [[Prototype_4x4_Shopping_List|Prototype 4x4 Shopping List]]:
+
+### Component Compatibility Matrix
+
+| Shopping List Item | Selected Model | PCB Compatibility | Connection / Assembly Notes |
+| :--- | :--- | :--- | :--- |
+| **Letter Tiles (16 needed)** | 200 Pcs Wooden Scrabble Tiles (`B0GH7LXL2K`) | ✅ **100% Compatible** | 19.0 x 19.0 x 4.8 mm wood tiles align 1:1 with the 19.0mm PCB coil pitch. |
+| **13.56 MHz NFC Tags** | 60 Pcs NTAG213 Stickers 25mm (`B0HC2ZKQLQ`) | ✅ **100% Compatible (RF)** | 13.56 MHz ISO 14443A matches resonant LC tank. For bench testing, 25mm stickers can be affixed centered on tiles or test veneer. |
+| **Host Microcontroller** | ESP32-S3 DevKitC-1 N16R8 (`B0GXF14RRM`) | ✅ **100% Compatible** | 3.3V logic matches +3.3V rail. Connects to J1 via 20-pin IDC ribbon or Dupont jumper wires. |
+| **16-Ch Multiplexer** | DollaTek CD74HC4067 Breakout (`B07PPKRVGW`) | ⚠️ **Footprint Variant Note** | PCB footprint U1 is **SOIC-24 SMD** (`CD74HC4067SM96`, LCSC C7406) for JLCPCB PCBA. The Amazon DollaTek breakout module (24-pin DIP) is for breadboard testing. Order JLCPCB PCBA or bare SOIC-24 IC for this PCB. |
+| **NFC Reader Module** | PN532 V3 RFID/NFC Breakout Kit (`B0C9DTJMLQ`) | ⚠️ **RF Tap Required** | Connect SPI signals (SCK, MISO, MOSI, SS/CS, IRQ, RST, 3.3V, GND) to J2 via Dupont leads. To drive PCB coils, link the PN532 RF stage to J3 (SMA) or J2 Pin 1 (`RF_SIG`) via a 50Ω coaxial pigtail. |
+| **Rotating Turntable** | QWORK Square Bearing 71x71mm (`B0B3X7R961`) | ✅ **100% Compatible** | Mounts centered underneath the 3D-printed base enclosure tray; zero interference with PCB. |
+| **Color Display Screen** | 3.5" TFT SPI 480x320 (`B0BZXX1QFM`) | ✅ **100% Compatible** | Off-board peripheral wired directly to ESP32-S3 host GPIOs. |
+| **Audio DAC Amp & Speaker** | MAX98357A I2S Amp (`B0F21T7Q3P`) + 40mm 4Ω Speaker | ✅ **100% Compatible** | Off-board I2S peripheral wired directly to ESP32-S3 host GPIOs. |
+| **Hardware Fasteners** | 440 Pcs M3 Button Head Screws & Nuts (`B0B3MGZ7T2`) | ✅ **100% Compatible** | M3x8 / M3x10 screws seat perfectly in the 4x 3.2mm corner mounting holes (H1–H4). |
+| **Anti-Skid Bumper Feet** | Silicone Bumper Feet 10mm (`B08GKP4311`) | ✅ **100% Compatible** | Fits bottom locating recesses in 3D-printed base enclosure. |
+
+### J1 (ESP32-S3 Host) Wiring Map
+
+| Header J1 Pin | Net | ESP32-S3 DevKit Pin | Function |
+| :--- | :--- | :--- | :--- |
+| **Pin 1, 2** | `+3.3V` | `3V3` | Power Supply |
+| **Pin 3** | `MUX_S3` | `GPIO 4` | Multiplexer Address Bit 3 |
+| **Pin 5** | `MUX_S2` | `GPIO 5` | Multiplexer Address Bit 2 |
+| **Pin 7** | `MUX_EN` | `GPIO 6` | Multiplexer Enable (Active Low) |
+| **Pin 9** | `MUX_S1` | `GPIO 7` | Multiplexer Address Bit 1 |
+| **Pin 11** | `MUX_S0` | `GPIO 15` | Multiplexer Address Bit 0 |
+| **Pin 13, 15, 17, 19** | `GND` | `GND` | Ground Reference |
+| **Pin 4** | `GPIO_AUX` | `GPIO 16` | Spare / Tactile Button / LED |
+| **Pin 6** | `I2C_SDA` | `GPIO 8` | Spare I2C Data |
+| **Pin 8** | `I2C_SCL` | `GPIO 9` | Spare I2C Clock |
+| **Pin 10** | `NFC_IRQ` | `GPIO 10` | NFC Reader Interrupt |
+| **Pin 12** | `NFC_RST` | `GPIO 11` | NFC Reader Reset |
+| **Pin 14** | `SPI_MOSI`| `GPIO 13` | SPI Data Host -> NFC |
+| **Pin 16** | `SPI_CS` | `GPIO 14` | SPI Chip Select |
+| **Pin 18** | `SPI_SCK` | `GPIO 12` | SPI Clock |
+| **Pin 20** | `SPI_MISO`| `GPIO 21` | SPI Data NFC -> Host |
+

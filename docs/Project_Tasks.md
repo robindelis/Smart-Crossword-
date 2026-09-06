@@ -23,7 +23,13 @@
 
 ## ✅ Done
 
+- [x] 4x4 Prototype PCB & Shopping List Hardware Compatibility Audit & Schematic Sync ([`hardware/kicad/test_grid_4x4/README.md`](../hardware/kicad/test_grid_4x4/README.md), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md))
+  - [x] Verified mechanical and electrical fit for all 12 items (tiles, tags, MCU, MUX, reader, screen, audio, bearing, fasteners)
+  - [x] Synchronized `test_grid_4x4.kicad_sch` to match the perfected zero-DRC layout of `test_grid_4x4.kicad_pcb`
+  - [x] Documented integration notes for CD74HC4067 SOIC-24 PCBA vs Amazon DIP breakout and PN532 RF stage tap
+  - [x] Recorded FAIL-011 and ADL-021
 - [x] DataLoom Dynamic Procurement Spreadsheets & Candidate Sourcing Sync ([`Prototype_4x4_Shopping_List.loom`](Prototype_4x4_Shopping_List.loom), [`Production_15x15_Sourcing_List.loom`](Production_15x15_Sourcing_List.loom), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md), [`Production_15x15_Sourcing_List.md`](Production_15x15_Sourcing_List.md), [`Procurement_Shopping_List.md`](Procurement_Shopping_List.md))
+
   - [x] Generated native Obsidian DataLoom (.loom) files validated with DataLoom's internal deserializer
   - [x] Updated Prototype (4x4) Shopping List with top picks across all 12 items (€69.47 allocated / €125.47 pack checkout total)
   - [x] Updated Production (15x15) Sourcing List with top picks across all 12 items ($67.87 BOM per unit)

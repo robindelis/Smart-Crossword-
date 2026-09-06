@@ -28,3 +28,19 @@ This shopping list reflects the top-recommended components selected from the mul
 <!-- TBLFM: @>$3=sum(@I..@-1) -->
 
 > 🔍 **Multi-Candidate Analysis**: To inspect alternative vendors, bulk options, or comparison trade-offs across all 9 hardware categories, refer to [[Component_Candidate_Comparison|Component Candidate Comparison]].
+
+---
+
+### ⚠️ PCB Assembly & Bench Wiring Notes (FAIL-011)
+
+1. **Multiplexer Footprint (CD74HC4067)**:
+   * The custom 4-layer PCB (`hardware/kicad/test_grid_4x4/`) uses an SMD **SOIC-24** footprint (`CD74HC4067SM96`, LCSC `C7406`, $0.28).
+   * The DollaTek breakout pack listed above is a 24-pin DIP board module for breadboard bench testing.
+   * When fabricating the custom PCB via JLCPCB, select SMT assembly (PCBA) to have U1 and all 0603 passive components factory-soldered.
+2. **NFC Reader RF Connection (PN532 V3)**:
+   * The PN532 V3 breakout kit (`B0C9DTJMLQ`) includes an onboard loop antenna and does not expose an RF pin on its 2.54mm header.
+   * Connect digital SPI lines (SCK, MISO, MOSI, CS, IRQ, RST, 3.3V, GND) to header `J2` using female-to-female Dupont jumper wires.
+   * To energize the 16 board coils, connect a 50Ω coaxial cable or pigtail from the PN532 RF stage directly into the SMA connector `J3` (or `J2` Pin 1 `RF_SIG`).
+3. **ESP32-S3 Host Connection**:
+   * Connect the ESP32-S3 DevKit (`B0GXF14RRM`) to header `J1` using a standard 2x10 2.54mm IDC ribbon cable or Dupont jumpers according to the pinout map in [[hardware/kicad/test_grid_4x4/README|Phase 1 4x4 NFC Test Board README]].
+

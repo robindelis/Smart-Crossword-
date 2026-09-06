@@ -317,16 +317,16 @@ def main():
 \t)''')
 
     j1_net_map = {
-        1: "+3.3V", 2: "+3.3V",
-        3: "MUX_S0", 4: "SPI_SCK",
-        5: "MUX_S1", 6: "SPI_MISO",
-        7: "MUX_S3", 8: "SPI_MOSI",
-        9: "MUX_S2", 10: "SPI_CS",
-        11: "MUX_EN", 12: "NFC_IRQ",
-        13: "I2C_SDA", 14: "NFC_RST",
-        15: "I2C_SCL", 16: "GPIO_AUX",
-        17: "GND", 18: "GND",
-        19: "GND", 20: "GND"
+        1: "+3.3V",   2: "+3.3V",
+        3: "MUX_S3",  4: "GPIO_AUX",
+        5: "MUX_S2",  6: "I2C_SDA",
+        7: "MUX_EN",  8: "I2C_SCL",
+        9: "MUX_S1",  10: "NFC_IRQ",
+        11: "MUX_S0", 12: "NFC_RST",
+        13: "GND",    14: "SPI_MOSI",
+        15: "GND",    16: "SPI_CS",
+        17: "GND",    18: "SPI_SCK",
+        19: "GND",    20: "SPI_MISO"
     }
     for p_num, net in j1_net_map.items():
         dx, dy, _ = pins_j1[str(p_num)]
