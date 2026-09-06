@@ -12,7 +12,7 @@ All online store links have been actively verified live via [`scripts/verify_eco
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Wood Letter Tiles** | **200 Pcs Scrabble Wooden Tiles** | **€0.035** (€6.99 / 200) | [Amazon BE (`B0GH7LXL2K`)](https://www.amazon.com.be/dp/B0GH7LXL2K) | Standard 19x19x4.8mm pine/beechwood tiles, exact fit for 19mm CAD pockets. |
 | **2. 13.56 MHz NFC Tags** | **60 Pcs NTAG213 Stickers 25mm** | **€0.116** (€6.99 / 60) | [Amazon BE (`B0HC2ZKQLQ`)](https://www.amazon.com.be/dp/B0HC2ZKQLQ) | Lowest cost per tag on Amazon BE; fast read speed with PN532. |
-| **3. NFC Reader Module** | **PN532 V3 RFID/NFC Breakout Kit** | **€8.98** | [Amazon BE (`B0C9DTJMLQ`)](https://www.amazon.com.be/dp/B0C9DTJMLQ) | Integrated SPI/I2C/UART switches + level shifters; includes test cards & jumpers. |
+| **3. NFC Reader Module** | **NXP PN5180 High-Power Breakout** | **€11.82** | [Amazon BE (`B0HDTXDNJY`)](https://www.amazon.com.be/dp/B0HDTXDNJY) | 250mW output (5x PN532 power) cuts through MUX switch resistance; dedicated external antenna launch pads. |
 | **4. Host Microcontroller** | **ESP32-S3 DevKitC-1 N16R8 (3-Pack)** | **€6.99** (€20.98 / 3) | [Amazon BE (`B0GXF14RRM`)](https://www.amazon.com.be/dp/B0GXF14RRM) | 16MB Flash + 8MB Octal PSRAM. Holds entire word dictionary in fast RAM. |
 | **5. 16-Ch Multiplexer** | **DollaTek CD74HC4067 Breakout (5-Pack)** | **€1.20** (€5.99 / 5) | [Amazon BE (`B07PPKRVGW`)](https://www.amazon.com.be/dp/B07PPKRVGW) | Bidirectional analog MUX, >60 MHz bandwidth, standard 0.1" DIP pins. |
 | **6. Rotating Turntable** | **QWORK Square Turntable Bearing (4-Pack)** | **€1.75** (€6.98 / 4) | [Amazon BE (`B0B3X7R961`)](https://www.amazon.com.be/dp/B0B3X7R961) | 71x71mm steel ball bearing plate. Direct fit under 4x4 base enclosure. |
@@ -56,10 +56,11 @@ The reader module drives the 13.56 MHz magnetic field and reads tag UIDs through
 
 | Candidate | Price | Store & Link | Interface & Features | Pros & Cons | Verdict |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Option A: PN532 V3 RFID/NFC Kit** | €8.98 | [Amazon BE (`B0C9DTJMLQ`)](https://www.amazon.com.be/dp/B0C9DTJMLQ) | SPI / I2C / HSU (UART), 3.3V/5V shifters | • Hardware switches for easy protocol select<br>• Includes breadboard jumpers and test cards<br>• Fully supported by open-source libraries | **Top Prototype Choice** |
-| **Option B: PN532 Breakout Board** | €7.99 | [Amazon BE (`B0GL25388N`)](https://www.amazon.com.be/dp/B0GL25388N) | SPI / I2C / HSU | • Minimalist board, saves space<br>• No extra cards or cables included | **Lowest Single-Unit Price** |
-| **Option C: PN532 Dual Module Pack** | €11.99 (€6.00 / board) | [Amazon BE (`B0H1W93KBP`)](https://www.amazon.com.be/dp/B0H1W93KBP) | 2x PN532 V3 boards + accessories | • Best price when needing a backup or dual readers<br>• Solid solder pads | **Best Multi-Unit Value** |
-| **Production Target: ST25R3916-AQFT** | $3.00 (bare IC) | [STMicroelectronics](https://www.st.com/en/nfc/st25r3916.html) | QFN-32, 1.7W RF output, AOP | • Dynamic power control and noise suppression<br>• Low power standby for battery life | **Production IC** |
+| **Option A (High Power): NXP PN5180 Breakout** | **€11.82** (single) / **€21.00** (2-pack) | [Amazon BE (`B0HDTXDNJY`)](https://www.amazon.com.be/dp/B0HDTXDNJY) / [2-Pack (`B0DRWSHRQT`)](https://www.amazon.com.be/dp/B0DRWSHRQT) | SPI (3.3V) + BUSY + IRQ, 250mW RF output | • 250mW output (5x PN532 power) cuts through MUX switch resistance easily<br>• Dynamic Power Control (DPC) prevents field collapse<br>• Dedicated edge pads for external coax / antenna launch | **Top Amazon BE Recommendation**<br>(Prime Next-Day Delivery) |
+| **Option B (Zero Rework): ELECHOUSE ST25R3916B Mini** | **~€16.60** ($18.00) | [Elechouse Store](https://www.elechouse.com/product/st25r3916b-mini/) | SPI / I2C (3.3V), single-ended 50Ω RF drive | • Zero onboard antenna; built specifically for external antennas<br>• Native 50Ω single-ended RF drive connects directly to SMA J3<br>• Uses the exact ST25R3916 IC planned for 15x15 production | **Cleanest Engineering Match**<br>(5–10 days shipping) |
+| **Option C (Baseline): PN532 V3 + SMA Pigtail Tap** | **€8.98** (board) + **€8.99** (coax) | [Amazon BE (`B0C9DTJMLQ`)](https://www.amazon.com.be/dp/B0C9DTJMLQ) + [Pigtail (`B07YCBQF89`)](https://www.amazon.com.be/dp/B07YCBQF89) | SPI / I2C / HSU | • 100% compatible with existing Adafruit_PN532 software<br>• Requires soldering a thin coax pigtail to tap the RF stage before the loop<br>• 50mW output power is lower than PN5180 | **Software Drop-in Fallback** |
+| **Production Target: ST25R3916-AQFT** | $3.00 (bare IC) | [STMicroelectronics](https://www.st.com/en/nfc/st25r3916.html) | QFN-32, 1.7W RF output, AOP | • Dynamic power control and noise suppression<br>• SMT soldered directly onto full 15x15 board | **Production IC** |
+
 
 ---
 
