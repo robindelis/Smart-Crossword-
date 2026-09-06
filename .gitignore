@@ -47,8 +47,10 @@ cmake-build-*/
 tests/test_engine
 
 # Temporary & Logs
-.DS_Store
-*.log
+# KiCad temporary & history
+.history/
+.kicad-push
+firmware/esp32_driver/bin/
 
 # Obsidian
 .obsidian/workspace*.json

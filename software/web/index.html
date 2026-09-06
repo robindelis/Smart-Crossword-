@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Crossword Board — Play with Grandma Across Any Distance</title>
+  <meta name="description" content="A classic wooden crossword board that connects to your smartphone. She plays real tiles at home, you play from anywhere. Automatic referee, voice notes, and 100% senior-friendly.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="banner">
+    <div class="container banner-content">
+      <span>✨ <strong>Early Bird Kickstarter Reservation:</strong> Put down $1 to lock in 40% off ($199 vs $329 retail).</span>
+    </div>
+  </aside>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="logo">
+        <span class="logo-tile">S</span>
+        <span class="logo-text">Smart Crossword Board</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+        <a href="#reserve" class="btn btn-sm btn-primary">Reserve for $1</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <div class="badge">A Real Wooden Board For Seniors • A Phone App For You</div>
+        <h1>Play Scrabble with Grandma every morning—even from 1,000 miles away.</h1>
+        <p class="hero-lead">
+          She plays classic wooden tiles on her living room table. You play your turn from your phone on your morning commute. The board announces your move out loud, updates the score, and plays your voice notes.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#reserve" class="btn btn-lg btn-primary">Lock in 40% Off ($1 Deposit)</a>
+          <span class="hero-guarantee">🛡️ 100% Refundable Deposit • Limited to 750 VIP Backers</span>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric">
+            <strong>0 Apps</strong>
+            <span>For older parents</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric">
+            <strong>100% Wood</strong>
+            <span>Solid beechwood tiles</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric">
+            <strong>5 Languages</strong>
+            <span>Official tournament lexicons</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="board-card">
+          <div class="board-header">
+            <span class="status-dot"></span>
+            <span class="status-text">Living Room Board Connected</span>
+            <span class="round-pill">Turn 12</span>
+          </div>
+
+          <!-- Interactive 4x4 Preview Grid -->
+          <div class="grid-preview" id="interactiveGrid">
+            <div class="grid-cell" data-letter="P" data-score="3">P<span class="sub">3</span></div>
+            <div class="grid-cell" data-letter="L" data-score="1">L<span class="sub">1</span></div>
+            <div class="grid-cell" data-letter="A" data-score="1">A<span class="sub">1</span></div>
+            <div class="grid-cell" data-letter="Y" data-score="4">Y<span class="sub">4</span></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell" data-letter="O" data-score="1">O<span class="sub">1</span></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell" data-letter="V" data-score="4">V<span class="sub">4</span></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell" data-letter="E" data-score="1">E<span class="sub">1</span></div>
+            <div class="grid-cell empty"></div>
+            <div class="grid-cell empty"></div>
+          </div>
+
+          <div class="board-footer">
+            <div class="voice-box">
+              <div class="speaker-icon">🔊</div>
+              <div class="voice-text">
+                <strong>Voice Referee:</strong> "Sarah played <em>LOVE</em> for 14 points!"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem / Solution Section -->
+  <section class="split-contrast">
+    <div class="container split-grid">
+      <div class="contrast-col bad">
+        <h3>Why Small Screens Fail Seniors</h3>
+        <ul>
+          <li>❌ Tiny digital keyboards cause frustration and typos.</li>
+          <li>❌ Passwords, updates, and Bluetooth pairing constantly break.</li>
+          <li>❌ Eye strain and screen fatigue take away the joy of tactile games.</li>
+          <li>❌ Calling every day is hard when everyone is busy at work.</li>
+        </ul>
+      </div>
+      <div class="contrast-col good">
+        <h3>The Smart Crossword Board Way</h3>
+        <ul>
+          <li>✅ <strong>Zero tech hurdles:</strong> Plug it in with the magnetic cable and just place tiles.</li>
+          <li>✅ <strong>Warm voice announcements:</strong> Speaks moves at a clear, comfortable conversational volume.</li>
+          <li>✅ <strong>Hidden RFID sensors:</strong> Reads every letter through solid hardwood without cameras.</li>
+          <li>✅ <strong>Stay connected daily:</strong> A gentle shared family ritual that fits naturally into busy schedules.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <div class="section-title">
+        <h2>How It Works</h2>
+        <p>A natural bridge between physical play and smartphone convenience.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h4>She plays on real wood</h4>
+          <p>Mom or Grandma sits with her tea and arranges real beechwood tiles on the turntable board. No login screens, no menus.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h4>You play on your phone</h4>
+          <p>Her move instantly appears on your phone app. During lunch or on the train, drag your tiles onto the board and send a voice note.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h4>The board speaks out loud</h4>
+          <p>The board chimes gently, announces your word and score, and plays your voice message directly through its built-in speaker.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Thoughtfully Engineered for Real Life</h2>
+        <p>High-tech precision concealed inside timeless craftsmanship.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">📡</div>
+          <h4>225 Concealed RFID Sensors</h4>
+          <p>Every cell has a 13.56 MHz antenna coil that detects letter tiles through 2.5mm of real wood with zero moving parts.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="f-icon">🔄</div>
+          <h4>Smooth 360° Turntable</h4>
+          <p>Rotates smoothly on steel ball bearings so both players can face the board from their favorite chair.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="f-icon">🔊</div>
+          <h4>Senior-Tuned Audio</h4>
+          <p>Tuned specifically for older ears (300 Hz – 2.5 kHz) for crisp, pleasant speech clarity without shrill high-pitched beeps.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="f-icon">🧲</div>
+          <h4>Magnetic Breakaway Power</h4>
+          <p>Snaps easily into place without fumbling. If someone trips on the cord, it safely detaches with zero damage or reset.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="f-icon">📚</div>
+          <h4>Official Tournament Rules</h4>
+          <p>Built-in tournament referee engines for English (ENABLE1), French (ODS8), Dutch (OpenTaal), German (Scrabble DE), and Spanish (FISE).</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="f-icon">📱</div>
+          <h4>Native Companion App</h4>
+          <p>Clean Android & iOS app for family members with 1-tap Google sign-in, turn notifications, and family group chat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- $1 VIP Pre-Order Funnel -->
+  <section id="reserve" class="reserve-section">
+    <div class="container">
+      <div class="vip-box">
+        <div class="vip-header">
+          <div class="vip-tag">EXCLUSIVE VIP OFFER</div>
+          <h2>Join the Founding 750 Backers</h2>
+          <p>Put down a fully refundable $1 deposit today to lock in the absolute lowest price on Kickstarter.</p>
+        </div>
+
+        <div class="vip-perks">
+          <div class="perk">
+            <span class="perk-check">✔</span>
+            <div>
+              <strong>40% Off Kickstarter Discount</strong>
+              <p>Get the board for <strong>$199</strong> instead of the $329 planned retail price.</p>
+            </div>
+          </div>
+          <div class="perk">
+            <span class="perk-check">✔</span>
+            <div>
+              <strong>Numbered Founder's Edition</strong>
+              <p>Custom laser engraving on the solid wood underside commemorating your support.</p>
+            </div>
+          </div>
+          <div class="perk">
+            <span class="perk-check">✔</span>
+            <div>
+              <strong>Free Worldwide Shipping</strong>
+              <p>VIP reservation holders receive free priority courier delivery on launch.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reservation Form -->
+        <form class="reservation-form" id="vipForm">
+          <div class="form-row">
+            <input type="email" id="vipEmail" placeholder="Enter your email address" required aria-label="Email Address">
+            <button type="submit" class="btn btn-primary btn-submit">Reserve Spot ($1)</button>
+          </div>
+          <div class="form-fineprint">
+            <span>🔒 Safe checkout via Stripe. 100% refundable at any time before shipment.</span>
+          </div>
+        </form>
+
+        <div class="spots-left">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 68%;"></div>
+          </div>
+          <span class="spots-text"><strong>512 of 750</strong> VIP Spots Reserved</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq">
+    <div class="container">
+      <div class="section-title">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Does my parent or grandparent need a smartphone to play?</summary>
+          <div class="faq-answer">
+            <p><strong>No.</strong> That is the core reason we designed this. The physical board has a built-in high-contrast screen, speaker, and automatic referee. They play strictly with physical wooden tiles, just like classic Scrabble.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How does the board connect to the internet?</summary>
+          <div class="faq-answer">
+            <p>It connects to home 2.4 GHz Wi-Fi. You can pre-configure the Wi-Fi credentials from your phone in 30 seconds before giving it as a gift, or set it up once when you visit.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Is the $1 deposit really refundable?</summary>
+          <div class="faq-answer">
+            <p><strong>Yes, 100%.</strong> If you change your mind for any reason before the Kickstarter campaign begins, simply reply to any of our emails and your $1 will be refunded immediately to your card.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What languages are supported?</summary>
+          <div class="faq-answer">
+            <p>The board ships with localized tile sets and tournament referee dictionaries for English, French, Dutch, German, and Spanish.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <strong>Smart Crossword Board</strong>
+        <p>Bridging generations through classic games and quiet technology.</p>
+      </div>
+      <div class="footer-right">
+        <p>&copy; 2026 Smart Crossword Board Project. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

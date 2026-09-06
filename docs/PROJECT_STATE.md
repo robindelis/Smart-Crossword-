@@ -17,8 +17,9 @@ gantt
     Game engine in C                     :done, p3, 2026-09-04, 1d
     Native Android companion prototype   :done, p3b, 2026-09-06, 1d
     4x4 test circuit board               :done, p4, 2026-09-04, 1d
-    1-page test website ($1 pre-orders)  :active, p5, 2026-09-05, 5d
-    Bench test 4x4 circuit board         :p5b, 2026-09-10, 5d
+    1-page test website ($1 pre-orders)  :done, p5, 2026-09-05, 2d
+    Bench driver code & JLCPCB package   :done, p5b, 2026-09-06, 1d
+    Hardware delivery & bench test       :active, p5c, 2026-09-07, 7d
     section Phase 2: Full Board & Screen
     Full 15x15 circuit board             :p6, 2026-09-20, 14d
     Screen code & speaker setup          :p7, 2026-09-27, 14d
@@ -56,14 +57,14 @@ gantt
 | **ADL-021** | 2026-09-06 | 4x4 PCB & Shopping List Hardware Compatibility Sync   | **4x4 Prototype PCB & Shopping List Compatibility Validation**: Audited all 12 items in `Prototype_4x4_Shopping_List.md` against `test_grid_4x4.kicad_pcb`. Confirmed 100% compatibility for wooden Scrabble tiles (19.0mm pitch), NTAG213 tags (13.56 MHz LC resonance), ESP32-S3 host (3.3V logic, J1 header), turntable bearing (71x71mm), 3.5" TFT display, I2S DAC amp, and M3 fasteners. Synchronized schematic `test_grid_4x4.kicad_sch` to match the perfected zero-DRC pin layout of `test_grid_4x4.kicad_pcb`. Documented practical integration notes for CD74HC4067 multiplexer (SOIC-24 PCBA vs Amazon DIP breakout) and PN532 V3 transceiver (SMA RF link). Added FAIL-011 to Wise. |
 | **ADL-022** | 2026-09-06 | 13.56 MHz LC Resonant Selection & Antenna Theory      | **Antenna Resonance & Q-Damping Theoretical Derivation**: Documented complete electromagnetic and circuit theory in `docs/LC_Resonance_and_Antenna_Theory.md` and added theoretical section to `Project_Cockpit.canvas`. Derived coil inductance $L = 1.262\,\mu\text{H}$ via Modified Wheeler model (N=7 turns, 17.5mm square, 0.25mm trace/space). Derived tuning capacitor $C = 100\,\text{pF}$ C0G from Thomson formula ($109.2\,\text{pF}$ total minus $9.2\,\text{pF}$ multiplexer/PCB parasitics). Derived damping resistor $R = 3.3\,\Omega$ to fix loaded Quality Factor at $Q = 25$ ($542\,\text{kHz}$ bandwidth) to preserve ISO 14443A 848 kHz subcarrier sidebands. |
 | **ADL-023** | 2026-09-06 | Engineering Truth & Anti-Fudging Invariant            | **Zero Fudging & Mandatory Physical Rigor**: Enforced non-negotiable Rule 9 in `AGENTS.md`, Invariant 8 in `wise.md`, and FAIL-012 prohibiting the fabrication of fake numbers or justifications (such as fudging parasitic capacitance to neatly match standard 100 pF components). Mandated that all physical discrepancies, component tolerances ($\pm 5\%$), and detuning effects must be analyzed with honest operating margins ($Q=25$, $542\,\text{kHz}$ bandwidth, tag frequency pull, and PN5180 250mW power headroom) to build physical hardware that actually works. |
-
-
+| **ADL-024** | 2026-09-06 | 4x4 JLCPCB SMT Package, ESP32 Driver & Pre-Launch Funnel | **JLCPCB SMT Package, Firmware Bench Driver & 1-Page Pre-Launch Funnel**: Prepared full JLCPCB manufacturing package (`bom_jlcpcb.csv`, `cpl_jlcpcb.csv`, `JLCPCB_ORDERING_GUIDE.md`) with LCSC parts matching for automated assembly. Built complete ESP32-S3 bench driver suite (`firmware/esp32_driver/`) with CD74HC4067 MUX control, PN532 SPI driver, tile mapper, and tournament crossword referee bridge with 100% automated test pass (1.18ms sweep latency vs 40ms ceiling). Built responsive 1-page pre-launch landing page (`software/web/`) for $1 VIP pre-orders and $100 ad test funnel. |
 
 ---
 
 ## Next Tasks
-1. Build the 1-page test website with $1 pre-order button (`software/`).
-2. Order 4x4 test boards from JLCPCB and assemble bench prototype.
-3. Connect physical NFC multiplexing bench driver to C engine.
-4. Field test native Android companion app (APK) against 4x4 test hardware.
+1. Order 4x4 test boards from JLCPCB and bench components from Amazon Belgium.
+2. Run local preview / deploy 1-page pre-launch website (`software/web/`) for $100 ad test.
+3. Flash and verify ESP32-S3 driver on physical bench hardware upon parcel arrival.
+4. Field test native Android companion app (APK) against physical board moves.
+
 

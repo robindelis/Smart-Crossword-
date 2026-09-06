@@ -9,19 +9,35 @@
 - [ ] Design simple database for player stats and scores
 - [ ] 3D model the tile trays and storage pouch
 
-## ⏳ In Progress (Phase 1: Test Board & Code)
+## ⏳ In Progress (Phase 1: Hardware Bench Assembly & Testing)
 
-- [ ] Build 1-page test website (`software/`)
-  - [ ] Show product photo and plain-language explanation
-  - [ ] Add $1 pre-order Stripe button
-  - [ ] Collect emails and send automated confirmation
+- [ ] Procure hardware & bench components
+  - [ ] Order 4x4 PCB prototype (SMT assembly) from JLCPCB via `JLCPCB_ORDERING_GUIDE.md`
+  - [ ] Order Amazon Belgium bench items (tiles `B0GH7LXL2K`, tags `B0HC2ZKQLQ`, ESP32-S3 `B0GXF14RRM`, PN532 `B0C9DTJMLQ`, screws `B0B3MGZ7T2`)
 - [ ] Bench test 4x4 circuit board
-  - [ ] Order PCB prototype from JLCPCB
-  - [ ] Procure test bench tiles (Amazon Belgium 200-pack B0GH7LXL2K) & 15mm NTAG213 stickers
-  - [ ] Verify reading tags through 2.0mm–2.5mm hardwood
-  - [ ] Verify 16-channel scan latency (<40ms)
+  - [ ] Solder 3x pin headers (J1 host, J2 NFC, J3 SMA)
+  - [ ] Flash ESP32-S3 driver (`firmware/esp32_driver/`) to DevKit
+  - [ ] Verify reading tags through 2.0mm–2.5mm hardwood veneer
+  - [ ] Verify 16-channel scan latency (<40ms) and adjacent coil crosstalk isolation
 
 ## ✅ Done
+
+- [x] JLCPCB Manufacturing Package & Ordering Guide ([`hardware/kicad/test_grid_4x4/jlcpcb/JLCPCB_ORDERING_GUIDE.md`](../hardware/kicad/test_grid_4x4/jlcpcb/JLCPCB_ORDERING_GUIDE.md))
+  - [x] Generated standard JLCPCB SMT BOM (`bom_jlcpcb.csv`) matching LCSC basic parts
+  - [x] Generated standard JLCPCB CPL pick-and-place position file (`cpl_jlcpcb.csv`)
+  - [x] Created step-by-step ordering walkthrough with part numbers and configuration parameters
+- [x] ESP32-S3 Firmware Bench Driver Suite ([`firmware/esp32_driver/`](../firmware/esp32_driver/))
+  - [x] Implemented CD74HC4067 16-channel multiplexer driver with settling delays (`mux_driver.c`)
+  - [x] Implemented PN532 SPI transceiver protocol driver with ISO 14443A tag detection (`pn532_driver.c`)
+  - [x] Implemented UID-to-Letter dynamic mapper with 16 default tournament tiles (`tile_mapper.c`)
+  - [x] Implemented 16-coil sweep state machine and benchmark profiler (`grid_scanner.c`)
+  - [x] Connected directly to standard C crossword tournament referee (168,551 words)
+  - [x] 100% automated test pass: verified word `PLAY` placement, removal, and 1.18ms latency (PASS vs 40ms ceiling)
+- [x] 1-Page Pre-Launch Landing Page & VIP Funnel ([`software/web/`](../software/web/))
+  - [x] Plain-language senior-friendly and gift-buyer messaging ("Play with Grandma from anywhere")
+  - [x] Emotional UX design: natural wood aesthetic, WCAG AAA high contrast, tactile Scrabble tiles
+  - [x] Interactive 4x4 board preview with synthesized acoustic feedback
+  - [x] $1 VIP pre-order reservation form and Stripe checkout integration hook (750 backer goal)
 
 - [x] 13.56 MHz NFC Antenna Resonance & Q-Damping Theory ([`docs/LC_Resonance_and_Antenna_Theory.md`](LC_Resonance_and_Antenna_Theory.md), [`Project_Cockpit.canvas`](../Project_Cockpit.canvas))
   - [x] Derived coil inductance $L = 1.262\,\mu\text{H}$ using Modified Wheeler model for 17.5mm square coil (N=7)
