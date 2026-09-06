@@ -2,7 +2,7 @@
   "model": {
     "columns": [
       {
-        "id": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+        "id": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
         "sortDir": "default",
         "isVisible": true,
         "width": "220px",
@@ -27,7 +27,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "7d7e31c4-7308-4037-984c-3efaad377056",
+        "id": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
         "sortDir": "default",
         "isVisible": true,
         "width": "270px",
@@ -52,7 +52,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+        "id": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
         "sortDir": "default",
         "isVisible": true,
         "width": "130px",
@@ -77,7 +77,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "2922601a-fda6-431e-841b-fdac1066641a",
+        "id": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
         "sortDir": "default",
         "isVisible": true,
         "width": "130px",
@@ -102,7 +102,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+        "id": "a35bff25-56a5-4578-9a29-194fd71a3091",
         "sortDir": "default",
         "isVisible": true,
         "width": "340px",
@@ -127,7 +127,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+        "id": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
         "sortDir": "default",
         "isVisible": true,
         "width": "260px",
@@ -154,564 +154,564 @@
     ],
     "rows": [
       {
-        "id": "f4d2f893-0f1f-42a4-87c6-6ceeeeb00ee7",
+        "id": "7302d13d-cb71-4ebe-92a2-3a3f7e3ab8c0",
         "index": 0,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.147Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.147Z",
         "cells": [
           {
-            "id": "c33f8687-fa58-4355-965b-d009367bd12d",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "ae8068df-13ec-41a6-a3c3-b8a1f797315a",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Wood Letter Tiles",
             "hasValidFrontmatter": null
           },
           {
-            "id": "fe7cf965-bc5c-4fce-b3bf-0067d236c614",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "7e51daf9-51fa-4f89-8249-552adbd3476b",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "200 Pcs Scrabble Wooden Tiles (16 needed)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "cf774fe1-031a-434c-9a0d-86cf23ed3acc",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "0e5109ba-9002-4651-8b08-085fe6802fd4",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 6.99,
             "hasValidFrontmatter": null,
             "content": 6.99
           },
           {
-            "id": "81f5b5ab-6188-4dd3-b08d-c9b9ef4ac239",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "1d7c82e1-b2f9-4724-8b85-b1216856b24e",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 6.99,
             "hasValidFrontmatter": null,
             "content": 6.99
           },
           {
-            "id": "80eaea6a-1b49-464b-9fd0-447b1ec21973",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "0308057a-ea97-4b14-b35d-b45eb3207f2a",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0GH7LXL2K",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a85fa6fc-d1e4-479b-98f4-73f95be12b1b",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "74bed62a-182c-4f29-9a73-a5c3aa3fac51",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "19x19x4.8mm pine/beechwood; fits 19mm CAD pockets",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "64c6946e-909b-440b-8749-4a8aa4523ce9",
+        "id": "256e5030-569d-4576-9a54-dba4b43d1fb3",
         "index": 1,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "fe2660f6-f996-4a29-b378-d1a886680f92",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "1873bf4a-b279-43ae-b4b2-293361f69361",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "13.56 MHz NFC Tags",
             "hasValidFrontmatter": null
           },
           {
-            "id": "1f5a3c3f-b657-46ca-8578-7e1ae3a6a3e4",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "be0713a5-5bde-4d3d-af72-150c9eaeeb18",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "60 Pcs NTAG213 Stickers 25mm (16 needed)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "8fa52626-1569-4314-a13e-3a8cdc40159f",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "dec0f021-6df6-467d-9047-86c8e9eb6c21",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 6.99,
             "hasValidFrontmatter": null,
             "content": 6.99
           },
           {
-            "id": "65923dd7-508f-4e98-8f0c-59875f00d844",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "29f2f383-0e88-4679-94be-f5be5ee728ea",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 6.99,
             "hasValidFrontmatter": null,
             "content": 6.99
           },
           {
-            "id": "fc48919a-56c4-4ac1-8103-28e7a71aaa21",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "2a7256b1-0818-4782-9494-0612190a4e25",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0HC2ZKQLQ",
             "hasValidFrontmatter": null
           },
           {
-            "id": "98f70a9f-4d5b-4f26-86dc-d13d0ebf58d3",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "a8995ba2-ecb3-4f1d-8051-4ec62f49534d",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "144 bytes, ISO14443A, fast read with PN532",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "0b5738d5-56de-415f-aa76-2ee94c0fe411",
+        "id": "89c2383a-33c9-4a3b-9aba-8de3c7086358",
         "index": 2,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "fb03da60-bec3-49fa-bc47-8bdb057e7ef7",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "e096e386-c59b-4c4e-8876-c9b4ff5eab15",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "NFC Reader Module",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ebfbb25d-46d6-4f14-be60-b7da453669ba",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
-            "content": "PN532 V3 RFID/NFC Breakout Kit (1 board)",
+            "id": "4099fc11-e6e0-4075-bdfe-5f4c1f7b9ff1",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
+            "content": "NXP PN5180 High-Power NFC Breakout (1 board)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "e46afa34-3ee4-4f98-8195-a32ecc5b2d2f",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
-            "value": 8.98,
+            "id": "10aaa41c-c9c8-4865-a576-0628b48e9ef0",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
+            "value": 11.82,
             "hasValidFrontmatter": null,
-            "content": 8.98
+            "content": 11.82
           },
           {
-            "id": "2791f224-bd7e-4d8e-a639-0168e7c1f879",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
-            "value": 8.98,
+            "id": "b52eb05b-29f7-4784-8fa4-63537dc9d19f",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
+            "value": 11.82,
             "hasValidFrontmatter": null,
-            "content": 8.98
+            "content": 11.82
           },
           {
-            "id": "9c779498-1ef5-4d0b-9984-b1184003c6ba",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
-            "content": "https://www.amazon.com.be/dp/B0C9DTJMLQ",
+            "id": "cbabbea3-bd4d-4182-bd93-c7beeadcd099",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
+            "content": "https://www.amazon.com.be/dp/B0HDTXDNJY",
             "hasValidFrontmatter": null
           },
           {
-            "id": "30b3fe0e-182d-45cf-a06b-4e00accae73c",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
-            "content": "SPI/I2C switches + level shifters; includes test cards",
+            "id": "02bcf3fe-a5ad-4004-9385-9965949e0e56",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
+            "content": "250mW RF power, Dynamic Power Control, external antenna pads",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "70d6257e-2526-4314-83e8-c7da3c8eda9c",
+        "id": "6f2bff12-597b-405b-a93c-aca5aee1f4c7",
         "index": 3,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "bfc5465c-74ff-49c9-a3e0-4f6e57e5a4a1",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "47fc6df7-d9da-4444-bcc3-8a3e6e34b75f",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Host Microcontroller",
             "hasValidFrontmatter": null
           },
           {
-            "id": "d8f171fa-3694-4324-bf7b-6cbe7405d287",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "7682884d-eb65-411f-b0eb-a2884cb68f72",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "diymore ESP32-S3 DevKit N16R8 3-Pack (1 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "023c88f6-46a3-49d6-970d-a96f82524aab",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "5a6d2b8a-23d5-4cf3-92f1-17916e662bd1",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 6.99,
             "hasValidFrontmatter": null,
             "content": 6.99
           },
           {
-            "id": "5b4a121e-fec1-4946-9bfa-317ef2211443",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "a1ca851a-70ac-4999-a111-fbee588e03d2",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 20.98,
             "hasValidFrontmatter": null,
             "content": 20.98
           },
           {
-            "id": "c212d5be-a0a3-4560-aa51-4b3069964020",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "364281cb-c790-4c0f-b85f-1ccce7a9ee21",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0GXF14RRM",
             "hasValidFrontmatter": null
           },
           {
-            "id": "6db60abe-d9b1-4e99-a5ba-bf1f3ec2e1c5",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "da20c74d-9e32-4f5c-a01d-1bc67e768c4f",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "16MB Flash + 8MB PSRAM; holds Trie dictionary in RAM",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "284d46cd-5007-4144-b3f0-54d712e66ab7",
+        "id": "f50e5225-1653-4962-91cb-83e5b1ecfa1a",
         "index": 4,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "6b2b5a35-a71c-46ab-aafe-43249418223a",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "7bd01ce4-cf82-477f-b8bf-bf3cf71ff448",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "16-Ch Multiplexer",
             "hasValidFrontmatter": null
           },
           {
-            "id": "b0ffeb33-35d8-4f5e-9768-3177a86a647d",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "fa610297-ac92-454a-9d59-e404fc5bd265",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "DollaTek CD74HC4067 Breakout 5-Pack (1 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ed95e1b1-729e-4ea1-aa38-715bb3048ad2",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "1430b7ec-0dd7-4bea-9848-2af8b8f13418",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 1.2,
             "hasValidFrontmatter": null,
             "content": 1.2
           },
           {
-            "id": "a943fa09-662b-4445-a4ae-7dce57d679af",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "c6ad6208-2e6e-4262-bb24-b0cfa98b3371",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 5.99,
             "hasValidFrontmatter": null,
             "content": 5.99
           },
           {
-            "id": "7769d1dc-6bb3-478d-96ee-920dcdb799b1",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "40f146ca-8a68-4868-aa97-d8bf2f156e4f",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B07PPKRVGW",
             "hasValidFrontmatter": null
           },
           {
-            "id": "512816fd-1f8a-4ba6-9e3b-bc258522c2c8",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "03a3904b-7782-4eaf-9379-71f4731a22bc",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": ">60 MHz analog bandwidth, standard 0.1 inch DIP pins",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "e0ea3fde-0a5f-4810-bb5d-ad3f677555ac",
+        "id": "5d74dd78-f191-4825-ad8d-cbf190340195",
         "index": 5,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "dfa39130-a76d-4218-b807-e45facc79f43",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "26929bbd-fa2d-4c21-91a8-9e7da1b6e719",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Rotating Turntable",
             "hasValidFrontmatter": null
           },
           {
-            "id": "2e2ed900-198f-4f4a-bfea-f71cd8019407",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "f198f177-e075-4bb9-a70d-596a0c24c7c5",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "QWORK Square Ball Bearing 4-Pack (1 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "2163125b-7c83-4a94-a1f6-8d8875afa618",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "2c3f02f8-d89c-4ad6-a75c-dcfca26a036b",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 1.75,
             "hasValidFrontmatter": null,
             "content": 1.75
           },
           {
-            "id": "ab07face-5b0e-4c07-8596-be217dd5822c",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "34823525-b2c2-480f-b7bb-ae28b60e33e7",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 6.98,
             "hasValidFrontmatter": null,
             "content": 6.98
           },
           {
-            "id": "f54659a9-48e9-49e7-b121-e7d1f148cbb8",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "e162731f-a7b0-4569-ae3a-3914ac383b73",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0B3X7R961",
             "hasValidFrontmatter": null
           },
           {
-            "id": "81f5dc97-7739-4582-8cf3-22953abb3cc1",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "48c9b457-571e-4516-9b9d-cc3f0a2a32d8",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "71x71mm steel bearing plate; fits 4x4 base enclosure",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "6ebcadaf-7e1c-4136-b5f3-e54b37a09fc5",
+        "id": "a057a1ad-81cc-441e-ab7c-23026f86afea",
         "index": 6,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "c43b921a-7792-4cc1-9352-1bf0bc689b6b",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "76222fc7-0979-49fb-96ab-3ecf9e9e3d91",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Color Display Screen",
             "hasValidFrontmatter": null
           },
           {
-            "id": "301473f0-f2fd-43cc-96c3-3f458b65b7fe",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "89f7bedc-804d-476e-994e-8ee06c040e1d",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "3.5\" TFT SPI 480x320 with Touch (1 screen)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a8697a5f-2e44-45aa-a89b-43fd9d19b47a",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "50309dfb-fb67-425b-af66-f7344408ceda",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 17.91,
             "hasValidFrontmatter": null,
             "content": 17.91
           },
           {
-            "id": "aec73226-a712-4dfc-8b12-2b21cd734dfd",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "478f01e5-c07f-4efa-908c-fec3b27220a3",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 17.91,
             "hasValidFrontmatter": null,
             "content": 17.91
           },
           {
-            "id": "19fa228b-bc68-4d29-8507-1bc946434fb4",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "0571f145-dd47-4301-a441-d54e618ee63e",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0BZXX1QFM",
             "hasValidFrontmatter": null
           },
           {
-            "id": "35c24f00-dd19-4634-b04d-9a5cc4b3307e",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "a9933c63-de2a-46ab-a98d-b6168aca17b9",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "480x320 high-contrast LCD for senior visual accessibility",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "b0dee693-3015-4dad-900e-d52db856f2a3",
+        "id": "3c36b55a-260e-487c-a1de-4479fdbe5c26",
         "index": 7,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "b8b9769f-8b77-46a0-82df-ce22a97f318f",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "d81ac79f-03b7-4abc-ba27-48511102b3ea",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Audio Referee DAC Amp",
             "hasValidFrontmatter": null
           },
           {
-            "id": "2264533d-13f6-49a7-8798-f25751548053",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "8d84c7f3-865f-4c09-8d43-16200248d355",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "MAX98357A I2S 3W Amp 3-Pack (1 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "65154a8e-4d79-4129-a22d-1a45d2fe70ae",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "149d7dad-0373-4592-8303-d374e4456e5c",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 3.03,
             "hasValidFrontmatter": null,
             "content": 3.03
           },
           {
-            "id": "7b2b212e-4734-4381-8ea5-852331150cb2",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "ee64634a-8796-4aac-8dcc-ad6286926759",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 9.09,
             "hasValidFrontmatter": null,
             "content": 9.09
           },
           {
-            "id": "b6dab15e-9e9e-4d7e-8a2e-5eccddf94f00",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "8bb3036d-4ff4-4fd1-b991-c44f240163ff",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0F21T7Q3P",
             "hasValidFrontmatter": null
           },
           {
-            "id": "5540519b-038a-4ba8-89be-1a8b330df597",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "ef28d9ad-69b4-4bdc-95e1-6c1e2dec03e3",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "Native I2S digital audio from ESP32; zero analog hiss",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "01881345-a8ff-4c0b-854f-82f35d51d841",
+        "id": "1912d56c-26e2-442a-bc51-462480f3c91c",
         "index": 8,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "862b3409-5a7d-4f55-85e8-422ad6b012f1",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "ecb110a1-4227-44c6-b9ea-4e647b70cb35",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Mini Speaker 40mm",
             "hasValidFrontmatter": null
           },
           {
-            "id": "3392ac90-27e7-431e-91cb-7a38d744f9f3",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "9c23df57-5a11-4c81-b273-542c70162af8",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "RELAND SUN 3W 4Ω 40mm Speakers 2-Pack (1 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "d6823daa-2cb3-419a-b8ef-6dc2d9dcb1cf",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "16bee17c-f1a4-44d0-b01b-08945d1d6dac",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 2.35,
             "hasValidFrontmatter": null,
             "content": 2.35
           },
           {
-            "id": "2cb51c18-1640-4544-abad-28ab37ed9a47",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "e0862609-94c8-40c4-bb29-23cf7b2de1d1",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 4.7,
             "hasValidFrontmatter": null,
             "content": 4.7
           },
           {
-            "id": "af883436-1fcc-4801-be89-3de2597be3d3",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "dca17eb3-e1db-4e35-94c2-e1ce43ab25ac",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B09YQ1S988",
             "hasValidFrontmatter": null
           },
           {
-            "id": "15017a1b-b80a-4d50-9a8c-53aae6df1898",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "828e2d7a-6f4f-4eea-ae43-3b0554d90ba0",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "40mm diameter fits base cavity; clear vocal resonance",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "839c1c22-d5e4-4ebd-b980-2b013889a65f",
+        "id": "3dda7ea3-eb97-485c-9648-f7d2679c211f",
         "index": 9,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "25330b96-e9dc-4792-856e-ddeda1ce3e68",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "554fa2c3-7ad5-4aee-9f3d-a56482ca8b0f",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Hardware Fasteners Kit",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ce2d690e-53a1-46ba-befe-9a783c04b5d7",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "54b1444c-168b-455f-b456-9d428f881988",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "440 Pcs M3 Button Head Screws & Nuts Box",
             "hasValidFrontmatter": null
           },
           {
-            "id": "fa978de0-e17d-45b5-a4ee-38f83e7d2229",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "4cdc2448-38c3-4abd-accb-8b7d45d817b6",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 7.88,
             "hasValidFrontmatter": null,
             "content": 7.88
           },
           {
-            "id": "d223d844-fb02-4b1d-920c-3b0300b85e53",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "d02936d8-1e0d-4db1-bdb4-087eed077a02",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 7.88,
             "hasValidFrontmatter": null,
             "content": 7.88
           },
           {
-            "id": "f2bd0050-d568-4324-84a6-6017918915c3",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "46725d05-ceee-4db8-92ac-dfc5fcf5b935",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B0B3MGZ7T2",
             "hasValidFrontmatter": null
           },
           {
-            "id": "3e9b8168-3e61-4dcd-8e2d-44be0a97b89c",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "54bdfce4-5f77-4eae-b3da-359aee5c7031",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "Hex socket button heads; sits flush in CAD counterbores",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "cacb8083-b81e-4ba2-95d9-8d964d6cd92f",
+        "id": "b705d845-37ed-4a98-bafe-8fe1fcdeb9e5",
         "index": 10,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "6e24d201-ec06-45fa-817e-98acaa340ecd",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "85c6b1b2-61a2-4e10-9ee7-426bec9b9364",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "Anti-Skid Bumper Feet",
             "hasValidFrontmatter": null
           },
           {
-            "id": "64788a51-8c56-4e76-bc15-304037590689",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "b4e92150-04aa-4d3c-9247-4420a8f10edf",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "Silicone Bumper Feet 10mm 12-Pack (4 used)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "400f88ad-068f-4304-8ba5-d2e156c1e857",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "32a60fe3-b562-41bb-ad65-dd4dfc154e0b",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 3,
             "hasValidFrontmatter": null,
             "content": 3
           },
           {
-            "id": "b9a8bfca-5b70-4383-9026-85307b990f93",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "aa87c755-3017-4c06-b9b2-8cfb8cab376e",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 8.99,
             "hasValidFrontmatter": null,
             "content": 8.99
           },
           {
-            "id": "ca3cebee-b656-4154-a35f-e3a36fc49c9b",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "95c71b67-1675-4cfe-b411-ef1b8d5b9111",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "https://www.amazon.com.be/dp/B08GKP4311",
             "hasValidFrontmatter": null
           },
           {
-            "id": "7ef3946d-c5ec-4a1c-a59b-b88b44cacfc8",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "981fe81b-f37a-4e49-8075-4db3fc4d3866",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "High-friction non-marking silicone; fits corner recesses",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "87f46f63-2703-41aa-bf22-8d5e344724ff",
+        "id": "6f06ce2d-5196-4b41-882b-7b6e6637d77d",
         "index": 11,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.896Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.896Z",
+        "creationDateTime": "2026-09-06T15:16:06.156Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.156Z",
         "cells": [
           {
-            "id": "25b4343b-e6c2-497b-a97e-e3ea055a8d25",
-            "columnId": "b43f7663-0ab8-45e2-9d68-a4bbcdcc4706",
+            "id": "a9553db6-5374-4d4b-b9cf-c292bccb3a64",
+            "columnId": "d9b01a01-b098-4147-a564-0d8abcb3b4bb",
             "content": "3D Printing Filament",
             "hasValidFrontmatter": null
           },
           {
-            "id": "4e41c767-6d9a-4968-a056-587e4fdf66dc",
-            "columnId": "7d7e31c4-7308-4037-984c-3efaad377056",
+            "id": "5cb2d42e-8f47-4919-8294-1b782a629ea8",
+            "columnId": "d3251d84-eb12-4c48-a768-aa895cfd6b5a",
             "content": "PLA / PETG Spool Allocation (~120g)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "0c3c9375-5d17-49bd-9415-f3144a362b0b",
-            "columnId": "336bdcee-d486-4aa7-9aee-8cb3c166a747",
+            "id": "48322a2b-4cb4-4e02-8226-f468911c047a",
+            "columnId": "09f37bbf-89a1-496a-97d1-f4943094d8a1",
             "value": 2.4,
             "hasValidFrontmatter": null,
             "content": 2.4
           },
           {
-            "id": "d3b46a16-4d30-40f6-abee-39a36656bfcd",
-            "columnId": "2922601a-fda6-431e-841b-fdac1066641a",
+            "id": "c722484c-be55-452e-b952-c35d6cab04df",
+            "columnId": "0e2c8290-953b-4eb6-a7f1-c72bd474952a",
             "value": 19.99,
             "hasValidFrontmatter": null,
             "content": 19.99
           },
           {
-            "id": "dd7ce941-8b4c-4ee4-bc02-08d56d88620e",
-            "columnId": "b5b73df3-85f4-437d-bb54-6e7ea1b2bdce",
+            "id": "377693e9-1aa7-40e0-9707-55951f6d26fc",
+            "columnId": "a35bff25-56a5-4578-9a29-194fd71a3091",
             "content": "hardware/cad/output/",
             "hasValidFrontmatter": null
           },
           {
-            "id": "9236bfcc-6e4f-4563-a53c-7b9207269311",
-            "columnId": "67ff51c9-4616-4fa6-ad20-8c8aaff1812a",
+            "id": "0b2ca3df-fa88-4495-98ee-99d9dac38b1a",
+            "columnId": "41a8852b-ee6f-4d57-ae0c-1d00d8e56d50",
             "content": "Base enclosure + top grid plate (1.5mm floor, 1.2mm ribs)",
             "hasValidFrontmatter": null
           }

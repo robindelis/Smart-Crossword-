@@ -146,10 +146,10 @@ def check_stock_status(platform: str, html: str) -> bool:
         return price is not None
 
     elif "bol.com" in platform.lower():
-        if "openProductAvailabilityDialog" in html or "Niet leverbaar" in html:
-            return False
         if "In winkelwagen" in html or "schema.org/InStock" in html:
             return True
+        if "openProductAvailabilityDialog" in html or "Niet leverbaar" in html:
+            return False
         return True
 
     elif "shopnfc" in platform.lower():
@@ -190,18 +190,6 @@ def verify_url(url: str, timeout: int = 10) -> LinkCheckResult:
             error_message=f"Connection error: {str(e)}"
         )
 
-    # Detect 404 / Missing page indicators in HTML
-    missing_indicators = [
-        "Page Not Found",
-        "Looking for something?",
-        "Désolé, nous ne pouvons pas trouver cette page",
-        "Tut uns leid",
-        "404 Not Found",
-        "Niet gevonden",
-        "Product niet gevonden"
-    ]
-    is_missing = any(ind.lower() in html.lower() for ind in missing_indicators if "<title>" in html[:1000])
-
     # Extract Canonical URL
     canonical_match = re.search(r'<link\s+[^>]*rel=["\']canonical["\'][^>]*href=["\']([^"\']+)["\']', html, re.IGNORECASE)
     if not canonical_match:
@@ -211,6 +199,19 @@ def verify_url(url: str, timeout: int = 10) -> LinkCheckResult:
     # Extract Title
     title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
     title = clean_html_title(title_match.group(1)) if title_match else None
+
+    # Detect 404 / Missing page indicators in Title
+    is_missing = title and any(ind.lower() in title.lower() for ind in [
+        "page not found",
+        "looking for something?",
+        "désolé, nous ne pouvons pas trouver cette page",
+        "tut uns leid",
+        "404 not found",
+        "404",
+        "niet gevonden",
+        "product niet gevonden",
+        "pagina niet gevonden"
+    ])
 
     # Check for Captcha / Bot Challenge
     is_bot_challenge = (
@@ -223,7 +224,7 @@ def verify_url(url: str, timeout: int = 10) -> LinkCheckResult:
         try:
             import subprocess
             curl_cmd = [
-                "curl", "-sL", "--max-time", str(timeout),
+                "curl", "-sL", "--compressed", "--max-time", str(timeout),
                 "-A", DEFAULT_HEADERS["User-Agent"],
                 "-H", f"Accept-Language: {DEFAULT_HEADERS['Accept-Language']}",
                 "-H", "Sec-Ch-Ua: \"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"128\", \"Google Chrome\";v=\"128\"",
@@ -232,20 +233,22 @@ def verify_url(url: str, timeout: int = 10) -> LinkCheckResult:
                 url
             ]
             res = subprocess.run(curl_cmd, capture_output=True, text=True, errors='replace')
-            if res.returncode == 0 and len(res.stdout) > 5000:
+            if res.returncode == 0 and len(res.stdout) > 0:
                 curl_html = res.stdout
                 c_title_m = re.search(r'<title>(.*?)</title>', curl_html, re.IGNORECASE | re.DOTALL)
                 c_title = clean_html_title(c_title_m.group(1)) if c_title_m else None
                 c_is_bot = (
                     (c_title and any(bot in c_title.lower() for bot in ["server busy", "robot check", "captcha"]))
                     or "validateCaptcha" in curl_html
-                    or ("a-no-js" in curl_html[:300] and len(curl_html) < 5000)
+                    or ("a-no-js" in curl_html[:300] and len(curl_html) < 5000 and "nicht gefunden" not in curl_html.lower() and "not found" not in curl_html.lower())
                 )
                 if not c_is_bot:
                     html = curl_html
                     title = c_title
                     is_bot_challenge = False
                     status_code = 200
+                    # re-check missing indicators with the new html title
+                    is_missing = title and any(ind.lower() in title.lower() for ind in ["404", "page not found", "nicht gefunden", "not found", "trouver cette page", "pagina niet gevonden"])
         except Exception:
             pass
 

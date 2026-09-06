@@ -16,7 +16,7 @@ All online store links have been verified live per **Invariant FAIL-010** using 
 | :--- | :--- | :--- | :--- | :--- |
 | **Letter Tiles (16 needed)** | 200 Pcs Wooden Scrabble Tiles | **€6.99** | €6.99 | [Amazon BE (`B0GH7LXL2K`)](https://www.amazon.com.be/dp/B0GH7LXL2K) |
 | **13.56 MHz NFC Tags (16 needed)** | 60 Pcs NTAG213 Stickers 25mm | **€6.99** | €6.99 | [Amazon BE (`B0HC2ZKQLQ`)](https://www.amazon.com.be/dp/B0HC2ZKQLQ) |
-| **NFC Reader Module (1 needed)** | PN532 V3 RFID/NFC Breakout Kit | **€8.98** | €8.98 | [Amazon BE (`B0C9DTJMLQ`)](https://www.amazon.com.be/dp/B0C9DTJMLQ) |
+| **NFC Reader Module (1 needed)** | NXP PN5180 High-Power Breakout | **€11.82** | €11.82 | [Amazon BE (`B0HDTXDNJY`)](https://www.amazon.com.be/dp/B0HDTXDNJY) |
 | **Host Microcontroller (1 needed)** | ESP32-S3 DevKit N16R8 *(3-pack @ €20.98)* | **€6.99** | €20.98 | [Amazon BE (`B0GXF14RRM`)](https://www.amazon.com.be/dp/B0GXF14RRM) |
 | **16-Ch Multiplexer (1 needed)** | DollaTek CD74HC4067 Breakout *(5-pack @ €5.99)* | **€1.20** | €5.99 | [Amazon BE (`B07PPKRVGW`)](https://www.amazon.com.be/dp/B07PPKRVGW) |
 | **Rotating Turntable (1 needed)** | QWORK Square Bearing 71x71mm *(4-pack @ €6.98)* | **€1.75** | €6.98 | [Amazon BE (`B0B3X7R961`)](https://www.amazon.com.be/dp/B0B3X7R961) |
@@ -26,7 +26,7 @@ All online store links have been verified live per **Invariant FAIL-010** using 
 | **Hardware Fasteners Kit** | 440 Pcs M3 Button Head Screws & Nuts Box | **€7.88** | €7.88 | [Amazon BE (`B0B3MGZ7T2`)](https://www.amazon.com.be/dp/B0B3MGZ7T2) |
 | **Anti-Skid Bumper Feet (4 needed)** | Silicone Bumper Feet 10mm *(12-pack @ €8.99)* | **€3.00** | €8.99 | [Amazon BE (`B08GKP4311`)](https://www.amazon.com.be/dp/B08GKP4311) |
 | **3D Print Chassis & Grid (1 set)** | PLA / PETG Spool Allocation (~120g filament) | **€2.40** | €19.99 | [3D CAD Models](file:///home/robin/Smart-Crossword-Board/hardware/cad/output/) |
-| **TOTAL PROTOTYPE BENCH COST** | **All components to build 1 bench unit** | **€69.47** | **€125.47** | *(Checkout total provides ample spares)* |
+| **TOTAL PROTOTYPE BENCH COST** | **All components to build 1 bench unit** | **€72.31** | **€128.31** | *(Checkout total provides ample spares)* |
 
 <!-- TBLFM: @>$3=sum(@I..@-1) -->
 

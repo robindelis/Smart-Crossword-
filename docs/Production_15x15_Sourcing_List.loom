@@ -2,7 +2,7 @@
   "model": {
     "columns": [
       {
-        "id": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+        "id": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
         "sortDir": "default",
         "isVisible": true,
         "width": "220px",
@@ -27,7 +27,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "1fab372e-5adc-4946-8c58-708572277dc4",
+        "id": "30d33aa1-9be7-433f-b685-b089ef768a54",
         "sortDir": "default",
         "isVisible": true,
         "width": "270px",
@@ -52,7 +52,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+        "id": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
         "sortDir": "default",
         "isVisible": true,
         "width": "130px",
@@ -77,7 +77,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+        "id": "e3066d6d-8812-4735-b419-45265197218d",
         "sortDir": "default",
         "isVisible": true,
         "width": "180px",
@@ -102,7 +102,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+        "id": "4140fa1d-f763-4675-971e-45e2fd945a9b",
         "sortDir": "default",
         "isVisible": true,
         "width": "320px",
@@ -127,7 +127,7 @@
         "multiTagSortDir": "default"
       },
       {
-        "id": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+        "id": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
         "sortDir": "default",
         "isVisible": true,
         "width": "260px",
@@ -154,552 +154,552 @@
     ],
     "rows": [
       {
-        "id": "6e665b3b-dd91-4c59-a4f0-d29bfc1dcb21",
+        "id": "77649630-6454-484a-9c67-6de1bb292413",
         "index": 0,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "0d3ab464-519e-4c17-a7d6-4ea9c89ef336",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "9b03bdb8-52da-45df-96bb-6cff238997c0",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Beechwood Letter Tiles",
             "hasValidFrontmatter": null
           },
           {
-            "id": "4fd8facc-2211-44fd-8dd8-221e51a65b34",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "d383de1c-f1ce-4fdf-a7a2-5d7f8b4c67eb",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Panda Game Mfg",
             "hasValidFrontmatter": null
           },
           {
-            "id": "32c18265-1b3d-4c21-a404-8f692439abe4",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "80966a1a-99e3-4033-815c-6932b9ecfced",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 2.2,
             "hasValidFrontmatter": null,
             "content": 2.2
           },
           {
-            "id": "49632103-f8cd-4193-b5fe-8840c5b443e7",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "646293c7-2d2f-4889-8715-d5bbebcae870",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 sets (102 tiles/set)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "0f003af1-ae81-47fe-96cf-427eeddec854",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "49b3ed5c-6ecd-4cdb-8bed-b0d68ec7eda2",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://pandagm.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "80eba534-07c2-4bca-ad93-42f8c94a7c84",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "f13e612f-e9da-4d50-bc92-950c1962e1c3",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "19x19x4.8mm Beechwood with factory CNC rear cavity ø15.5x0.8mm",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "292a1bc9-096d-41bc-bcf9-556e6a836c81",
+        "id": "a0c1ba33-953d-481b-995c-279168807783",
         "index": 1,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "c4bb02fa-0303-43ba-b532-c9d7354c1eac",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "d9303613-6616-47a0-864d-a31d3550a3fd",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "15mm NTAG213 Tags on Reels",
             "hasValidFrontmatter": null
           },
           {
-            "id": "f62af248-8c3b-409d-9c3f-1f915203c024",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "db1c1481-24cb-401c-97b6-6c418e507e9e",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "CXJ RFID Factory",
             "hasValidFrontmatter": null
           },
           {
-            "id": "6edb7293-d6be-4213-86e6-c19dd915224c",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "fb83a558-27a9-42d0-9ce0-c23f99357f67",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 3.57,
             "hasValidFrontmatter": null,
             "content": 3.57
           },
           {
-            "id": "06cf77d0-c3af-46b5-887f-e493f1e7d53b",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "bde29bac-34b7-4fea-aba3-26c1b740a867",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "2,000-tag reels ($0.035/tag)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "d01457a9-3a97-4770-a9b5-85ff832387d9",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "e51dfcd5-3625-48b2-89d5-5ba1f613083d",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.cxjrfidfactory.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a733edf6-98a6-47f9-9be2-71e091fd9680",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "172fe716-2ee7-46d6-8a4d-601b5eb275fd",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "15mm clear wet inlays; pre-verified UID manifest file",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "70eb7325-f604-4c4f-ad22-e9280661931e",
+        "id": "7aedc949-9175-42a2-bbb3-0f8d7336a470",
         "index": 2,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "9c0b3f81-e711-4430-a398-ee4e424ea832",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "75e33457-6615-4351-9720-6fd1762d3f6f",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Factory Tag Placement & Mapping",
             "hasValidFrontmatter": null
           },
           {
-            "id": "7ab03c6f-b148-45fc-a4fc-3c8cb552c13f",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "0d13eefd-e7b1-46de-9ea0-9ae070c74649",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Board Game Assembly Partner",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a2c438ae-040c-4f57-9216-36d8fd4e78bd",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "920c7a9c-0a84-4678-993a-04900fc03aec",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 0.75,
             "hasValidFrontmatter": null,
             "content": 0.75
           },
           {
-            "id": "9f18ee4b-235a-4114-9759-2a3f04946799",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "3da1e1a1-d767-4461-bb67-85779eb5cc95",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 sets (102 tiles/set)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "f520b0f6-a9e9-4cbb-94c8-92690d1ea68a",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "85c7f045-dc7b-4377-ab59-12875ea68d92",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://pandagm.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "8d6a26de-d4ed-4e26-9f4e-a1402925a97a",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "efec3180-f914-4db2-b972-f14140689e0c",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Automated pick-and-place tile adhesion + barcode/UID serialization",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "689e693b-e3ab-478e-87f5-698a8325098e",
+        "id": "aaa08e1d-b0ad-4431-99fe-12feeaa2ff5a",
         "index": 3,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "0234b68a-b772-411d-8890-3861dc44eb97",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "fa6112bf-0577-44e4-a4a9-39605cfb7e9f",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "15x15 Main Circuit Board",
             "hasValidFrontmatter": null
           },
           {
-            "id": "7bbd8bfb-d937-4bd3-bb43-8f6f90d63667",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "06214551-61f9-4236-af9e-f4477459544f",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "JLCPCB / PCBWay",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ee31c8b1-5d3a-4fd9-990d-7954cf05031d",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "3eddd563-0ecc-4528-9d1e-bdf41ffb68ff",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 17.5,
             "hasValidFrontmatter": null,
             "content": 17.5
           },
           {
-            "id": "8658181e-2282-4a84-a470-54b0a5337d34",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "c7643a05-dc9a-4c78-9ed8-2659045a130e",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 boards (320x320mm)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "eaa2086a-698f-46ca-8678-55d69e1fd59d",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "a214a8ae-6963-4771-a88f-cf08bd3cac5b",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://jlcpcb.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "12a18e24-164c-4919-a062-9df691d77f1f",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "eeb37ac0-9a5b-43ad-8379-287bd51e7768",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "4-layer FR4; 225 planar spiral antenna coils + SMT analog MUX tree",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "e1a483a2-1212-4d70-aee3-b775a9e66c43",
+        "id": "19934428-aad2-44b9-8d09-32d88b845773",
         "index": 4,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "03ba5838-b709-4b06-9239-b6435369dbf7",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "243baf1a-32b6-495c-9f72-2fe358477c75",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "NFC Transceiver IC",
             "hasValidFrontmatter": null
           },
           {
-            "id": "7d02ed20-7fe8-4977-b2d5-6b9607dfd2a9",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "934009c3-798b-4f00-bf7b-9555e1bba5ff",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "STMicroelectronics (ST25R3916)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "2ad961f6-8835-40b1-a83a-85b5e001d41f",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "f51f668d-4e87-466a-b63c-0e64564d980c",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 3,
             "hasValidFrontmatter": null,
             "content": 3
           },
           {
-            "id": "dd73a481-2f37-4fd2-8215-e3c93930a377",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "35e9b4d2-b0dc-4716-a3c7-c1be0634f48c",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "Tape & reel (QFN-32)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "f6d03130-21af-4d97-969f-f50da9959a00",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "f2b0287d-3679-43fc-a645-c0bea4d97599",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.st.com/en/nfc/st25r3916.html",
             "hasValidFrontmatter": null
           },
           {
-            "id": "1968d409-25c5-49cd-8c03-94da70a5423a",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "112ea67a-eb45-4ac1-9f18-827688409bdc",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "1.7W RF output, dynamic power control, capacitive wake-up",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "d20b0744-924c-44cd-a1e8-dea38b677928",
+        "id": "c67fdd30-f669-4790-b171-06af128dd40d",
         "index": 5,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "a17f2a91-4df7-4111-8521-bb0a0af995db",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "54ab75c2-483d-4eaa-8ac4-a203ec181876",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Rotating Turntable 250mm Ring",
             "hasValidFrontmatter": null
           },
           {
-            "id": "b242c762-7ec2-4ad6-946a-b69c25ec9259",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "976db8e2-1cb7-4648-b851-6b3422a8f92d",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Hardware Wholesale Partner",
             "hasValidFrontmatter": null
           },
           {
-            "id": "8d851546-10f4-4201-964c-01f2865115fd",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "0144a096-ba25-4ecc-a268-7215d6107f84",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 4,
             "hasValidFrontmatter": null,
             "content": 4
           },
           {
-            "id": "e1ce5d72-a60a-4d4d-a15e-0b340c303890",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "9d049769-9223-4c11-abd6-8ad8b3c4eeb7",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 units",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a8cdb138-a25e-4d66-a1e9-2b12582b3e73",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "2ebcdb44-dba6-4d00-90ed-a8a788bb7fc4",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.alibaba.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "a9e0ab86-9c76-447e-867a-67071d28cdbb",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "1d032251-9358-4e4f-a1c4-326c54f25e8a",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Low-friction extruded aluminum ring with rubber isolating feet",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "9d1bce79-bb70-462e-8c44-b08b639508ae",
+        "id": "ac2c70b3-140e-4a43-9ab4-80fb55934e6f",
         "index": 6,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "65856417-d8ab-413a-94f5-933107808124",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "1d988501-e2ba-406b-b00a-20d21ae14707",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "3.5\" IPS Color Screen (480x320)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ff516f99-3e56-45ce-a060-754c2cb6e0e2",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "922eebed-4ab0-43fb-b8c9-67d6113b4c94",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "ST7796 / Panel Partner",
             "hasValidFrontmatter": null
           },
           {
-            "id": "fde28a10-1c96-4ba0-9697-50e340473871",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "65e99993-4020-4b0e-af62-e9c2b2e596ad",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 7.2,
             "hasValidFrontmatter": null,
             "content": 7.2
           },
           {
-            "id": "334b8fd7-e718-4d43-b20d-d0a8b0bba346",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "0f7be484-388f-4bdb-8555-b733ef32f051",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 panels",
             "hasValidFrontmatter": null
           },
           {
-            "id": "65352948-d498-489e-844e-9327fbf61c9c",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "bf60d9d7-3b2c-4ff4-97a4-27c1521bf96d",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.aliexpress.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "634dbaaf-e9bc-4b7f-9117-e58288d1bac7",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "1446744d-4350-4b7e-863d-ef069c353d7f",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Wide viewing angle IPS LCD; high-contrast UI for seniors",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "aac59fa5-93e0-4305-aca6-a3d3c9bb83a3",
+        "id": "b3065a3e-2248-490b-8856-6fd8fbcf2486",
         "index": 7,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "4901458a-250b-4572-ada4-ad68d7f99f40",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "16c4539f-1708-4235-981f-a2e7a37566b8",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Audio Voice Referee Subsystem",
             "hasValidFrontmatter": null
           },
           {
-            "id": "1ce2a53f-0ad1-4a40-b2c2-313ece5568d1",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "37027ac6-3529-445d-be2c-2d6ff163b45c",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "PUI Audio / SMT BOM",
             "hasValidFrontmatter": null
           },
           {
-            "id": "d596e506-9404-4caf-8abe-60b75122bd4d",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "9a85688e-da43-44e4-8fa4-9aafed8d77f9",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 2.45,
             "hasValidFrontmatter": null,
             "content": 2.45
           },
           {
-            "id": "2d6d5102-87ab-4887-a524-6bfe2f6c3486",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "b1a3931c-7c82-4573-9a96-9b8843b84519",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 sets (Amp + Speaker)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "5cb82168-31a6-4ee9-be4a-4afcbec3f92b",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "214c01e3-089f-43cc-9990-860a6e313ceb",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.puiaudio.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ed15c6fa-02d3-469c-bfec-817d51aca0f7",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "023f305d-51c6-4efd-8c85-59d11cd2dff3",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Tuned 40mm acoustic cavity; warm voice synthesis, zero distortion",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "545bd2db-627d-4cf8-b358-48a3640db055",
+        "id": "0df28f16-f73c-44e9-a52b-39af7a758f12",
         "index": 8,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "e6952477-3e9c-4373-bc7f-e8607de7a472",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "ab203de2-5ee7-4923-954d-5fab1b3ae064",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Host Microcontroller Module",
             "hasValidFrontmatter": null
           },
           {
-            "id": "ce122bd6-efea-4e2f-b32d-6b226829b254",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "ecfd1eef-7aec-4f85-81d6-a0f3960dfca5",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Espressif Systems (ESP32-S3)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "cd829365-d385-4e74-b871-bf0dff75d3d1",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "f87263c3-2f40-4a2c-87c2-b5ed355d8e57",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 3,
             "hasValidFrontmatter": null,
             "content": 3
           },
           {
-            "id": "814d0d0b-9b20-4adf-b36f-92ab7a8eada2",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "ae2f25bf-3fdb-4efc-b22d-62bd1ae1189f",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "SMD Reels (ESP32-S3-WROOM-1)",
             "hasValidFrontmatter": null
           },
           {
-            "id": "9e0a63a4-c63f-4d5a-91ad-db9809a5c573",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "bc824dcb-4ec7-4a94-a4c1-648f24062bd5",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.espressif.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "48b11911-63c9-4bed-929b-6b7245b13fb1",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "e4b1ac0f-8a59-46e4-8059-1af09d67b98b",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Dual-core 240MHz, 16MB Flash, 8MB PSRAM, CE/FCC certified",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "1e11edf1-4203-4b7a-9e89-042dbadf2225",
+        "id": "12d5eb43-79a7-4db9-a56c-7b352bfa72bf",
         "index": 9,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "5b9b46b1-6f59-4197-b97d-df5e4528731b",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "f08a00ad-b98a-4928-bb29-ecef093a4df6",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Battery & Power Management",
             "hasValidFrontmatter": null
           },
           {
-            "id": "31781c6e-ac74-46ce-a9b0-d7bc15af7898",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "49d08591-cca4-47b7-aa0b-03c108e15f27",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Custom Battery Fabricator",
             "hasValidFrontmatter": null
           },
           {
-            "id": "2f5e704b-f1ff-42aa-b0ad-a0d54b6f930b",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "95088381-c442-42dc-8738-6f1392e5a0b6",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 6.2,
             "hasValidFrontmatter": null,
             "content": 6.2
           },
           {
-            "id": "7773ba42-70d2-4552-a133-13ed4c0b4048",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "ee4b01ae-5439-42a0-9a0b-0b88b3519f65",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 packs",
             "hasValidFrontmatter": null
           },
           {
-            "id": "02d42f56-38bd-45ed-8f4f-934cf79ebc8f",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "1d3a3173-4e93-4edf-9a89-5a42dd90012b",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://www.alibaba.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "891adf9d-4cc8-4874-86fe-31d49f964c14",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "2cc08b4b-8996-4c9c-a481-f6961d4511f8",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "3500mAh LiPo cell + PCM protection + magnetic breakaway charging",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "de42d2ff-ad56-4ea7-9aa0-37f264a0422a",
+        "id": "b24c5c5a-5da4-4627-8b64-2fbb4ac63f80",
         "index": 10,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "710ab6e5-d133-4b84-bf55-9a07883f457b",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "bbeb31c2-4405-4652-b0d8-3150276e1b87",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Wood Housing & Tile Grid Frame",
             "hasValidFrontmatter": null
           },
           {
-            "id": "f8fda440-d48a-4bd2-837f-5a2de829e94c",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "5ec4d1fc-00fb-4cad-9ff5-17fd8d7edcfa",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Wood Tooling & Fabricator",
             "hasValidFrontmatter": null
           },
           {
-            "id": "3bc25c68-e03c-4cd0-ae4f-614eb56bf4a6",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "d69d56d7-4a18-498a-8f5a-3f8069e6c130",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 14,
             "hasValidFrontmatter": null,
             "content": 14
           },
           {
-            "id": "6225f188-361a-4b1b-abc4-d2b536f4b5c9",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "58c84316-0ef1-4ec3-92f6-9c6cb16ceb09",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 sets",
             "hasValidFrontmatter": null
           },
           {
-            "id": "11412249-0275-459c-a54b-9f40fe6db4b5",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "d0f596c6-7a67-44a6-b079-7e2e49e5f07a",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://pandagm.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "7b37d823-6466-445b-b083-bcf71b3118bc",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "4e221853-1184-4ff0-a590-fe03d6cc9308",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "CNC milled solid beech/walnut base tray + laser-cut tile locator grid",
             "hasValidFrontmatter": null
           }
         ]
       },
       {
-        "id": "ce500b17-f321-4ad2-b2eb-f1071c439a8d",
+        "id": "d6a81899-c428-41fa-bf81-71e7a87013aa",
         "index": 11,
         "sourceId": null,
-        "creationDateTime": "2026-09-05T22:39:53.900Z",
-        "lastEditedDateTime": "2026-09-05T22:39:53.900Z",
+        "creationDateTime": "2026-09-06T15:16:06.160Z",
+        "lastEditedDateTime": "2026-09-06T15:16:06.160Z",
         "cells": [
           {
-            "id": "62fdfbaa-0cbb-4819-86bc-29b61d858cd0",
-            "columnId": "c498e93b-b7f1-44cb-a418-6ca552bc6dee",
+            "id": "fa8536f9-271b-4006-b741-9fdd373a065d",
+            "columnId": "6b38bd61-1393-4c7e-b3db-8d483b1d29ca",
             "content": "Packaging, Foam Tray & Guide",
             "hasValidFrontmatter": null
           },
           {
-            "id": "de31cd15-ff03-42ed-9ef2-b8b654c31aae",
-            "columnId": "1fab372e-5adc-4946-8c58-708572277dc4",
+            "id": "85297d22-2d47-48f4-89e9-a7d07187bdf6",
+            "columnId": "30d33aa1-9be7-433f-b685-b089ef768a54",
             "content": "Packaging Fabricator",
             "hasValidFrontmatter": null
           },
           {
-            "id": "8e385ddb-3bf6-48eb-af66-d9e54e4017c0",
-            "columnId": "8638e7c8-6a18-4d67-8c59-6e89a67c9666",
+            "id": "d3b716ed-00b6-43bf-89aa-ff4bb4f683c1",
+            "columnId": "91c2f2bc-bf74-4bd2-901f-0e6b19c74aa9",
             "value": 4,
             "hasValidFrontmatter": null,
             "content": 4
           },
           {
-            "id": "ff854cc5-2f64-4675-b59a-e21c35b8be46",
-            "columnId": "634bad03-9bf9-49d8-bbcd-5d3d1b5f000e",
+            "id": "12db1f5b-39ff-4ecc-8726-88ab57c6a440",
+            "columnId": "e3066d6d-8812-4735-b419-45265197218d",
             "content": "1,000 boxes",
             "hasValidFrontmatter": null
           },
           {
-            "id": "d1e2ca8f-dccf-4675-90c8-d69a21aa17cf",
-            "columnId": "05790f8b-f346-4e11-997e-fe15ca58aa99",
+            "id": "76520a22-d148-44d5-9fea-d59f8c0cfbee",
+            "columnId": "4140fa1d-f763-4675-971e-45e2fd945a9b",
             "content": "https://pandagm.com",
             "hasValidFrontmatter": null
           },
           {
-            "id": "286b2cec-10df-439a-ac9d-225da4a0f64e",
-            "columnId": "96d1c597-17dc-4f8e-bb79-c8961b7201b9",
+            "id": "6f195934-f50d-411f-8bf1-11227fd16f04",
+            "columnId": "f0ae9cb4-f16d-40ab-8e3c-67318961e3e3",
             "content": "Premium rigid game box + custom die-cut EVA foam + senior guide",
             "hasValidFrontmatter": null
           }

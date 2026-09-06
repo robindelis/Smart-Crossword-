@@ -119,11 +119,11 @@ function buildPrototypeLoom() {
     },
     {
       item: "NFC Reader Module",
-      details: "PN532 V3 RFID/NFC Breakout Kit (1 board)",
-      cost: 8.98,
-      pack: 8.98,
-      link: "https://www.amazon.com.be/dp/B0C9DTJMLQ",
-      notes: "SPI/I2C switches + level shifters; includes test cards"
+      details: "NXP PN5180 High-Power NFC Breakout (1 board)",
+      cost: 11.82,
+      pack: 11.82,
+      link: "https://www.amazon.com.be/dp/B0HDTXDNJY",
+      notes: "250mW RF power, Dynamic Power Control, external antenna pads"
     },
     {
       item: "Host Microcontroller",

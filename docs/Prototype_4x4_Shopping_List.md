@@ -13,7 +13,7 @@ This shopping list reflects the top-recommended components selected from the mul
 | :----------------------------------- | :-------------------------------------------------- | :--------- | :---------- | :----------------------------------------------------------------------------- |
 | **Letter Tiles (16 needed)**         | 200 Pcs Wooden Scrabble Tiles                       | **€6.99**  | €6.99       | [Amazon BE (`B0GH7LXL2K`)](https://www.amazon.com.be/dp/B0GH7LXL2K)            |
 | **13.56 MHz NFC Tags (16 needed)**   | 60 Pcs NTAG213 Stickers 25mm                        | **€6.99**  | €6.99       | [Amazon BE (`B0HC2ZKQLQ`)](https://www.amazon.com.be/dp/B0HC2ZKQLQ)            |
-| **NFC Reader Module (1 needed)**     | PN532 V3 RFID/NFC Breakout Kit                      | **€8.98**  | €8.98       | [Amazon BE (`B0C9DTJMLQ`)](https://www.amazon.com.be/dp/B0C9DTJMLQ)            |
+| **NFC Reader Module (1 needed)**     | NXP PN5180 High-Power Breakout                      | **€11.82** | €11.82      | [Amazon BE (`B0HDTXDNJY`)](https://www.amazon.com.be/dp/B0HDTXDNJY)            |
 | **Host Microcontroller (1 needed)**  | ESP32-S3 DevKit N16R8 *(3-pack @ €20.98)*           | **€6.99**  | €20.98      | [Amazon BE (`B0GXF14RRM`)](https://www.amazon.com.be/dp/B0GXF14RRM)            |
 | **16-Ch Multiplexer (1 needed)**     | DollaTek CD74HC4067 Breakout *(5-pack @ €5.99)*     | **€1.20**  | €5.99       | [Amazon BE (`B07PPKRVGW`)](https://www.amazon.com.be/dp/B07PPKRVGW)            |
 | **Rotating Turntable (1 needed)**    | QWORK Square Bearing 71x71mm *(4-pack @ €6.98)*     | **€1.75**  | €6.98       | [Amazon BE (`B0B3X7R961`)](https://www.amazon.com.be/dp/B0B3X7R961)            |
@@ -23,7 +23,7 @@ This shopping list reflects the top-recommended components selected from the mul
 | **Hardware Fasteners Kit**           | 440 Pcs M3 Button Head Screws & Nuts Box            | **€7.88**  | €7.88       | [Amazon BE (`B0B3MGZ7T2`)](https://www.amazon.com.be/dp/B0B3MGZ7T2)            |
 | **Anti-Skid Bumper Feet (4 needed)** | Silicone Bumper Feet 10mm *(12-pack @ €8.99)*       | **€3.00**  | €8.99       | [Amazon BE (`B08GKP4311`)](https://www.amazon.com.be/dp/B08GKP4311)            |
 | **3D Print Chassis & Grid (1 set)**  | PLA / PETG Spool Allocation (~120g filament)        | **€2.40**  | €19.99      | [3D CAD Models](file:///home/robin/Smart-Crossword-Board/hardware/cad/output/) |
-| **TOTAL BENCH PROTOTYPE COST**       | **All components to build 1 fully functional unit** | **€69.47** | **€125.47** | *(Multi-pack checkout provides ample spares)*                                  |
+| **TOTAL BENCH PROTOTYPE COST**       | **All components to build 1 fully functional unit** | **€72.31** | **€128.31** | *(Multi-pack checkout provides ample spares)*                                  |
 
 <!-- TBLFM: @>$3=sum(@I..@-1) -->
 
@@ -37,10 +37,10 @@ This shopping list reflects the top-recommended components selected from the mul
    * The custom 4-layer PCB (`hardware/kicad/test_grid_4x4/`) uses an SMD **SOIC-24** footprint (`CD74HC4067SM96`, LCSC `C7406`, $0.28).
    * The DollaTek breakout pack listed above is a 24-pin DIP board module for breadboard bench testing.
    * When fabricating the custom PCB via JLCPCB, select SMT assembly (PCBA) to have U1 and all 0603 passive components factory-soldered.
-2. **NFC Reader RF Connection (PN532 V3)**:
-   * The PN532 V3 breakout kit (`B0C9DTJMLQ`) includes an onboard loop antenna and does not expose an RF pin on its 2.54mm header.
-   * Connect digital SPI lines (SCK, MISO, MOSI, CS, IRQ, RST, 3.3V, GND) to header `J2` using female-to-female Dupont jumper wires.
-   * To energize the 16 board coils, connect a 50Ω coaxial cable or pigtail from the PN532 RF stage directly into the SMA connector `J3` (or `J2` Pin 1 `RF_SIG`).
+2. **NFC Reader Connection (NXP PN5180)**:
+   * The NXP PN5180 breakout kit (`B0HDTXDNJY`) delivers 250mW RF output (5x PN532 power) with Dynamic Power Control (DPC).
+   * Connect digital SPI lines (SCK, MISO, MOSI, NSS/CS, BUSY, IRQ, 3.3V, GND) to the host / header `J2` using female-to-female Dupont jumper wires.
+   * Connect the RF output stage to SMA port `J3` (or `J2` Pin 1 `RF_SIG`) via a short 50Ω coaxial cable.
 3. **ESP32-S3 Host Connection**:
    * Connect the ESP32-S3 DevKit (`B0GXF14RRM`) to header `J1` using a standard 2x10 2.54mm IDC ribbon cable or Dupont jumpers according to the pinout map in [[hardware/kicad/test_grid_4x4/README|Phase 1 4x4 NFC Test Board README]].
 
