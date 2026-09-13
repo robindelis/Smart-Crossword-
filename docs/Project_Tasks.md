@@ -12,7 +12,7 @@
 ## ⏳ In Progress (Phase 1: Hardware Bench Assembly & Testing)
 
 - [ ] Procure hardware & bench components
-  - [ ] Order 4x4 PCB prototype (SMT assembly) from JLCPCB via `JLCPCB_ORDERING_GUIDE.md`
+  - [x] Order 4x4 PCB prototype (SMT assembly) from JLCPCB via `JLCPCB_ORDERING_GUIDE.md`
   - [ ] Order Amazon Belgium bench items (tiles `B0GH7LXL2K`, tags `B0HC2ZKQLQ`, ESP32-S3 `B0GXF14RRM`, PN532 `B0C9DTJMLQ`, screws `B0B3MGZ7T2`)
 - [ ] Bench test 4x4 circuit board
   - [ ] Solder 3x pin headers (J1 host, J2 NFC, J3 SMA)

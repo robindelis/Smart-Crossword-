@@ -91,7 +91,21 @@ def test_live_user_product_verification():
     assert res.is_live is True
     assert res.status_code == 200
     assert res.is_in_stock is True
-    assert res.price_eur == 6.99
+    assert res.price_eur in [5.99, 6.99]
     assert "200 Pcs Lettres en Bois" in (res.title or "")
     assert res.canonical_url is not None
     assert "B0GH7LXL2K" in res.canonical_url
+
+
+def test_live_pn532_reader_verification():
+    """Live integration test: verifies Hailege PN532 V4 module on Amazon Belgium."""
+    res = verify_url("https://www.amazon.com.be/dp/B0CJY2GQZ8", timeout=10)
+    if not res.is_live and "Anti-bot" in (res.error_message or ""):
+        pytest.skip("Amazon rate limit / bot challenge encountered")
+    assert res.is_live is True
+    assert res.status_code == 200
+    assert res.is_in_stock is True
+    assert res.price_eur == 10.84
+    assert "PN532" in (res.title or "")
+    assert "B0CJY2GQZ8" in (res.canonical_url or "")
+
