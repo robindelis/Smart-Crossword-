@@ -5,7 +5,7 @@
 		{"id":"group-comm","type":"group","x":-4720,"y":-4320,"width":5880,"height":2260,"color":"2","label":"Commercial, Marketing & Launch"},
 		{"id":"group-fw","type":"group","x":4960,"y":-3840,"width":4600,"height":2720,"color":"4","label":"Software, Rules & Multi-Language"},
 		{"id":"group-procurement","type":"group","x":-4480,"y":1800,"width":3240,"height":2800,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
-		{"id":"group-state","type":"group","x":-7440,"y":-560,"width":2260,"height":2305,"color":"6","label":"Tasks & Project State"},
+		{"id":"group-state","type":"group","x":-7440,"y":-560,"width":3460,"height":2305,"color":"6","label":"Tasks & Project State"},
 		{"id":"group-ideas","type":"group","x":1240,"y":-3000,"width":2640,"height":1880,"color":"3","label":"Ideas & Feature Backlog"},
 		{"id":"group-android","type":"group","x":10400,"y":-5440,"width":3600,"height":2720,"color":"4","label":"Native Android Companion (Kotlin & Compose)"},
 		{"id":"node-android-companion","type":"text","text":"## Native Android Companion App\n\n* **Location**: `software/android/`\n* **Tech**: Kotlin, Jetpack Compose, Material 3, Gradle 9.1\n* **Board**: Interactive 4x4 test grid with 2W/3W/2L/3L & rack\n* **Referee**: Tournament English referee (168k words)\n* **Auth**: 1-Tap play & Google Sign-In with Firebase\n* **Persistence**: Local-first SQLite (`AppDatabaseHelper`)\n* **Pairing**: Unique handles (`sarah#4821`, `board_scb1234`)\n* **Living Memory**: `software/android/android_lessons.md`","x":10540,"y":-5320,"width":1600,"height":700,"color":"4"},
@@ -45,7 +45,8 @@
 		{"id":"node-playbook","type":"file","file":"commercial/prelaunch_playbook.md","x":-3220,"y":-4210,"width":510,"height":1920,"color":"2"},
 		{"id":"node-tasks","type":"file","file":"docs/Project_Tasks.md","x":-6120,"y":-440,"width":920,"height":2120,"color":"3"},
 		{"id":"node-sourcing","type":"file","file":"commercial/tile_and_rfid_sourcing.md","x":-1480,"y":-4210,"width":1360,"height":1920,"color":"2"},
-		{"id":"node-web-landing","type":"file","file":"software/web/README.md","x":0,"y":-4240,"width":1040,"height":2080,"color":"2"}
+		{"id":"node-web-landing","type":"file","file":"software/web/README.md","x":0,"y":-4240,"width":1040,"height":2080,"color":"2"},
+		{"id":"node-cockpit-web","type":"file","file":"software/cockpit/README.md","x":-5050,"y":-440,"width":1000,"height":2120,"color":"6"}
 	],
 	"edges":[
 		{"id":"edge-rfid-hall","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hall-eval","toSide":"left","label":"Hall vs RFID Trade-off"},
@@ -80,6 +81,7 @@
 		{"id":"edge-theory-summary","fromNode":"node-rf-theory","fromSide":"right","toNode":"node-rf-theory-summary","toSide":"left","label":"Resonant Formulas & Component Values"},
 		{"id":"edge-kicad-jlcpcb","fromNode":"node-hw-kicad-4x4","fromSide":"right","toNode":"node-jlcpcb-guide","toSide":"left","label":"JLCPCB SMT Package & Guide"},
 		{"id":"edge-arch-esp32","fromNode":"node-sw-arch","fromSide":"right","toNode":"node-esp32-driver","toSide":"left","label":"ESP32 4x4 Bench Driver"},
-		{"id":"edge-playbook-web","fromNode":"node-playbook","fromSide":"right","toNode":"node-web-landing","toSide":"left","label":"1-Page Pre-Launch Funnel"}
+		{"id":"edge-playbook-web","fromNode":"node-playbook","fromSide":"right","toNode":"node-web-landing","toSide":"left","label":"1-Page Pre-Launch Funnel"},
+		{"id":"edge-tasks-cockpit","fromNode":"node-tasks","fromSide":"right","toNode":"node-cockpit-web","toSide":"left","label":"Interactive Progression & Disk Sync"}
 	]
 }

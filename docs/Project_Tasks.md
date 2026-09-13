@@ -38,6 +38,12 @@
   - [x] Emotional UX design: natural wood aesthetic, WCAG AAA high contrast, tactile Scrabble tiles
   - [x] Interactive 4x4 board preview with synthesized acoustic feedback
   - [x] $1 VIP pre-order reservation form and Stripe checkout integration hook (750 backer goal)
+- [x] Visual Progression Web Cockpit & Bidirectional Disk Sync ([`software/cockpit/`](../software/cockpit/))
+  - [x] Multi-view dashboard: Infinite Canvas (@xyflow/react), Roadmap Gantt & Decisions log, and Tasks Kanban
+  - [x] Clean Engineering Light Mode design tokens (#f8fafc canvas, blueprint grid, high-contrast slate cards)
+  - [x] Vite server middleware for live bidirectional reads/writes to Project_Cockpit.canvas and docs/Project_Tasks.md
+  - [x] Modern web performance optimizations: CSS content-visibility: auto layout isolation per modern-web-guidance
+  - [x] Slide-over document and 3D KiCad/CAD render inspection drawer
 
 - [x] 13.56 MHz NFC Antenna Resonance & Q-Damping Theory ([`docs/LC_Resonance_and_Antenna_Theory.md`](LC_Resonance_and_Antenna_Theory.md), [`Project_Cockpit.canvas`](../Project_Cockpit.canvas))
   - [x] Derived coil inductance $L = 1.262\,\mu\text{H}$ using Modified Wheeler model for 17.5mm square coil (N=7)
