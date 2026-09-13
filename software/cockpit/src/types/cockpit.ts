@@ -11,6 +11,7 @@ export interface ObsidianCanvasNode {
   label?: string; // for group nodes
   text?: string;  // for text nodes
   file?: string;  // for file nodes
+  fileContent?: string; // markdown content for file nodes
 }
 
 export interface ObsidianCanvasEdge {

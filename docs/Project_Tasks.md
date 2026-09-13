@@ -11,9 +11,9 @@
 
 ## ⏳ In Progress (Phase 1: Hardware Bench Assembly & Testing)
 
-- [ ] Procure hardware & bench components
+- [x] Procure hardware & bench components
   - [x] Order 4x4 PCB prototype (SMT assembly) from JLCPCB via `JLCPCB_ORDERING_GUIDE.md`
-  - [ ] Order Amazon Belgium bench items (tiles `B0GH7LXL2K`, tags `B0HC2ZKQLQ`, ESP32-S3 `B0GXF14RRM`, PN532 `B0C9DTJMLQ`, screws `B0B3MGZ7T2`)
+  - [x] Order Amazon Belgium bench items (tiles `B0GH7LXL2K`, tags `B0HC2ZKQLQ`, ESP32-S3 `B0GXF14RRM`, PN532 `B0C9DTJMLQ`, screws `B0B3MGZ7T2`)
 - [ ] Bench test 4x4 circuit board
   - [ ] Solder 3x pin headers (J1 host, J2 NFC, J3 SMA)
   - [ ] Flash ESP32-S3 driver (`firmware/esp32_driver/`) to DevKit
@@ -44,20 +44,17 @@
   - [x] Vite server middleware for live bidirectional reads/writes to Project_Cockpit.canvas and docs/Project_Tasks.md
   - [x] Modern web performance optimizations: CSS content-visibility: auto layout isolation per modern-web-guidance
   - [x] Slide-over document and 3D KiCad/CAD render inspection drawer
-
 - [x] 13.56 MHz NFC Antenna Resonance & Q-Damping Theory ([`docs/LC_Resonance_and_Antenna_Theory.md`](LC_Resonance_and_Antenna_Theory.md), [`Project_Cockpit.canvas`](../Project_Cockpit.canvas))
   - [x] Derived coil inductance $L = 1.262\,\mu\text{H}$ using Modified Wheeler model for 17.5mm square coil (N=7)
   - [x] Derived tuning capacitor $C = 100\,\text{pF}$ C0G with Thomson resonance formula ($109.2\,\text{pF} - 9.2\,\text{pF}$ parasitics)
   - [x] Derived damping resistor $R = 3.3\,\Omega$ to lock loaded $Q = 25$ ($542\,\text{kHz}$ bandwidth for ISO 14443A subcarriers)
   - [x] Added theoretical group, circuit schematic diagram, and summary cards to `Project_Cockpit.canvas`
 - [x] 4x4 Prototype PCB & Shopping List Hardware Compatibility Audit & Schematic Sync ([`hardware/kicad/test_grid_4x4/README.md`](../hardware/kicad/test_grid_4x4/README.md), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md))
-
   - [x] Verified mechanical and electrical fit for all 12 items (tiles, tags, MCU, MUX, reader, screen, audio, bearing, fasteners)
   - [x] Synchronized `test_grid_4x4.kicad_sch` to match the perfected zero-DRC layout of `test_grid_4x4.kicad_pcb`
   - [x] Documented integration notes for CD74HC4067 SOIC-24 PCBA vs Amazon DIP breakout and PN532 RF stage tap
   - [x] Recorded FAIL-011 and ADL-021
 - [x] DataLoom Dynamic Procurement Spreadsheets & Candidate Sourcing Sync ([`Prototype_4x4_Shopping_List.loom`](Prototype_4x4_Shopping_List.loom), [`Production_15x15_Sourcing_List.loom`](Production_15x15_Sourcing_List.loom), [`Prototype_4x4_Shopping_List.md`](Prototype_4x4_Shopping_List.md), [`Production_15x15_Sourcing_List.md`](Production_15x15_Sourcing_List.md), [`Procurement_Shopping_List.md`](Procurement_Shopping_List.md))
-
   - [x] Generated native Obsidian DataLoom (.loom) files validated with DataLoom's internal deserializer
   - [x] Updated Prototype (4x4) Shopping List with top picks across all 12 items (€69.47 allocated / €125.47 pack checkout total)
   - [x] Updated Production (15x15) Sourcing List with top picks across all 12 items ($67.87 BOM per unit)

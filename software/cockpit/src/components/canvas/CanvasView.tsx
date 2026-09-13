@@ -40,6 +40,42 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const rawCanvasRef = useRef<ObsidianCanvasData | null>(null);
 
+  // Direct deletion handler
+  const handleDeleteNode = useCallback((nodeId: string) => {
+    setNodes((nds) => nds.filter((n) => n.id !== nodeId));
+    setEdges((eds) => eds.filter((e) => e.source !== nodeId && e.target !== nodeId));
+
+    if (rawCanvasRef.current) {
+      const updated: ObsidianCanvasData = {
+        ...rawCanvasRef.current,
+        nodes: rawCanvasRef.current.nodes.filter((n) => n.id !== nodeId),
+        edges: rawCanvasRef.current.edges.filter((e) => e.fromNode !== nodeId && e.toNode !== nodeId),
+      };
+      rawCanvasRef.current = updated;
+      onSyncStatusChange('saving');
+      api.saveCanvas(updated)
+        .then(() => onSyncStatusChange('saved'))
+        .catch(() => onSyncStatusChange('error'));
+    }
+  }, [setNodes, setEdges, onSyncStatusChange]);
+
+  // Direct text note update handler
+  const handleTextChange = useCallback((nodeId: string, newText: string) => {
+    if (rawCanvasRef.current) {
+      const updated: ObsidianCanvasData = {
+        ...rawCanvasRef.current,
+        nodes: rawCanvasRef.current.nodes.map((n) =>
+          n.id === nodeId ? { ...n, text: newText } : n
+        ),
+      };
+      rawCanvasRef.current = updated;
+      onSyncStatusChange('saving');
+      api.saveCanvas(updated)
+        .then(() => onSyncStatusChange('saved'))
+        .catch(() => onSyncStatusChange('error'));
+    }
+  }, [onSyncStatusChange]);
+
   // Load canvas data from disk
   const loadCanvas = useCallback(async () => {
     try {
@@ -72,6 +108,8 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
           data: {
             ...node,
             onOpenFile,
+            onDeleteNode: handleDeleteNode,
+            onTextChange: handleTextChange,
           },
           draggable: true,
           selectable: true,
@@ -104,18 +142,40 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
     } finally {
       setLoading(false);
     }
-  }, [onOpenFile, onSyncStatusChange, setNodes, setEdges]);
+  }, [onOpenFile, onSyncStatusChange, setNodes, setEdges, handleDeleteNode, handleTextChange]);
 
   useEffect(() => {
     loadCanvas();
   }, [loadCanvas]);
 
-  // Handle bidirectional save when node positions change
+  // Handle bidirectional save when node positions change or nodes are removed via Delete key
   const handleNodesChange = useCallback(
     (changes: any) => {
       onNodesChange(changes);
 
-      // Check if any change was a position change
+      // 1. Check for removed nodes (Delete / Backspace key)
+      const removeChanges = changes.filter((c: any) => c.type === 'remove');
+      if (removeChanges.length > 0 && rawCanvasRef.current) {
+        const removedIds = new Set(removeChanges.map((c: any) => c.id));
+        const updatedCanvas: ObsidianCanvasData = {
+          ...rawCanvasRef.current,
+          nodes: rawCanvasRef.current.nodes.filter((n) => !removedIds.has(n.id)),
+          edges: rawCanvasRef.current.edges.filter(
+            (e) => !removedIds.has(e.fromNode) && !removedIds.has(e.toNode)
+          ),
+        };
+        rawCanvasRef.current = updatedCanvas;
+        onSyncStatusChange('saving');
+        api.saveCanvas(updatedCanvas)
+          .then(() => onSyncStatusChange('saved'))
+          .catch((e) => {
+            console.error('Error saving deleted nodes:', e);
+            onSyncStatusChange('error');
+          });
+        return;
+      }
+
+      // 2. Check for position changes
       const hasPositionChange = changes.some(
         (c: any) => c.type === 'position' && c.dragging === false
       );
@@ -126,7 +186,6 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
 
         const timer = setTimeout(async () => {
           try {
-            // Update node positions in rawCanvasRef
             setNodes((currentNodes) => {
               if (!rawCanvasRef.current) return currentNodes;
 
@@ -150,14 +209,15 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
                 nodes: updatedObsidianNodes,
               };
 
-              // Send to disk API
-              api.saveCanvas(updatedCanvas).then(() => {
-                rawCanvasRef.current = updatedCanvas;
-                onSyncStatusChange('saved');
-              }).catch((e) => {
-                console.error('Error auto-saving canvas:', e);
-                onSyncStatusChange('error');
-              });
+              api.saveCanvas(updatedCanvas)
+                .then(() => {
+                  rawCanvasRef.current = updatedCanvas;
+                  onSyncStatusChange('saved');
+                })
+                .catch((e) => {
+                  console.error('Error auto-saving canvas:', e);
+                  onSyncStatusChange('error');
+                });
 
               return currentNodes;
             });
@@ -171,6 +231,31 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
       }
     },
     [onNodesChange, saveTimer, onSyncStatusChange, setNodes]
+  );
+
+  // Handle edge deletions (Delete key)
+  const handleEdgesChange = useCallback(
+    (changes: any) => {
+      onEdgesChange(changes);
+
+      const removeChanges = changes.filter((c: any) => c.type === 'remove');
+      if (removeChanges.length > 0 && rawCanvasRef.current) {
+        const removedEdgeIds = new Set(removeChanges.map((c: any) => c.id));
+        const updatedCanvas: ObsidianCanvasData = {
+          ...rawCanvasRef.current,
+          edges: rawCanvasRef.current.edges.filter((e) => !removedEdgeIds.has(e.id)),
+        };
+        rawCanvasRef.current = updatedCanvas;
+        onSyncStatusChange('saving');
+        api.saveCanvas(updatedCanvas)
+          .then(() => onSyncStatusChange('saved'))
+          .catch((e) => {
+            console.error('Error saving deleted edges:', e);
+            onSyncStatusChange('error');
+          });
+      }
+    },
+    [onEdgesChange, onSyncStatusChange]
   );
 
   // Filtered nodes based on search or category
@@ -223,7 +308,8 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
         nodes={filteredNodes}
         edges={edges}
         onNodesChange={handleNodesChange}
-        onEdgesChange={onEdgesChange}
+        onEdgesChange={handleEdgesChange}
+        deleteKeyCode={['Delete', 'Backspace']}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.1 }}
@@ -340,6 +426,8 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ onOpenFile, onSyncStatus
           <span>{nodes.length} Nodes</span>
           <span className="text-slate-300">•</span>
           <span>{edges.length} Edges</span>
+          <span className="text-slate-300">•</span>
+          <span className="text-[10px] text-slate-400">Del/Backspace to remove</span>
         </Panel>
       </ReactFlow>
     </div>

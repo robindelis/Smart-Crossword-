@@ -37,6 +37,15 @@ export const api = {
     return res.json();
   },
 
+  async saveFile(filePath: string, content: string): Promise<void> {
+    const res = await fetch('/api/file', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: filePath, content }),
+    });
+    if (!res.ok) throw new Error(`Failed to save file: ${res.statusText}`);
+  },
+
   async fetchFile(filePath: string): Promise<{ filename: string; content?: string; isImage?: boolean }> {
     const ext = filePath.split('.').pop()?.toLowerCase() || '';
     const isImage = ['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif'].includes(ext);

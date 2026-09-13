@@ -200,12 +200,39 @@ function projectCockpitPlugin(): Plugin {
         try {
           if (pathname === '/api/canvas') {
             if (req.method === 'GET' || req.method === 'HEAD') {
-              const data = fs.readFileSync(CANVAS_FILE, 'utf-8');
+              const rawData = fs.readFileSync(CANVAS_FILE, 'utf-8');
+              const canvasData = JSON.parse(rawData);
+
+              // Attach markdown file contents directly for fast rendering
+              if (canvasData.nodes && Array.isArray(canvasData.nodes)) {
+                for (const node of canvasData.nodes) {
+                  if (node.type === 'file' && node.file) {
+                    const absPath = path.join(REPO_ROOT, node.file);
+                    const ext = path.extname(node.file).toLowerCase();
+                    if (['.md', '.txt', '.loom'].includes(ext) && fs.existsSync(absPath)) {
+                      try {
+                        node.fileContent = fs.readFileSync(absPath, 'utf-8');
+                      } catch (e) {
+                        console.error('Error reading file for node:', node.file, e);
+                      }
+                    }
+                  }
+                }
+              }
+
               res.setHeader('Content-Type', 'application/json');
-              res.end(data);
+              res.end(JSON.stringify(canvasData));
               return;
             } else if (req.method === 'PUT') {
               const body = await readJsonBody(req);
+              // Clean fileContent before saving to Project_Cockpit.canvas so it stays pure
+              if (body.nodes && Array.isArray(body.nodes)) {
+                body.nodes = body.nodes.map((n: any) => {
+                  const copy = { ...n };
+                  delete copy.fileContent;
+                  return copy;
+                });
+              }
               fs.writeFileSync(CANVAS_FILE, JSON.stringify(body, null, 2), 'utf-8');
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({ success: true, timestamp: Date.now() }));
@@ -287,6 +314,26 @@ function projectCockpitPlugin(): Plugin {
                 filename: path.basename(targetPath),
                 content,
               }));
+              return;
+            } else if (req.method === 'PUT') {
+              const body = await readJsonBody(req);
+              const filePath = body.path;
+              if (!filePath) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: 'Missing path in request body' }));
+                return;
+              }
+
+              const targetPath = path.resolve(REPO_ROOT, filePath.replace(/^\/+/, ''));
+              if (!targetPath.startsWith(REPO_ROOT)) {
+                res.statusCode = 403;
+                res.end(JSON.stringify({ error: 'Forbidden path' }));
+                return;
+              }
+
+              fs.writeFileSync(targetPath, body.content ?? '', 'utf-8');
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: true, timestamp: Date.now() }));
               return;
             }
           }
