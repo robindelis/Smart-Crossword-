@@ -1,746 +1,90 @@
 {
-  "nodes": [
-    {
-      "id": "group-hw",
-      "type": "group",
-      "x": 357,
-      "y": -225,
-      "width": 7680,
-      "height": 5820,
-      "color": "5",
-      "label": "Circuit Board, RFID & Hardware"
-    },
-    {
-      "id": "group-cad",
-      "type": "group",
-      "x": 8240,
-      "y": -140,
-      "width": 5100,
-      "height": 3180,
-      "color": "1",
-      "label": "Mechanical CAD, 3D Printing & Assembly"
-    },
-    {
-      "id": "group-comm",
-      "type": "group",
-      "x": -4720,
-      "y": -4320,
-      "width": 5880,
-      "height": 2260,
-      "color": "2",
-      "label": "Commercial, Marketing & Launch"
-    },
-    {
-      "id": "group-fw",
-      "type": "group",
-      "x": 4960,
-      "y": -3840,
-      "width": 4600,
-      "height": 2720,
-      "color": "4",
-      "label": "Software, Rules & Multi-Language"
-    },
-    {
-      "id": "group-procurement",
-      "type": "group",
-      "x": -4480,
-      "y": 1800,
-      "width": 3240,
-      "height": 2800,
-      "color": "4",
-      "label": "Procurement & Shopping Lists (What to Buy)"
-    },
-    {
-      "id": "group-state",
-      "type": "group",
-      "x": -7440,
-      "y": -560,
-      "width": 3460,
-      "height": 2305,
-      "color": "6",
-      "label": "Tasks & Project State"
-    },
-    {
-      "id": "group-ideas",
-      "type": "group",
-      "x": 1240,
-      "y": -3000,
-      "width": 2640,
-      "height": 1880,
-      "color": "3",
-      "label": "Ideas & Feature Backlog"
-    },
-    {
-      "id": "group-android",
-      "type": "group",
-      "x": 10400,
-      "y": -5440,
-      "width": 3600,
-      "height": 2720,
-      "color": "4",
-      "label": "Native Android Companion (Kotlin & Compose)"
-    },
-    {
-      "id": "node-android-companion",
-      "type": "text",
-      "text": "## Native Android Companion App\n\n* **Location**: `software/android/`\n* **Tech**: Kotlin, Jetpack Compose, Material 3, Gradle 9.1\n* **Board**: Interactive 4x4 test grid with 2W/3W/2L/3L & rack\n* **Referee**: Tournament English referee (168k words)\n* **Auth**: 1-Tap play & Google Sign-In with Firebase\n* **Persistence**: Local-first SQLite (`AppDatabaseHelper`)\n* **Pairing**: Unique handles (`sarah#4821`, `board_scb1234`)\n* **Living Memory**: `software/android/android_lessons.md`",
-      "x": 10540,
-      "y": -5320,
-      "width": 1600,
-      "height": 700,
-      "color": "4"
-    },
-    {
-      "id": "node-android-auth-db",
-      "type": "text",
-      "text": "## Google Auth & SQLite Database\n\n* **Firebase Project**: `smart-crossword-2177f`\n* **Google Auth**: Google Play Services + Firebase Auth\n* **Web Client ID**: `810714924778-...apps.googleusercontent.com`\n* **Debug SHA-1**: `93:5F:39:...:53`\n* **Database**: Local SQLite `crossword_companion.db`\n* **Inspector Tool**: `./software/android/inspect_db.sh`\n* **Clean/Reset**: `./inspect_db.sh --clear` or in-app reset button\n* **Tables**: `users`, `friends`, `games` with session exclusivity",
-      "x": 12290,
-      "y": -5320,
-      "width": 1600,
-      "height": 700,
-      "color": "4"
-    },
-    {
-      "id": "node-android-tests",
-      "type": "text",
-      "text": "## Automated Test Suites (JVM & Hardware)\n\n* **15 JVM Unit Tests** (`./gradlew testDebugUnitTest`):\n  * `FirebaseConfigTest`: SHA-1 hash & Web Client ID\n  * `RefereeTest`: 168k words, 2W/3W/2L/3L math, 26 letter values, vertical/horizontal words, gaps\n  * `MainScreenViewModelTest`: View model state\n* **6 On-Device Instrumented Tests** (`./gradlew connectedDebugAndroidTest`):\n  * `AppDatabaseDeviceTest`: Real hardware execution on OnePlus 7T Pro\n  * Tests: DB schema, board seed (`board_scb8492`), session exclusivity, logout, friends, reset\n* **All 21 automated tests passing**",
-      "x": 12290,
-      "y": -4570,
-      "width": 1600,
-      "height": 900,
-      "color": "4"
-    },
-    {
-      "id": "node-android-lessons",
-      "type": "file",
-      "file": "software/android/android_lessons.md",
-      "x": 10540,
-      "y": -3560,
-      "width": 1600,
-      "height": 800,
-      "color": "4"
-    },
-    {
-      "id": "node-android-readme",
-      "type": "file",
-      "file": "software/android/README.md",
-      "x": 10540,
-      "y": -4570,
-      "width": 1600,
-      "height": 900,
-      "color": "4"
-    },
-    {
-      "id": "node-rfid-schem",
-      "type": "file",
-      "file": "docs/RFID_Multiplexing_and_Coil_Schematics.md",
-      "x": 3640,
-      "y": 0,
-      "width": 1020,
-      "height": 2920,
-      "color": "5"
-    },
-    {
-      "id": "node-rf-theory",
-      "type": "file",
-      "file": "docs/LC_Resonance_and_Antenna_Theory.md",
-      "x": 4820,
-      "y": 2350,
-      "width": 1140,
-      "height": 2920,
-      "color": "5"
-    },
-    {
-      "id": "node-hall-eval",
-      "type": "file",
-      "file": "docs/Hall_Effect_vs_RFID_Evaluation.md",
-      "x": 4880,
-      "y": 40,
-      "width": 1020,
-      "height": 2080,
-      "color": "5"
-    },
-    {
-      "id": "node-rf-theory-summary",
-      "type": "text",
-      "text": "## R & C Resonant Selection Theory\n\n* **Carrier Frequency**: 13.56 MHz (ISO 14443A)\n* **Trace Width ($w$) & Gap ($s$)**: $w = 0.25\\,\\text{mm}$, $s = 0.25\\,\\text{mm}$\n* **Coil Inductance ($L$)**: **1.262 µH** (7 turns, 17.5mm square)\n* **Tuning Capacitor ($C$)**: **100 pF** (50V C0G/NP0, nearest E12 standard)\n  * *Ideal Thomson*: $C_{\\text{ideal}} = \\frac{1}{\\omega_0^2 L} = 109.2\\,\\text{pF}$\n  * *Detuning Tolerance*: $Q=25$ gives $542\\,\\text{kHz}$ bandwidth. With $100\\,\\text{pF} + 5\\,\\text{pF}$ stray ($13.83\\,\\text{MHz}$), flux remains $>72\\%$. Tag loading reactively pulls resonance down into $13.56\\,\\text{MHz}$.\n* **Damping Resistor ($R$)**: **3.3 Ω** (1% 0603)\n  * *Target Q-Factor*: $Q = 25$ ($B = 542\\,\\text{kHz}$ for 848 kHz subcarrier)\n  * *Loop Equation*: $R_{\\text{total}} = \\frac{\\omega_0 L}{Q} \\approx 4.30\\,\\Omega$\n  * $R_{\\text{damp}} = 4.30 - 0.66_{\\text{coil}} - 0.35_{\\text{mux}} = 3.29\\,\\Omega \\to \\mathbf{3.3\\,\\Omega}$",
-      "x": 6160,
-      "y": 865,
-      "width": 980,
-      "height": 940,
-      "color": "5"
-    },
-    {
-      "id": "node-jlcpcb-guide",
-      "type": "file",
-      "file": "hardware/kicad/test_grid_4x4/jlcpcb/JLCPCB_ORDERING_GUIDE.md",
-      "x": 2540,
-      "y": 580,
-      "width": 1000,
-      "height": 2330,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-readme",
-      "type": "file",
-      "file": "hardware/cad/README.md",
-      "x": 8360,
-      "y": -40,
-      "width": 840,
-      "height": 1700,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-lessons",
-      "type": "file",
-      "file": "hardware/cad/cad_lessons.md",
-      "x": 8360,
-      "y": 1745,
-      "width": 1040,
-      "height": 1210,
-      "color": "5"
-    },
-    {
-      "id": "node-hw-3d-render",
-      "type": "file",
-      "file": "hardware/kicad/test_grid_4x4/test_grid_4x4_3d_iso.png",
-      "x": 2540,
-      "y": -40,
-      "width": 1007,
-      "height": 560,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-assembly-notes",
-      "type": "text",
-      "text": "## 4x4 Master 3D Assembly\n\n* **Base Tray**: Houses PCB with 3.5mm standoffs\n* **PCB Mockup**: 100x100mm 4-layer NFC board\n* **Top Grid Plate**: 1.5mm RF floor + 1.2mm ribs\n* **Tiles**: 16 NFC Scrabble tiles with NTAG213\n* **Fasteners**: 4x M3 screws (90mm pitch)\n* **Openings**: J1 (Host), J2 (NFC), J3 (SMA)",
-      "x": 9520,
-      "y": 1210,
-      "width": 1400,
-      "height": 450,
-      "color": "1"
-    },
-    {
-      "id": "node-cad-render-assembly",
-      "type": "file",
-      "file": "hardware/cad/output/assembly_4x4_prototype_3d.png",
-      "x": 9480,
-      "y": 60,
-      "width": 1400,
-      "height": 1050,
-      "color": "1"
-    },
-    {
-      "id": "102a3e5c110a1c00",
-      "type": "file",
-      "file": "docs/Potential_Issues.md",
-      "x": 2560,
-      "y": -2880,
-      "width": 1240,
-      "height": 760,
-      "color": "3"
-    },
-    {
-      "id": "node-lexicons",
-      "type": "file",
-      "file": "docs/Multi_Language_Lexicons.md",
-      "x": 7067,
-      "y": 201,
-      "width": 870,
-      "height": 1900,
-      "color": "4"
-    },
-    {
-      "id": "node-sw-arch",
-      "type": "file",
-      "file": "docs/Software_Architecture.md",
-      "x": 6080,
-      "y": -3840,
-      "width": 2450,
-      "height": 2620,
-      "color": "4"
-    },
-    {
-      "id": "node-esp32-driver",
-      "type": "file",
-      "file": "firmware/esp32_driver/README.md",
-      "x": 8590,
-      "y": -3840,
-      "width": 950,
-      "height": 2620,
-      "color": "4"
-    },
-    {
-      "id": "node-ideas",
-      "type": "file",
-      "file": "docs/Project_Ideas_Backlog.md",
-      "x": 1360,
-      "y": -2880,
-      "width": 1000,
-      "height": 1340,
-      "color": "3"
-    },
-    {
-      "id": "node-hw-kicad-4x4",
-      "type": "file",
-      "file": "hardware/kicad/test_grid_4x4/README.md",
-      "x": 1760,
-      "y": 0,
-      "width": 680,
-      "height": 2911,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-render-base",
-      "type": "file",
-      "file": "hardware/cad/output/base_enclosure_3d.png",
-      "x": 11400,
-      "y": -80,
-      "width": 1000,
-      "height": 750,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-render-top",
-      "type": "file",
-      "file": "hardware/cad/output/top_grid_plate_3d.png",
-      "x": 11400,
-      "y": 735,
-      "width": 1000,
-      "height": 750,
-      "color": "5"
-    },
-    {
-      "id": "node-cad-render-tile",
-      "type": "file",
-      "file": "hardware/cad/output/nfc_tile_prototype_3d.png",
-      "x": 11400,
-      "y": 1600,
-      "width": 1000,
-      "height": 750,
-      "color": "3"
-    },
-    {
-      "id": "node-rfid-strat",
-      "type": "file",
-      "file": "docs/RFID_Detection_Strategy.md",
-      "x": 580,
-      "y": 320,
-      "width": 810,
-      "height": 2080,
-      "color": "5"
-    },
-    {
-      "id": "node-hw-specs",
-      "type": "text",
-      "text": "## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 µH per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring",
-      "x": 680,
-      "y": -100,
-      "width": 420,
-      "height": 380,
-      "color": "5"
-    },
-    {
-      "id": "node-orchestrator",
-      "type": "file",
-      "file": "AGENTS.md",
-      "x": -840,
-      "y": -1560,
-      "width": 450,
-      "height": 520,
-      "color": "1"
-    },
-    {
-      "id": "node-comp-table",
-      "type": "file",
-      "file": "docs/Component_Candidate_Comparison.md",
-      "x": -2880,
-      "y": 1840,
-      "width": 1540,
-      "height": 2680
-    },
-    {
-      "id": "5f5853a0a0a86f4a",
-      "type": "text",
-      "text": "",
-      "x": -3037,
-      "y": -1678,
-      "width": 250,
-      "height": 60
-    },
-    {
-      "id": "node-loom-proto",
-      "type": "file",
-      "file": "docs/Prototype_4x4_Shopping_List.md",
-      "x": -4360,
-      "y": 1840,
-      "width": 900,
-      "height": 1280,
-      "color": "4"
-    },
-    {
-      "id": "node-loom-full",
-      "type": "file",
-      "file": "docs/Production_15x15_Sourcing_List.md",
-      "x": -4380,
-      "y": 3200,
-      "width": 940,
-      "height": 1320,
-      "color": "4"
-    },
-    {
-      "id": "node-project-state",
-      "type": "file",
-      "file": "docs/PROJECT_STATE.md",
-      "x": -7260,
-      "y": -440,
-      "width": 1120,
-      "height": 1910,
-      "color": "6"
-    },
-    {
-      "id": "node-market",
-      "type": "file",
-      "file": "commercial/market_analysis.md",
-      "x": -4600,
-      "y": -4280,
-      "width": 1360,
-      "height": 2160,
-      "color": "2"
-    },
-    {
-      "id": "node-script",
-      "type": "file",
-      "file": "commercial/kickstarter_video_script.md",
-      "x": -2680,
-      "y": -4210,
-      "width": 1080,
-      "height": 1920,
-      "color": "2"
-    },
-    {
-      "id": "node-playbook",
-      "type": "file",
-      "file": "commercial/prelaunch_playbook.md",
-      "x": -3220,
-      "y": -4210,
-      "width": 510,
-      "height": 1920,
-      "color": "2"
-    },
-    {
-      "id": "node-tasks",
-      "type": "file",
-      "file": "docs/Project_Tasks.md",
-      "x": -6120,
-      "y": -440,
-      "width": 920,
-      "height": 2120,
-      "color": "3"
-    },
-    {
-      "id": "node-sourcing",
-      "type": "file",
-      "file": "commercial/tile_and_rfid_sourcing.md",
-      "x": -1480,
-      "y": -4210,
-      "width": 1360,
-      "height": 1920,
-      "color": "2"
-    },
-    {
-      "id": "node-web-landing",
-      "type": "file",
-      "file": "software/web/README.md",
-      "x": 0,
-      "y": -4240,
-      "width": 1040,
-      "height": 2080,
-      "color": "2"
-    },
-    {
-      "id": "node-cockpit-web",
-      "type": "file",
-      "file": "software/cockpit/README.md",
-      "x": -5050,
-      "y": -440,
-      "width": 1000,
-      "height": 2120,
-      "color": "6"
-    }
-  ],
-  "edges": [
-    {
-      "id": "edge-rfid-hall",
-      "fromNode": "node-rfid-strat",
-      "fromSide": "right",
-      "toNode": "node-hall-eval",
-      "toSide": "left",
-      "label": "Hall vs RFID Trade-off"
-    },
-    {
-      "id": "edge-ideas-tasks",
-      "fromNode": "node-ideas",
-      "fromSide": "bottom",
-      "toNode": "node-tasks",
-      "toSide": "top",
-      "label": "Graduates to tasks"
-    },
-    {
-      "id": "edge-script-playbook",
-      "fromNode": "node-market",
-      "fromSide": "right",
-      "toNode": "node-playbook",
-      "toSide": "left",
-      "label": "Pre-launch strategy"
-    },
-    {
-      "id": "edge-rfid-schem",
-      "fromNode": "node-rfid-strat",
-      "fromSide": "bottom",
-      "toNode": "node-rfid-schem",
-      "toSide": "left",
-      "label": "Coil Schematics & 225 Mux Tree"
-    },
-    {
-      "id": "edge-rfid-kicad",
-      "fromNode": "node-rfid-strat",
-      "fromSide": "right",
-      "toNode": "node-hw-kicad-4x4",
-      "toSide": "left",
-      "label": "KiCad 4x4 Prototype"
-    },
-    {
-      "id": "edge-kicad-3d",
-      "fromNode": "node-hw-kicad-4x4",
-      "fromSide": "right",
-      "toNode": "node-hw-3d-render",
-      "toSide": "left",
-      "label": "3D Board Preview"
-    },
-    {
-      "id": "edge-cad-lessons",
-      "fromNode": "node-cad-readme",
-      "fromSide": "bottom",
-      "toNode": "node-cad-lessons",
-      "toSide": "top",
-      "label": "Living Memory (11 Lessons)"
-    },
-    {
-      "id": "edge-assembly-base",
-      "fromNode": "node-cad-render-assembly",
-      "fromSide": "right",
-      "toNode": "node-cad-render-base",
-      "toSide": "left",
-      "label": "Base Tray"
-    },
-    {
-      "id": "edge-assembly-top",
-      "fromNode": "node-cad-render-assembly",
-      "fromSide": "right",
-      "toNode": "node-cad-render-top",
-      "toSide": "left",
-      "label": "Top Grid Plate"
-    },
-    {
-      "id": "edge-assembly-tile",
-      "fromNode": "node-cad-render-assembly",
-      "fromSide": "right",
-      "toNode": "node-cad-render-tile",
-      "toSide": "left",
-      "label": "NFC Tile Prototype"
-    },
-    {
-      "id": "edge-market-sourcing",
-      "fromNode": "node-market",
-      "fromSide": "right",
-      "toNode": "node-sourcing",
-      "toSide": "left",
-      "label": "Tile & RFID Sourcing"
-    },
-    {
-      "id": "edge-tasks-state",
-      "fromNode": "node-tasks",
-      "fromSide": "left",
-      "toNode": "node-project-state",
-      "toSide": "right",
-      "label": "Milestone status"
-    },
-    {
-      "id": "edge-state-comm",
-      "fromNode": "node-project-state",
-      "fromSide": "top",
-      "toNode": "node-market",
-      "toSide": "bottom",
-      "label": "Commercial roadmap"
-    },
-    {
-      "id": "edge-playbook-script",
-      "fromNode": "node-playbook",
-      "fromSide": "right",
-      "toNode": "node-script",
-      "toSide": "left",
-      "label": "Video Script"
-    },
-    {
-      "id": "edge-sourcing-hw",
-      "fromNode": "node-sourcing",
-      "fromSide": "bottom",
-      "toNode": "node-hw-specs",
-      "toSide": "top",
-      "label": "15mm Tag Specs"
-    },
-    {
-      "id": "edge-specs-rfid",
-      "fromNode": "node-hw-specs",
-      "fromSide": "bottom",
-      "toNode": "node-rfid-strat",
-      "toSide": "top",
-      "label": "Antenna & Sensor Specs"
-    },
-    {
-      "id": "edge-hw-sw",
-      "fromNode": "node-hw-specs",
-      "fromSide": "top",
-      "toNode": "node-sw-arch",
-      "toSide": "bottom",
-      "label": "Hardware-Software Interface"
-    },
-    {
-      "id": "edge-sw-lexicons",
-      "fromNode": "node-sw-arch",
-      "fromSide": "left",
-      "toNode": "node-lexicons",
-      "toSide": "right",
-      "label": "Tournament Lexicons (5 Langs)"
-    },
-    {
-      "id": "edge-hw-cad",
-      "fromNode": "node-hw-kicad-4x4",
-      "fromSide": "right",
-      "toNode": "node-cad-readme",
-      "toSide": "left",
-      "label": "Mechanical CAD & Enclosure"
-    },
-    {
-      "id": "edge-cad-assembly",
-      "fromNode": "node-cad-readme",
-      "fromSide": "right",
-      "toNode": "node-cad-render-assembly",
-      "toSide": "left",
-      "label": "4x4 Master Assembly"
-    },
-    {
-      "id": "edge-cad-notes",
-      "fromNode": "node-cad-readme",
-      "fromSide": "right",
-      "toNode": "node-cad-assembly-notes",
-      "toSide": "left",
-      "label": "Assembly Specs"
-    },
-    {
-      "id": "edge-proto-comp",
-      "fromNode": "node-loom-proto",
-      "fromSide": "right",
-      "toNode": "node-comp-table",
-      "toSide": "left",
-      "label": "Candidate Research & Comparison"
-    },
-    {
-      "id": "edge-full-comp",
-      "fromNode": "node-loom-full",
-      "fromSide": "right",
-      "toNode": "node-comp-table",
-      "toSide": "left",
-      "label": "Component Trade-offs"
-    },
-    {
-      "id": "edge-sw-android",
-      "fromNode": "node-sw-arch",
-      "fromSide": "bottom",
-      "toNode": "node-android-companion",
-      "toSide": "top",
-      "label": "Native Android Companion (Kotlin & Compose)"
-    },
-    {
-      "id": "edge-android-readme",
-      "fromNode": "node-android-companion",
-      "fromSide": "bottom",
-      "toNode": "node-android-readme",
-      "toSide": "top",
-      "label": "Companion Documentation"
-    },
-    {
-      "id": "edge-android-auth",
-      "fromNode": "node-android-companion",
-      "fromSide": "right",
-      "toNode": "node-android-auth-db",
-      "toSide": "left",
-      "label": "Google Auth & SQLite"
-    },
-    {
-      "id": "edge-android-tests",
-      "fromNode": "node-android-auth-db",
-      "fromSide": "bottom",
-      "toNode": "node-android-tests",
-      "toSide": "top",
-      "label": "Hardware & Unit Testing"
-    },
-    {
-      "id": "edge-proto-hw-compat",
-      "fromNode": "node-loom-proto",
-      "fromSide": "top",
-      "toNode": "node-hw-kicad-4x4",
-      "toSide": "bottom",
-      "label": "Shopping List & PCB Compatibility Verified"
-    },
-    {
-      "id": "edge-schem-theory",
-      "fromNode": "node-rfid-schem",
-      "fromSide": "right",
-      "toNode": "node-rf-theory",
-      "toSide": "left",
-      "label": "L, C, R Mathematical Derivation"
-    },
-    {
-      "id": "edge-theory-summary",
-      "fromNode": "node-rf-theory",
-      "fromSide": "right",
-      "toNode": "node-rf-theory-summary",
-      "toSide": "left",
-      "label": "Resonant Formulas & Component Values"
-    },
-    {
-      "id": "edge-kicad-jlcpcb",
-      "fromNode": "node-hw-kicad-4x4",
-      "fromSide": "right",
-      "toNode": "node-jlcpcb-guide",
-      "toSide": "left",
-      "label": "JLCPCB SMT Package & Guide"
-    },
-    {
-      "id": "edge-arch-esp32",
-      "fromNode": "node-sw-arch",
-      "fromSide": "right",
-      "toNode": "node-esp32-driver",
-      "toSide": "left",
-      "label": "ESP32 4x4 Bench Driver"
-    },
-    {
-      "id": "edge-playbook-web",
-      "fromNode": "node-playbook",
-      "fromSide": "right",
-      "toNode": "node-web-landing",
-      "toSide": "left",
-      "label": "1-Page Pre-Launch Funnel"
-    },
-    {
-      "id": "edge-tasks-cockpit",
-      "fromNode": "node-tasks",
-      "fromSide": "right",
-      "toNode": "node-cockpit-web",
-      "toSide": "left",
-      "label": "Interactive Progression & Disk Sync"
-    }
-  ]
+	"nodes":[
+		{"id":"group-hw","type":"group","x":357,"y":-225,"width":7680,"height":7465,"color":"5","label":"Circuit Board, RFID & Hardware"},
+		{"id":"group-cad","type":"group","x":8240,"y":-140,"width":5100,"height":3180,"color":"1","label":"Mechanical CAD, 3D Printing & Assembly"},
+		{"id":"group-comm","type":"group","x":-4720,"y":-4320,"width":5880,"height":2260,"color":"2","label":"Commercial, Marketing & Launch"},
+		{"id":"group-fw","type":"group","x":4960,"y":-3840,"width":5800,"height":2720,"color":"4","label":"Software, Rules & Multi-Language"},
+		{"id":"group-android","type":"group","x":10400,"y":-5440,"width":3600,"height":2720,"color":"4","label":"Native Android Companion (Kotlin & Compose)"},
+		{"id":"group-procurement","type":"group","x":-4480,"y":1800,"width":3240,"height":2800,"color":"4","label":"Procurement & Shopping Lists (What to Buy)"},
+		{"id":"group-state","type":"group","x":-7440,"y":-560,"width":3460,"height":2305,"color":"6","label":"Tasks & Project State"},
+		{"id":"group-ideas","type":"group","x":1240,"y":-3000,"width":2640,"height":1880,"color":"3","label":"Ideas & Feature Backlog"},
+		{"id":"node-android-companion","type":"text","text":"## Native Android Companion App\n\n* **Location**: `software/android/`\n* **Tech**: Kotlin, Jetpack Compose, Material 3, Gradle 9.1\n* **Board**: Interactive 4x4 test grid with 2W/3W/2L/3L & rack\n* **Referee**: Tournament English referee (168k words)\n* **Auth**: 1-Tap play & Google Sign-In with Firebase\n* **Persistence**: Local-first SQLite (`AppDatabaseHelper`)\n* **Pairing**: Unique handles (`sarah#4821`, `board_scb1234`)\n* **Living Memory**: `software/android/android_lessons.md`","x":10540,"y":-5320,"width":1600,"height":700,"color":"4"},
+		{"id":"node-orchestrator","type":"file","file":"AGENTS.md","x":-840,"y":-1560,"width":450,"height":520,"color":"1"},
+		{"id":"5f5853a0a0a86f4a","type":"text","text":"","x":-3037,"y":-1678,"width":250,"height":60},
+		{"id":"node-market","type":"file","file":"commercial/market_analysis.md","x":-4600,"y":-4280,"width":1360,"height":2160,"color":"2"},
+		{"id":"node-script","type":"file","file":"commercial/kickstarter_video_script.md","x":-2680,"y":-4210,"width":1080,"height":1920,"color":"2"},
+		{"id":"node-playbook","type":"file","file":"commercial/prelaunch_playbook.md","x":-3220,"y":-4210,"width":510,"height":1920,"color":"2"},
+		{"id":"node-sourcing","type":"file","file":"commercial/tile_and_rfid_sourcing.md","x":-1480,"y":-4210,"width":1360,"height":1920,"color":"2"},
+		{"id":"node-web-landing","type":"file","file":"software/web/README.md","x":0,"y":-4240,"width":1040,"height":2080,"color":"2"},
+		{"id":"node-android-auth-db","type":"text","text":"## Google Auth & SQLite Database\n\n* **Firebase Project**: `smart-crossword-2177f`\n* **Google Auth**: Google Play Services + Firebase Auth\n* **Web Client ID**: `810714924778-...apps.googleusercontent.com`\n* **Debug SHA-1**: `93:5F:39:...:53`\n* **Database**: Local SQLite `crossword_companion.db`\n* **Inspector Tool**: `./software/android/inspect_db.sh`\n* **Clean/Reset**: `./inspect_db.sh --clear` or in-app reset button\n* **Tables**: `users`, `friends`, `games` with session exclusivity","x":12290,"y":-5320,"width":1600,"height":700,"color":"4"},
+		{"id":"node-android-tests","type":"text","text":"## Automated Test Suites (JVM & Hardware)\n\n* **15 JVM Unit Tests** (`./gradlew testDebugUnitTest`):\n  * `FirebaseConfigTest`: SHA-1 hash & Web Client ID\n  * `RefereeTest`: 168k words, 2W/3W/2L/3L math, 26 letter values, vertical/horizontal words, gaps\n  * `MainScreenViewModelTest`: View model state\n* **6 On-Device Instrumented Tests** (`./gradlew connectedDebugAndroidTest`):\n  * `AppDatabaseDeviceTest`: Real hardware execution on OnePlus 7T Pro\n  * Tests: DB schema, board seed (`board_scb8492`), session exclusivity, logout, friends, reset\n* **All 21 automated tests passing**","x":12290,"y":-4570,"width":1600,"height":900,"color":"4"},
+		{"id":"node-android-lessons","type":"file","file":"software/android/android_lessons.md","x":10540,"y":-3560,"width":1600,"height":800,"color":"4"},
+		{"id":"node-android-readme","type":"file","file":"software/android/README.md","x":10540,"y":-4570,"width":1600,"height":900,"color":"4"},
+		{"id":"node-rf-theory","type":"file","file":"docs/LC_Resonance_and_Antenna_Theory.md","x":4820,"y":2350,"width":1140,"height":2920,"color":"5"},
+		{"id":"node-hall-eval","type":"file","file":"docs/Hall_Effect_vs_RFID_Evaluation.md","x":4880,"y":40,"width":1020,"height":2080,"color":"5"},
+		{"id":"node-rf-theory-summary","type":"text","text":"## R & C Resonant Selection Theory\n\n* **Carrier Frequency**: 13.56 MHz (ISO 14443A)\n* **Trace Width ($w$) & Gap ($s$)**: $w = 0.25\\,\\text{mm}$, $s = 0.25\\,\\text{mm}$\n* **Coil Inductance ($L$)**: **1.262 µH** (7 turns, 17.5mm square)\n* **Tuning Capacitor ($C$)**: **100 pF** (50V C0G/NP0, nearest E12 standard)\n  * *Ideal Thomson*: $C_{\\text{ideal}} = \\frac{1}{\\omega_0^2 L} = 109.2\\,\\text{pF}$\n  * *Detuning Tolerance*: $Q=25$ gives $542\\,\\text{kHz}$ bandwidth. With $100\\,\\text{pF} + 5\\,\\text{pF}$ stray ($13.83\\,\\text{MHz}$), flux remains $>72\\%$. Tag loading reactively pulls resonance down into $13.56\\,\\text{MHz}$.\n* **Damping Resistor ($R$)**: **3.3 Ω** (1% 0603)\n  * *Target Q-Factor*: $Q = 25$ ($B = 542\\,\\text{kHz}$ for 848 kHz subcarrier)\n  * *Loop Equation*: $R_{\\text{total}} = \\frac{\\omega_0 L}{Q} \\approx 4.30\\,\\Omega$\n  * $R_{\\text{damp}} = 4.30 - 0.66_{\\text{coil}} - 0.35_{\\text{mux}} = 3.29\\,\\Omega \\to \\mathbf{3.3\\,\\Omega}$","x":6160,"y":865,"width":980,"height":940,"color":"5"},
+		{"id":"node-cad-readme","type":"file","file":"hardware/cad/README.md","x":8360,"y":-40,"width":840,"height":1700,"color":"5"},
+		{"id":"node-cad-lessons","type":"file","file":"hardware/cad/cad_lessons.md","x":8360,"y":1745,"width":1040,"height":1210,"color":"5"},
+		{"id":"node-rfid-schem","type":"file","file":"docs/RFID_Multiplexing_and_Coil_Schematics.md","x":3640,"y":0,"width":1020,"height":2920,"color":"5"},
+		{"id":"node-jlcpcb-guide","type":"file","file":"hardware/kicad/test_grid_4x4/jlcpcb/JLCPCB_ORDERING_GUIDE.md","x":2540,"y":580,"width":1000,"height":2330,"color":"5"},
+		{"id":"node-hw-3d-render","type":"file","file":"hardware/kicad/test_grid_4x4/test_grid_4x4_3d_iso.png","x":2540,"y":-40,"width":1007,"height":560,"color":"5"},
+		{"id":"node-cad-render-assembly","type":"file","file":"hardware/cad/output/assembly_4x4_prototype_3d.png","x":9480,"y":60,"width":1400,"height":1050,"color":"1"},
+		{"id":"102a3e5c110a1c00","type":"file","file":"docs/Potential_Issues.md","x":2560,"y":-2880,"width":1240,"height":760,"color":"3"},
+		{"id":"node-lexicons","type":"file","file":"docs/Multi_Language_Lexicons.md","x":7067,"y":201,"width":870,"height":1900,"color":"4"},
+		{"id":"node-sw-arch","type":"file","file":"docs/Software_Architecture.md","x":6080,"y":-3840,"width":2450,"height":2620,"color":"4"},
+		{"id":"node-esp32-driver","type":"file","file":"firmware/esp32_driver/README.md","x":8590,"y":-3840,"width":950,"height":2620,"color":"4"},
+		{"id":"node-cad-render-base","type":"file","file":"hardware/cad/output/base_enclosure_3d.png","x":11400,"y":-80,"width":1000,"height":750,"color":"5"},
+		{"id":"node-cad-assembly-notes","type":"text","text":"## 4x4 Master 3D Assembly\n\n* **Base Tray**: Houses PCB with 3.5mm standoffs\n* **PCB Mockup**: 100x100mm 4-layer NFC board\n* **Top Grid Plate**: 1.5mm RF floor + 1.2mm ribs\n* **Tiles**: 16 NFC Scrabble tiles with NTAG213\n* **Fasteners**: 4x M3 screws (90mm pitch)\n* **Openings**: J1 (Host), J2 (NFC), J3 (SMA)","x":9520,"y":1210,"width":1400,"height":450,"color":"1"},
+		{"id":"node-ideas","type":"file","file":"docs/Project_Ideas_Backlog.md","x":1360,"y":-2880,"width":1000,"height":1340,"color":"3"},
+		{"id":"node-hw-kicad-4x4","type":"file","file":"hardware/kicad/test_grid_4x4/README.md","x":1760,"y":0,"width":680,"height":2911,"color":"5"},
+		{"id":"node-cad-render-top","type":"file","file":"hardware/cad/output/top_grid_plate_3d.png","x":11400,"y":735,"width":1000,"height":750,"color":"5"},
+		{"id":"node-cad-render-tile","type":"file","file":"hardware/cad/output/nfc_tile_prototype_3d.png","x":11400,"y":1600,"width":1000,"height":750,"color":"3"},
+		{"id":"node-rfid-strat","type":"file","file":"docs/RFID_Detection_Strategy.md","x":580,"y":320,"width":810,"height":2080,"color":"5"},
+		{"id":"node-hw-specs","type":"text","text":"## Key Hardware Numbers\n\n* **Frequency**: 13.56 MHz (NFC)\n* **Coil Inductance**: ~1.5 µH per coil\n* **Switches**: 74HC4067 multiplexers\n* **Wood Thickness**: Under 2.5mm\n* **Scan Speed**: Under 500ms for all 225 tiles\n* **Battery**: 3.7V 3000mAh + magnetic plug\n* **Turntable**: 250mm ball-bearing ring","x":680,"y":-100,"width":420,"height":380,"color":"5"},
+		{"id":"node-comp-table","type":"file","file":"docs/Component_Candidate_Comparison.md","x":-2880,"y":1840,"width":1540,"height":2680},
+		{"id":"node-loom-proto","type":"file","file":"docs/Prototype_4x4_Shopping_List.md","x":-4360,"y":1840,"width":900,"height":1280,"color":"4"},
+		{"id":"node-loom-full","type":"file","file":"docs/Production_15x15_Sourcing_List.md","x":-4380,"y":3200,"width":940,"height":1320,"color":"4"},
+		{"id":"node-project-state","type":"file","file":"docs/PROJECT_STATE.md","x":-7260,"y":-440,"width":1120,"height":1910,"color":"6"},
+		{"id":"node-tasks","type":"file","file":"docs/Project_Tasks.md","x":-6120,"y":-440,"width":920,"height":2120,"color":"3"},
+		{"id":"node-cockpit-web","type":"file","file":"software/cockpit/README.md","x":-5050,"y":-440,"width":1000,"height":2120,"color":"6"},
+		{"id":"8729bf501e12a6dd","x":840,"y":3920,"width":1600,"height":1120,"color":"5","type":"text","text":"![[Pasted image 20260914160923.png]]"},
+		{"id":"node-pn532-single-test","type":"file","file":"firmware/pn532_single_test/README.md","x":9600,"y":-3840,"width":1050,"height":2620,"color":"4"}
+	],
+	"edges":[
+		{"id":"edge-pn532-test","fromNode":"node-esp32-driver","fromSide":"right","toNode":"node-pn532-single-test","toSide":"left","label":"Single Antenna Hardware Sanity Test"},
+		{"id":"edge-rfid-hall","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hall-eval","toSide":"left","label":"Hall vs RFID Trade-off"},
+		{"id":"edge-ideas-tasks","fromNode":"node-ideas","fromSide":"bottom","toNode":"node-tasks","toSide":"top","label":"Graduates to tasks"},
+		{"id":"edge-script-playbook","fromNode":"node-market","fromSide":"right","toNode":"node-playbook","toSide":"left","label":"Pre-launch strategy"},
+		{"id":"edge-rfid-schem","fromNode":"node-rfid-strat","fromSide":"bottom","toNode":"node-rfid-schem","toSide":"left","label":"Coil Schematics & 225 Mux Tree"},
+		{"id":"edge-rfid-kicad","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hw-kicad-4x4","toSide":"left","label":"KiCad 4x4 Prototype"},
+		{"id":"edge-kicad-3d","fromNode":"node-hw-kicad-4x4","fromSide":"right","toNode":"node-hw-3d-render","toSide":"left","label":"3D Board Preview"},
+		{"id":"edge-cad-lessons","fromNode":"node-cad-readme","fromSide":"bottom","toNode":"node-cad-lessons","toSide":"top","label":"Living Memory (11 Lessons)"},
+		{"id":"edge-assembly-base","fromNode":"node-cad-render-assembly","fromSide":"right","toNode":"node-cad-render-base","toSide":"left","label":"Base Tray"},
+		{"id":"edge-assembly-top","fromNode":"node-cad-render-assembly","fromSide":"right","toNode":"node-cad-render-top","toSide":"left","label":"Top Grid Plate"},
+		{"id":"edge-assembly-tile","fromNode":"node-cad-render-assembly","fromSide":"right","toNode":"node-cad-render-tile","toSide":"left","label":"NFC Tile Prototype"},
+		{"id":"edge-market-sourcing","fromNode":"node-market","fromSide":"right","toNode":"node-sourcing","toSide":"left","label":"Tile & RFID Sourcing"},
+		{"id":"edge-tasks-state","fromNode":"node-tasks","fromSide":"left","toNode":"node-project-state","toSide":"right","label":"Milestone status"},
+		{"id":"edge-state-comm","fromNode":"node-project-state","fromSide":"top","toNode":"node-market","toSide":"bottom","label":"Commercial roadmap"},
+		{"id":"edge-playbook-script","fromNode":"node-playbook","fromSide":"right","toNode":"node-script","toSide":"left","label":"Video Script"},
+		{"id":"edge-sourcing-hw","fromNode":"node-sourcing","fromSide":"bottom","toNode":"node-hw-specs","toSide":"top","label":"15mm Tag Specs"},
+		{"id":"edge-specs-rfid","fromNode":"node-hw-specs","fromSide":"bottom","toNode":"node-rfid-strat","toSide":"top","label":"Antenna & Sensor Specs"},
+		{"id":"edge-hw-sw","fromNode":"node-hw-specs","fromSide":"top","toNode":"node-sw-arch","toSide":"bottom","label":"Hardware-Software Interface"},
+		{"id":"edge-sw-lexicons","fromNode":"node-sw-arch","fromSide":"left","toNode":"node-lexicons","toSide":"right","label":"Tournament Lexicons (5 Langs)"},
+		{"id":"edge-hw-cad","fromNode":"node-hw-kicad-4x4","fromSide":"right","toNode":"node-cad-readme","toSide":"left","label":"Mechanical CAD & Enclosure"},
+		{"id":"edge-cad-assembly","fromNode":"node-cad-readme","fromSide":"right","toNode":"node-cad-render-assembly","toSide":"left","label":"4x4 Master Assembly"},
+		{"id":"edge-cad-notes","fromNode":"node-cad-readme","fromSide":"right","toNode":"node-cad-assembly-notes","toSide":"left","label":"Assembly Specs"},
+		{"id":"edge-proto-comp","fromNode":"node-loom-proto","fromSide":"right","toNode":"node-comp-table","toSide":"left","label":"Candidate Research & Comparison"},
+		{"id":"edge-full-comp","fromNode":"node-loom-full","fromSide":"right","toNode":"node-comp-table","toSide":"left","label":"Component Trade-offs"},
+		{"id":"edge-sw-android","fromNode":"node-sw-arch","fromSide":"bottom","toNode":"node-android-companion","toSide":"top","label":"Native Android Companion (Kotlin & Compose)"},
+		{"id":"edge-android-readme","fromNode":"node-android-companion","fromSide":"bottom","toNode":"node-android-readme","toSide":"top","label":"Companion Documentation"},
+		{"id":"edge-android-auth","fromNode":"node-android-companion","fromSide":"right","toNode":"node-android-auth-db","toSide":"left","label":"Google Auth & SQLite"},
+		{"id":"edge-android-tests","fromNode":"node-android-auth-db","fromSide":"bottom","toNode":"node-android-tests","toSide":"top","label":"Hardware & Unit Testing"},
+		{"id":"edge-proto-hw-compat","fromNode":"node-loom-proto","fromSide":"top","toNode":"node-hw-kicad-4x4","toSide":"bottom","label":"Shopping List & PCB Compatibility Verified"},
+		{"id":"edge-schem-theory","fromNode":"node-rfid-schem","fromSide":"right","toNode":"node-rf-theory","toSide":"left","label":"L, C, R Mathematical Derivation"},
+		{"id":"edge-theory-summary","fromNode":"node-rf-theory","fromSide":"right","toNode":"node-rf-theory-summary","toSide":"left","label":"Resonant Formulas & Component Values"},
+		{"id":"edge-kicad-jlcpcb","fromNode":"node-hw-kicad-4x4","fromSide":"right","toNode":"node-jlcpcb-guide","toSide":"left","label":"JLCPCB SMT Package & Guide"},
+		{"id":"edge-arch-esp32","fromNode":"node-sw-arch","fromSide":"right","toNode":"node-esp32-driver","toSide":"left","label":"ESP32 4x4 Bench Driver"},
+		{"id":"edge-playbook-web","fromNode":"node-playbook","fromSide":"right","toNode":"node-web-landing","toSide":"left","label":"1-Page Pre-Launch Funnel"},
+		{"id":"edge-tasks-cockpit","fromNode":"node-tasks","fromSide":"right","toNode":"node-cockpit-web","toSide":"left","label":"Interactive Progression & Disk Sync"}
+	]
 }
