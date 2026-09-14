@@ -1,139 +1,178 @@
 #include <Arduino.h>
-#include <SPI.h>
-#include <Adafruit_PN532.h>
 
 /*
- * PN532 Single-Antenna Sanity Test (Smart Crossword Board)
+ * CD74HC4067 16-Channel Multiplexer Interactive Step-Tester
+ * Smart Crossword Board - 4x4 Test Grid Hardware Verification
  *
- * Hardware Setup:
- *   ESP32-S3 3V3       --> PN532 VCC (3.3V is ideal and matches logic level)
- *   ESP32-S3 GND       --> PN532 GND
- *   ESP32-S3 GPIO 12   --> PN532 SCK
- *   ESP32-S3 GPIO 13   --> PN532 MOSI (MO)
- *   ESP32-S3 GPIO 21   --> PN532 MISO (M / MI)   [Note: GPIO 21 is on the RIGHT header]
- *   ESP32-S3 GPIO 14   --> PN532 CS / NSS / SS
- *   ESP32-S3 GPIO 11   --> PN532 RST (Hardware reset)
- *
- * Switches on PN532:
- *   SET0 = L (0)
- *   SET1 = H (1)
+ * Wiring from ESP32-S3 to 4x4 PCB (Header J1):
+ *   ESP32 3V3       -->  J1 Pin 1 or 2 (Power)
+ *   ESP32 GND       -->  J1 Pin 13, 15, 17, or 19 (Ground)
+ *   ESP32 GPIO 15   -->  J1 Pin 11 (MUX_S0: Address bit 0)
+ *   ESP32 GPIO 7    -->  J1 Pin 9  (MUX_S1: Address bit 1)
+ *   ESP32 GPIO 5    -->  J1 Pin 5  (MUX_S2: Address bit 2)
+ *   ESP32 GPIO 4    -->  J1 Pin 3  (MUX_S3: Address bit 3)
+ *   ESP32 GPIO 6    -->  J1 Pin 7  (MUX_EN: Active-Low Enable)
  */
 
-#define PIN_PN532_SCK   12
-#define PIN_PN532_MOSI  13
-#define PIN_PN532_MISO  21
-#define PIN_PN532_SS    14
-#define PIN_PN532_RST   11
+#define PIN_MUX_S0   15
+#define PIN_MUX_S1   7
+#define PIN_MUX_S2   5
+#define PIN_MUX_S3   4
+#define PIN_MUX_EN   6
 
-// Constructor parameter order: (clk, miso, mosi, ss)
-Adafruit_PN532 nfc(PIN_PN532_SCK, PIN_PN532_MISO, PIN_PN532_MOSI, PIN_PN532_SS);
+int currentChannel = 0;
+bool muxEnabled = true;
+bool autoStep = false;
+unsigned long lastAutoStep = 0;
+String inputBuffer = "";
 
-bool connected = false;
-uint32_t lastRetry = 0;
+void setMuxChannel(uint8_t ch, bool enable) {
+    if (!enable) {
+        digitalWrite(PIN_MUX_EN, HIGH); // Disabled (High-Z)
+        return;
+    }
+
+    // Set address bits
+    digitalWrite(PIN_MUX_S0, (ch & 0x01) ? HIGH : LOW);
+    digitalWrite(PIN_MUX_S1, (ch & 0x02) ? HIGH : LOW);
+    digitalWrite(PIN_MUX_S2, (ch & 0x04) ? HIGH : LOW);
+    digitalWrite(PIN_MUX_S3, (ch & 0x08) ? HIGH : LOW);
+
+    // Assert Active-Low Enable
+    digitalWrite(PIN_MUX_EN, LOW);
+}
+
+void printDashboard() {
+    uint8_t row = currentChannel / 4;
+    uint8_t col = currentChannel % 4;
+
+    Serial.println("\n==================================================");
+    Serial.println("   4x4 PCB MULTIPLEXER (CD74HC4067) STEP-TESTER   ");
+    Serial.println("==================================================");
+
+    // 4x4 Visual Representation
+    Serial.println("   Board Layout (Top View):");
+    Serial.println("      Col 0   Col 1   Col 2   Col 3");
+    Serial.println("    +-------+-------+-------+-------+");
+    for (uint8_t r = 0; r < 4; r++) {
+        Serial.printf("Row%d|", r);
+        for (uint8_t c = 0; c < 4; c++) {
+            uint8_t ch = r * 4 + c;
+            if (muxEnabled && r == row && c == col) {
+                Serial.printf(" [*%2d] |", ch);
+            } else {
+                Serial.printf("   %2d  |", ch);
+            }
+        }
+        Serial.println();
+        Serial.println("    +-------+-------+-------+-------+");
+    }
+
+    Serial.println();
+    if (muxEnabled) {
+        Serial.printf("  ACTIVE CHANNEL : Channel %d (Row %d, Col %d)\n", currentChannel, row, col);
+        Serial.printf("  BINARY ADDRESS : S3=%d, S2=%d, S1=%d, S0=%d (0b%d%d%d%d)\n",
+                      (currentChannel >> 3) & 1,
+                      (currentChannel >> 2) & 1,
+                      (currentChannel >> 1) & 1,
+                      currentChannel & 1,
+                      (currentChannel >> 3) & 1,
+                      (currentChannel >> 2) & 1,
+                      (currentChannel >> 1) & 1,
+                      currentChannel & 1);
+        Serial.println("  MUX STATUS     : ENABLED (EN / GPIO 6 = LOW, 0V)");
+    } else {
+        Serial.println("  MUX STATUS     : DISABLED (EN / GPIO 6 = HIGH, 3.3V - All channels disconnected)");
+    }
+
+    Serial.println("\n  GPIO Pin States (Measurable with Multimeter):");
+    Serial.printf("    - EN (GPIO 6)  : %s (%s)\n", muxEnabled ? "LOW " : "HIGH", muxEnabled ? "0.0V" : "3.3V");
+    Serial.printf("    - S3 (GPIO 4)  : %s (%s)\n", (currentChannel & 0x08) ? "HIGH" : "LOW ", (currentChannel & 0x08) ? "3.3V" : "0.0V");
+    Serial.printf("    - S2 (GPIO 5)  : %s (%s)\n", (currentChannel & 0x04) ? "HIGH" : "LOW ", (currentChannel & 0x04) ? "3.3V" : "0.0V");
+    Serial.printf("    - S1 (GPIO 7)  : %s (%s)\n", (currentChannel & 0x02) ? "HIGH" : "LOW ", (currentChannel & 0x02) ? "3.3V" : "0.0V");
+    Serial.printf("    - S0 (GPIO 15) : %s (%s)\n", (currentChannel & 0x01) ? "HIGH" : "LOW ", (currentChannel & 0x01) ? "3.3V" : "0.0V");
+
+    Serial.println("\n  Multimeter Continuity/Resistance Check:");
+    Serial.printf("    Probe 1 on J3 center pad (RF_SIG), Probe 2 on Coil %d feed trace:\n", currentChannel);
+    Serial.println("    -> Selected channel should measure ~70 Ohms (internal switch Ron).");
+    Serial.println("    -> All other 15 channels should measure OPEN circuit (>1 MegaOhm).");
+
+    Serial.println("--------------------------------------------------");
+    Serial.print("  Commands: [ENTER]=Next | [p]=Prev | [0..15]=Jump | [a]=Auto | [e]=Enable/Disable\n> ");
+}
 
 void setup() {
     Serial.begin(115200);
 
-    // Hardware reset pulse for PN532
-    pinMode(PIN_PN532_RST, OUTPUT);
-    digitalWrite(PIN_PN532_RST, LOW);
-    delay(10);
-    digitalWrite(PIN_PN532_RST, HIGH);
-    delay(20);
+    pinMode(PIN_MUX_S0, OUTPUT);
+    pinMode(PIN_MUX_S1, OUTPUT);
+    pinMode(PIN_MUX_S2, OUTPUT);
+    pinMode(PIN_MUX_S3, OUTPUT);
+    pinMode(PIN_MUX_EN, OUTPUT);
 
-    // Allow serial monitor time to connect, but do not hang
+    // Initial state: Channel 0 Enabled
+    setMuxChannel(currentChannel, muxEnabled);
+
+    // Give CDC time to open
     unsigned long start = millis();
-    while (!Serial && (millis() - start < 2500)) {
+    while (!Serial && (millis() - start < 2000)) {
         delay(10);
     }
 
-    Serial.println("\n==================================================");
-    Serial.println("   PN532 Single Antenna Test (ESP32-S3 via SPI)   ");
-    Serial.println("==================================================");
-    Serial.printf("Configured Pins:\n");
-    Serial.printf("  Power: ESP32 3V3  -->  PN532 VCC\n");
-    Serial.printf("  GND:   ESP32 GND  -->  PN532 GND\n");
-    Serial.printf("  SCK:   GPIO %-2d   -->  PN532 SCK\n", PIN_PN532_SCK);
-    Serial.printf("  MOSI:  GPIO %-2d   -->  PN532 MOSI (MO)\n", PIN_PN532_MOSI);
-    Serial.printf("  MISO:  GPIO %-2d   -->  PN532 MISO (M / MI) [RIGHT HEADER]\n", PIN_PN532_MISO);
-    Serial.printf("  CS:    GPIO %-2d   -->  PN532 CS / NSS\n", PIN_PN532_SS);
-    Serial.printf("  RST:   GPIO %-2d   -->  PN532 RST\n", PIN_PN532_RST);
-    Serial.println("==================================================");
-
-    nfc.begin();
+    printDashboard();
 }
 
 void loop() {
-    if (!connected) {
-        // Continuous non-blocking retry every 1.5 seconds until detected
-        if (millis() - lastRetry > 1500) {
-            lastRetry = millis();
-
-            // Refresh hardware reset
-            digitalWrite(PIN_PN532_RST, LOW);
-            delay(10);
-            digitalWrite(PIN_PN532_RST, HIGH);
-            delay(20);
-
-            nfc.begin();
-            uint32_t versiondata = nfc.getFirmwareVersion();
-
-            if (!versiondata) {
-                Serial.println("[WAITING] PN532 not responding yet. Retrying...");
-                Serial.println("  -> Green LED: Must be lit on PN532 (proves 3.3V & GND connected)");
-                Serial.println("  -> Right Header: Verify GPIO 21 is connected to PN532 M / MI");
-                Serial.println("  -> DIP Switches: SET0 = L (0), SET1 = H (1) for SPI\n");
-            } else {
-                connected = true;
-                Serial.println("--------------------------------------------------");
-                Serial.print("🎉 [SUCCESS] Connected to PN5");
-                Serial.println((versiondata >> 24) & 0xFF, HEX);
-                Serial.printf("Firmware Version: %d.%d\n",
-                              (versiondata >> 16) & 0xFF,
-                              (versiondata >> 8) & 0xFF);
-                Serial.println("--------------------------------------------------");
-
-                nfc.SAMConfig();
-                Serial.println("\n>>> Ready! Bring an NFC tag or card near the antenna coil <<<\n");
-            }
-        }
-        return;
+    // Check for auto-step mode
+    if (autoStep && (millis() - lastAutoStep >= 1500)) {
+        lastAutoStep = millis();
+        currentChannel = (currentChannel + 1) % 16;
+        setMuxChannel(currentChannel, muxEnabled);
+        printDashboard();
     }
 
-    // Once connected: continuously poll for cards
-    uint8_t success;
-    uint8_t uid[7] = {0};
-    uint8_t uidLength = 0;
+    // Read user console input
+    while (Serial.available() > 0) {
+        char c = Serial.read();
 
-    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 200);
-
-    if (success) {
-        Serial.println("----------------------------------------------");
-        Serial.print("Tag Detected! Type: ");
-        if (uidLength == 7) {
-            Serial.println("NTAG213 / Ultralight (7-byte UID)");
-        } else if (uidLength == 4) {
-            Serial.println("Classic / 1K (4-byte UID)");
-        } else {
-            Serial.printf("Unknown (%d bytes)\n", uidLength);
-        }
-
-        Serial.print("UID (HEX): ");
-        for (uint8_t i = 0; i < uidLength; i++) {
-            if (uid[i] < 0x10) Serial.print("0");
-            Serial.print(uid[i], HEX);
-            if (i < uidLength - 1) Serial.print(":");
-        }
-        Serial.println();
-
-        if (uidLength == 7) {
-            uint8_t data[32];
-            if (nfc.ntag2xx_ReadPage(4, data)) {
-                Serial.print("Page 4 Data: ");
-                nfc.PrintHexChar(data, 4);
+        if (c == '\r' || c == '\n') {
+            inputBuffer.trim();
+            if (inputBuffer.length() == 0) {
+                // Just ENTER pressed: Next channel
+                autoStep = false;
+                currentChannel = (currentChannel + 1) % 16;
+                muxEnabled = true;
+            } else if (inputBuffer.equalsIgnoreCase("p")) {
+                // Previous channel
+                autoStep = false;
+                currentChannel = (currentChannel + 15) % 16;
+                muxEnabled = true;
+            } else if (inputBuffer.equalsIgnoreCase("a")) {
+                // Toggle auto-step
+                autoStep = !autoStep;
+                lastAutoStep = millis();
+                Serial.printf("\n[Auto-Step %s]\n", autoStep ? "STARTED (1.5s per channel)" : "STOPPED");
+            } else if (inputBuffer.equalsIgnoreCase("e")) {
+                // Toggle Enable/Disable
+                muxEnabled = !muxEnabled;
+                Serial.printf("\n[MUX %s]\n", muxEnabled ? "ENABLED" : "DISABLED");
+            } else {
+                // Check if user entered a number (0..15)
+                int num = inputBuffer.toInt();
+                if (num >= 0 && num <= 15 && (inputBuffer == "0" || num > 0)) {
+                    autoStep = false;
+                    currentChannel = num;
+                    muxEnabled = true;
+                } else {
+                    Serial.printf("\n[Unknown command: '%s']\n", inputBuffer.c_str());
+                }
             }
+
+            setMuxChannel(currentChannel, muxEnabled);
+            printDashboard();
+            inputBuffer = "";
+        } else {
+            inputBuffer += c;
         }
-        Serial.println("----------------------------------------------");
-        delay(600);
     }
 }
