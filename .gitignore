@@ -38,7 +38,8 @@ _autosave-*
 
 # C / C++ / Embedded / PlatformIO
 .pio/
-.vscode/
+.vscode/*
+!.vscode/tasks.json
 cmake-build-*/
 *.o
 *.elf

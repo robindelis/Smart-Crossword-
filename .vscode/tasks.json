@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PlatformIO: Flash & Monitor (PN532 Test)",
+      "type": "shell",
+      "command": "pio run -t upload -t monitor",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/pn532_single_test"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: Flash / Upload (PN532 Test)",
+      "type": "shell",
+      "command": "pio run -t upload",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/pn532_single_test"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: Serial Monitor",
+      "type": "shell",
+      "command": "pio device monitor",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/pn532_single_test"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: Build (PN532 Test)",
+      "type": "shell",
+      "command": "pio run",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/pn532_single_test"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: Update clangd compile_commands.json",
+      "type": "shell",
+      "command": "pio run -t compiledb",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/pn532_single_test"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Firmware: Run 4x4 Simulation Bench Test (make test)",
+      "type": "shell",
+      "command": "make test",
+      "options": {
+        "cwd": "${workspaceFolder}/firmware/esp32_driver"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
