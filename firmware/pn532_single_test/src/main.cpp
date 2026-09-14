@@ -24,7 +24,7 @@ int currentChannel = 0;
 bool muxEnabled = true;
 bool autoStep = false;
 unsigned long lastAutoStep = 0;
-String inputBuffer = "";
+unsigned long lastHeartbeat = 0;
 
 void setMuxChannel(uint8_t ch, bool enable) {
     if (!enable) {
@@ -80,7 +80,7 @@ void printDashboard() {
                       (currentChannel >> 2) & 1,
                       (currentChannel >> 1) & 1,
                       currentChannel & 1);
-        Serial.println("  MUX STATUS     : ENABLED (EN / GPIO 6 = LOW, 0V)");
+        Serial.println("  MUX STATUS     : ENABLED (EN / GPIO 6 = LOW, 0.0V)");
     } else {
         Serial.println("  MUX STATUS     : DISABLED (EN / GPIO 6 = HIGH, 3.3V - All channels disconnected)");
     }
@@ -92,13 +92,14 @@ void printDashboard() {
     Serial.printf("    - S1 (GPIO 7)  : %s (%s)\n", (currentChannel & 0x02) ? "HIGH" : "LOW ", (currentChannel & 0x02) ? "3.3V" : "0.0V");
     Serial.printf("    - S0 (GPIO 15) : %s (%s)\n", (currentChannel & 0x01) ? "HIGH" : "LOW ", (currentChannel & 0x01) ? "3.3V" : "0.0V");
 
-    Serial.println("\n  Multimeter Continuity/Resistance Check:");
+    Serial.println("\n  Multimeter Check:");
     Serial.printf("    Probe 1 on J3 center pad (RF_SIG), Probe 2 on Coil %d feed trace:\n", currentChannel);
-    Serial.println("    -> Selected channel should measure ~70 Ohms (internal switch Ron).");
-    Serial.println("    -> All other 15 channels should measure OPEN circuit (>1 MegaOhm).");
+    Serial.println("    -> Selected channel = ~70 Ohms (internal switch Ron).");
+    Serial.println("    -> All other 15 channels = OPEN circuit (>1 MegaOhm).");
 
     Serial.println("--------------------------------------------------");
-    Serial.print("  Commands: [ENTER]=Next | [p]=Prev | [0..15]=Jump | [a]=Auto | [e]=Enable/Disable\n> ");
+    Serial.println("  Commands: [SPACE/ENTER]=Next | [p]=Prev | [a]=Auto | [e]=Enable/Disable");
+    Serial.print("> ");
 }
 
 void setup() {
@@ -113,17 +114,13 @@ void setup() {
     // Initial state: Channel 0 Enabled
     setMuxChannel(currentChannel, muxEnabled);
 
-    // Give CDC time to open
-    unsigned long start = millis();
-    while (!Serial && (millis() - start < 2000)) {
-        delay(10);
-    }
-
+    // Wait a bit for native USB CDC
+    delay(1000);
     printDashboard();
 }
 
 void loop() {
-    // Check for auto-step mode
+    // Auto-step mode: cycles automatically every 1.5s
     if (autoStep && (millis() - lastAutoStep >= 1500)) {
         lastAutoStep = millis();
         currentChannel = (currentChannel + 1) % 16;
@@ -131,48 +128,56 @@ void loop() {
         printDashboard();
     }
 
-    // Read user console input
+    // Periodic heartbeat every 2 seconds so terminal is NEVER frozen
+    if (!autoStep && (millis() - lastHeartbeat >= 2000)) {
+        lastHeartbeat = millis();
+        Serial.printf("[RUNNING] Active: Channel %d (Row %d, Col %d) | S3..S0 = %d%d%d%d | Press [SPACE] or [ENTER] for next...\n",
+                      currentChannel,
+                      currentChannel / 4,
+                      currentChannel % 4,
+                      (currentChannel >> 3) & 1,
+                      (currentChannel >> 2) & 1,
+                      (currentChannel >> 1) & 1,
+                      currentChannel & 1);
+    }
+
+    // Check for any user input from the terminal
     while (Serial.available() > 0) {
         char c = Serial.read();
 
-        if (c == '\r' || c == '\n') {
-            inputBuffer.trim();
-            if (inputBuffer.length() == 0) {
-                // Just ENTER pressed: Next channel
-                autoStep = false;
-                currentChannel = (currentChannel + 1) % 16;
-                muxEnabled = true;
-            } else if (inputBuffer.equalsIgnoreCase("p")) {
-                // Previous channel
-                autoStep = false;
-                currentChannel = (currentChannel + 15) % 16;
-                muxEnabled = true;
-            } else if (inputBuffer.equalsIgnoreCase("a")) {
-                // Toggle auto-step
-                autoStep = !autoStep;
-                lastAutoStep = millis();
-                Serial.printf("\n[Auto-Step %s]\n", autoStep ? "STARTED (1.5s per channel)" : "STOPPED");
-            } else if (inputBuffer.equalsIgnoreCase("e")) {
-                // Toggle Enable/Disable
-                muxEnabled = !muxEnabled;
-                Serial.printf("\n[MUX %s]\n", muxEnabled ? "ENABLED" : "DISABLED");
-            } else {
-                // Check if user entered a number (0..15)
-                int num = inputBuffer.toInt();
-                if (num >= 0 && num <= 15 && (inputBuffer == "0" || num > 0)) {
-                    autoStep = false;
-                    currentChannel = num;
-                    muxEnabled = true;
-                } else {
-                    Serial.printf("\n[Unknown command: '%s']\n", inputBuffer.c_str());
-                }
-            }
-
+        // Immediate response on space, enter, or command keys:
+        if (c == ' ' || c == '\n' || c == '\r' || c == 'n' || c == 'N') {
+            // Next channel
+            autoStep = false;
+            currentChannel = (currentChannel + 1) % 16;
+            muxEnabled = true;
             setMuxChannel(currentChannel, muxEnabled);
             printDashboard();
-            inputBuffer = "";
-        } else {
-            inputBuffer += c;
+        } else if (c == 'p' || c == 'P') {
+            // Previous channel
+            autoStep = false;
+            currentChannel = (currentChannel + 15) % 16;
+            muxEnabled = true;
+            setMuxChannel(currentChannel, muxEnabled);
+            printDashboard();
+        } else if (c == 'a' || c == 'A') {
+            // Toggle Auto-Step
+            autoStep = !autoStep;
+            lastAutoStep = millis();
+            Serial.printf("\n>>> Auto-Step %s <<<\n", autoStep ? "STARTED (1.5s per channel)" : "STOPPED");
+            if (!autoStep) printDashboard();
+        } else if (c == 'e' || c == 'E') {
+            // Toggle Enable
+            muxEnabled = !muxEnabled;
+            setMuxChannel(currentChannel, muxEnabled);
+            printDashboard();
+        } else if (c >= '0' && c <= '9') {
+            // Single digit channel jump: 0 to 9
+            autoStep = false;
+            currentChannel = c - '0';
+            muxEnabled = true;
+            setMuxChannel(currentChannel, muxEnabled);
+            printDashboard();
         }
     }
 }
