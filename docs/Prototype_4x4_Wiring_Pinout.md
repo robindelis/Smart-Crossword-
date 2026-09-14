@@ -30,20 +30,21 @@ Complete point-to-point connection table between the **ESP32-S3 DevKit**, the **
 
 ## 2. Header Layout Diagrams (Top View)
 
-### A. 4x4 PCB Header J1 (Host Controller Interface - 2x10 Pins)
+### A. 4x4 PCB Header J1 (Host Controller Interface - Horizontal 2x10 Header)
+
+Looking at the PCB right-side up (top edge up, J1 in the top-left near the mounting hole):
+
 ```
-                  [ Odd Pins (Left) ]      [ Even Pins (Right) ]
-   (+3.3V Power)  Pin  1: +3.3V            Pin  2: +3.3V         (+3.3V Power)
-    (Address S3)  Pin  3: MUX_S3 (GPIO 4)   Pin  4: GPIO_AUX      (Spare / LED)
-    (Address S2)  Pin  5: MUX_S2 (GPIO 5)   Pin  6: I2C_SDA       (Spare SDA)
-    (MUX Enable)  Pin  7: MUX_EN (GPIO 6)   Pin  8: I2C_SCL       (Spare SCL)
-    (Address S1)  Pin  9: MUX_S1 (GPIO 7)   Pin 10: NFC_IRQ       (GPIO 10)
-    (Address S0)  Pin 11: MUX_S0 (GPIO 15)  Pin 12: NFC_RST       (GPIO 11)
-        (Ground)  Pin 13: GND               Pin 14: SPI_MOSI      (GPIO 13 -> MO)
-        (Ground)  Pin 15: GND               Pin 16: SPI_CS        (GPIO 14 -> SS)
-        (Ground)  Pin 17: GND               Pin 18: SPI_SCK       (GPIO 12 -> SCK)
-        (Ground)  Pin 19: GND               Pin 20: SPI_MISO      (GPIO 21 -> M)
+TOP ROW (Closer to top board edge):
+[Pin 2]  [Pin 4]  [Pin 6]  [Pin 8]  [Pin 10] [Pin 12] [Pin 14] [Pin 16] [Pin 18] [Pin 20]
+ +3.3V     AUX      SDA      SCL      IRQ      RST      MOSI     CS       SCK      MISO
+
+BOTTOM ROW (Lower row):
+[Pin 1]* [Pin 3]  [Pin 5]  [Pin 7]  [Pin 9]  [Pin 11] [Pin 13] [Pin 15] [Pin 17] [Pin 19]
+ +3.3V     S3       S2       EN       S1       S0       GND      GND      GND      GND
 ```
+> 💡 **Identifying Pin 1**: Pad 1 has a **square solder pad** located at the **bottom-left** of Header J1. All other pads are circular.
+
 
 ### B. 4x4 PCB Header J2 (Transceiver Interface - 1x10 Pins)
 ```
