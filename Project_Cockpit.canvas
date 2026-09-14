@@ -497,11 +497,30 @@
       "width": 1100,
       "height": 2200,
       "color": "5"
+    },
+    {
+      "id": "node-bench-mux-verified",
+      "type": "text",
+      "text": "## 4x4 Bench MUX Verification: SUCCESS\n\n* **CD74HC4067 SMT IC**: Footprint SOIC-24W verified 100% correct.\n* **Power & Control**: 3.3V rail & S0-S3 channel switching verified.\n* **Physical Channel Switching**: Channel 0 conducts (0.24V divider through coil inductor).\n* **Pinout Validated**: Header J1 horizontal pinout mapped.\n* **Next Step**: Connect IPEX RF pigtail & test tag reads across 16 matrix positions.",
+      "x": 3840,
+      "y": 2980,
+      "width": 800,
+      "height": 450,
+      "color": "4"
     }
   ],
   "edges": [
     {
+      "id": "edge-wiring-mux-verified",
+      "fromNode": "node-proto-wiring-table",
+      "fromSide": "right",
+      "toNode": "node-bench-mux-verified",
+      "toSide": "left",
+      "label": "Bench Verified"
+    },
+    {
       "id": "edge-pn532-test",
+
       "fromNode": "node-esp32-driver",
       "fromSide": "right",
       "toNode": "node-pn532-single-test",

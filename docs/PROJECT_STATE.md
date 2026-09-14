@@ -59,13 +59,14 @@ gantt
 | **ADL-023** | 2026-09-06 | Engineering Truth & Anti-Fudging Invariant            | **Zero Fudging & Mandatory Physical Rigor**: Enforced non-negotiable Rule 9 in `AGENTS.md`, Invariant 8 in `wise.md`, and FAIL-012 prohibiting the fabrication of fake numbers or justifications (such as fudging parasitic capacitance to neatly match standard 100 pF components). Mandated that all physical discrepancies, component tolerances ($\pm 5\%$), and detuning effects must be analyzed with honest operating margins ($Q=25$, $542\,\text{kHz}$ bandwidth, tag frequency pull, and PN5180 250mW power headroom) to build physical hardware that actually works. |
 | **ADL-024** | 2026-09-06 | 4x4 JLCPCB SMT Package, ESP32 Driver & Pre-Launch Funnel | **JLCPCB SMT Package, Firmware Bench Driver & 1-Page Pre-Launch Funnel**: Prepared full JLCPCB manufacturing package (`bom_jlcpcb.csv`, `cpl_jlcpcb.csv`, `JLCPCB_ORDERING_GUIDE.md`) with LCSC parts matching for automated assembly. Built complete ESP32-S3 bench driver suite (`firmware/esp32_driver/`) with CD74HC4067 MUX control, PN532 SPI driver, tile mapper, and tournament crossword referee bridge with 100% automated test pass (1.18ms sweep latency vs 40ms ceiling). Built responsive 1-page pre-launch landing page (`software/web/`) for $1 VIP pre-orders and $100 ad test funnel. |
 | **ADL-025** | 2026-09-13 | Visual Progression Web Cockpit & Bidirectional Disk Sync | **React 18 + Vite + @xyflow/react Web Cockpit**: Created interactive web progression dashboard (`software/cockpit/`) featuring Infinite Canvas matching Obsidian, Gantt roadmap with 25 ADL decision entries, and high-performance Kanban board with `content-visibility: auto`. Integrated Vite server middleware for live bidirectional reads/writes to `Project_Cockpit.canvas` and `docs/Project_Tasks.md`. |
+| **ADL-026** | 2026-09-14 | Physical Bench Bring-Up & 4x4 MUX Verification | **Physical Hardware Validation (ESP32-S3 + PN532 + 4x4 Test Grid PCB)**: Verified PN532 SPI communication on ESP32-S3 at 3.3V (Pins SCK=12, MOSI=13, MISO=21, CS=14, RST=11). Validated CD74HC4067 SOIC-24 SMD multiplexer footprint and active channel switching under firmware control. Clarified physical horizontal orientation of Header J1 and documented voltage divider behavior of planar RF coils under DC testing (FAIL-014). |
 
 ---
 
 ## Next Tasks
-1. Order 4x4 test boards from JLCPCB and bench components from Amazon Belgium.
-2. Run local preview / deploy 1-page pre-launch website (`software/web/`) for $100 ad test.
-3. Flash and verify ESP32-S3 driver on physical bench hardware upon parcel arrival.
-4. Field test native Android companion app (APK) against physical board moves.
+1. Receive U.FL / IPEX coax pigtail cable and remove the two 0Ω bridges on PN532 to link 13.56 MHz RF directly to 4x4 PCB Port J3.
+2. Receive 15mm NTAG213 stickers and test tile UID enrollment and letter mapping with the core dictionary engine.
+3. Bench test multi-channel 16-coil scanning latency (< 40ms) and tag read height through 3D printed / wood top faceplate.
+4. Field test native Android companion app against physical board moves.
 
 
