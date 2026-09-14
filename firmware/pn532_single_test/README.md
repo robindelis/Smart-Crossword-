@@ -8,14 +8,13 @@ This test verifies the physical SPI wiring between your **ESP32-S3** and **PN532
 
 | Signal | ESP32-S3 Pin | PN532 Pin | Note |
 | :--- | :--- | :--- | :--- |
-| **Power** | `5V` (or `VIN`) | `VDD5V` (or `5V`) | Power from USB |
+| **Power** | `3V3` (Top left) | `VCC` | 3.3V power (matches logic levels) |
 | **Ground** | `GND` | `GND` | Common ground reference |
 | **SCK** | `GPIO 12` | `SCK` | SPI Clock |
-| **MOSI** | `GPIO 13` | `MOSI` | SPI Master Out |
-| **MISO** | `GPIO 21` | `MISO` | SPI Master In |
+| **MOSI** | `GPIO 13` | `MO` / `MOSI` | SPI Master Out |
+| **MISO** | `GPIO 21` | `M` / `MI` / `MISO` | SPI Master In (Right header!) |
 | **CS / NSS** | `GPIO 14` | `SS` / `NSS` | SPI Chip Select |
-| **IRQ** | `GPIO 10` | `INT0` / `IRQ` | Tag detect interrupt |
-| **RST** | `GPIO 11` | `RST` | Hardware reset |
+| **RST** | `GPIO 11` | `RST` | Hardware reset pulse |
 
 ### Switches on PN532:
 * **`SET0`** = **`L`** (Low)
