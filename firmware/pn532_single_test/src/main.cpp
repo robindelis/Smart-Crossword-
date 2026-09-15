@@ -131,14 +131,14 @@ void loop() {
     // Periodic heartbeat every 2 seconds so terminal is NEVER frozen
     if (!autoStep && (millis() - lastHeartbeat >= 2000)) {
         lastHeartbeat = millis();
-        Serial.printf("[RUNNING] Active: Channel %d (Row %d, Col %d) | S3..S0 = %d%d%d%d | Press [SPACE] or [ENTER] for next...\n",
-                      currentChannel,
-                      currentChannel / 4,
-                      currentChannel % 4,
-                      (currentChannel >> 3) & 1,
-                      (currentChannel >> 2) & 1,
-                      (currentChannel >> 1) & 1,
-                      currentChannel & 1);
+        // Serial.printf("[RUNNING] Active: Channel %d (Row %d, Col %d) | S3..S0 = %d%d%d%d | Press [SPACE] or [ENTER] for next...\n",
+                      // currentChannel,
+                      // currentChannel / 4,
+                      // currentChannel % 4,
+                      // (currentChannel >> 3) & 1,
+                      // (currentChannel >> 2) & 1,
+                      // (currentChannel >> 1) & 1,
+                      // currentChannel & 1);
     }
 
     // Check for any user input from the terminal
