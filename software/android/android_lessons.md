@@ -79,6 +79,12 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Relying only on `connectionState` to enable hardware mutation actions without binding the button's `enabled` state to live RF telemetry (`telemetry.status == STATUS_TAG_DETECTED && !telemetry.tagUid.isNullOrBlank()`).
   * *Reliable Mitigation*: Gate physical hardware write actions with composite preconditions (`val canEnroll = isConnected && hasTagDetected`). Provide contextual button labeling ("No Tag Detected on Square X" vs "Register Tag ...") and explicit disabled styling (`disabledContainerColor = Color(0xFFCFD8DC)`).
 
+* **LESSON-AND-014 (Latching Telemetry Across Heartbeat Notifications)**:
+  * *Symptom/Error*: Tag detection UI flickers or the registration button repeatedly enables and disables itself every 400ms when a tag is sitting on the board.
+  * *Root Cause*: The embedded board streams periodic lightweight telemetry pulses (e.g. `[channel, STATUS_ENERGIZED]`) without payload bytes to drive the UI radar animation. When the client deserializes this into `ScanTelemetry`, it assigns `tagUid = null`, inadvertently destroying persistent tag identity on every heartbeat frame.
+  * *Reliable Mitigation*: In `BleManager`, latch previously detected `tagUid` for the active channel when an incoming packet is a probing pulse (`STATUS_ENERGIZED`). Only clear the latch when `STATUS_IDLE (0)` (explicit removal) is received or when the user switches to a different channel.
+
+
 
 
 
