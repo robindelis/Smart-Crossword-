@@ -51,16 +51,16 @@ fun HardwareDebugScreen(
     var lastEnrolledUid by remember { mutableStateOf<String?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
-    var localTiles by remember { mutableStateOf(bleManager.dbHelper.getAllTiles()) }
+    val localTiles by bleManager.registeredTiles.collectAsState()
     var syncMessage by remember { mutableStateOf<String?>(null) }
     var isSyncing by remember { mutableStateOf(false) }
 
     fun reloadTiles() {
-        localTiles = bleManager.dbHelper.getAllTiles()
+        bleManager.refreshRegisteredTiles()
     }
 
     LaunchedEffect(Unit) {
-        reloadTiles()
+        bleManager.refreshRegisteredTiles()
     }
 
     val activeChannel = telemetry.activeChannel ?: 0
@@ -654,8 +654,7 @@ fun HardwareDebugScreen(
                     if (localTiles.isNotEmpty()) {
                         OutlinedButton(
                             onClick = {
-                                bleManager.dbHelper.clearAllTiles()
-                                reloadTiles()
+                                bleManager.clearAllTiles()
                                 syncMessage = "Cleared all local tile records."
                             },
                             shape = RoundedCornerShape(8.dp),
@@ -781,8 +780,7 @@ fun HardwareDebugScreen(
 
                                         IconButton(
                                             onClick = {
-                                                bleManager.dbHelper.deleteTile(tile.uid)
-                                                reloadTiles()
+                                                bleManager.deleteTile(tile.uid)
                                             },
                                             modifier = Modifier.size(32.dp)
                                         ) {

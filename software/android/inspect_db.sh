@@ -43,3 +43,8 @@ echo ""
 echo "--- GAMES ---"
 sqlite3 -box "$TEMP_DB" "SELECT * FROM games;" 2>/dev/null || sqlite3 -header -column "$TEMP_DB" "SELECT * FROM games;"
 echo ""
+
+echo "--- TILES ---"
+sqlite3 -box "$TEMP_DB" "SELECT uid, letter, points, datetime(registered_at/1000, 'unixepoch') as registered, notes FROM tiles;" 2>/dev/null || sqlite3 -header -column "$TEMP_DB" "SELECT * FROM tiles;"
+echo ""
+

@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.ParcelUuid
 import android.util.Log
 import com.example.crosswordcompanion.data.AppDatabaseHelper
+import com.example.crosswordcompanion.data.TileRecord
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -188,6 +189,25 @@ class BleManager private constructor(private val context: Context) {
     private val _boardState = MutableStateFlow<Map<Int, Char>>(emptyMap())
     val boardState: StateFlow<Map<Int, Char>> = _boardState.asStateFlow()
 
+    private val _registeredTiles = MutableStateFlow<List<TileRecord>>(dbHelper.getAllTiles())
+    val registeredTiles: StateFlow<List<TileRecord>> = _registeredTiles.asStateFlow()
+
+    fun refreshRegisteredTiles() {
+        _registeredTiles.value = dbHelper.getAllTiles()
+    }
+
+    fun deleteTile(uid: String): Boolean {
+        val ok = dbHelper.deleteTile(uid)
+        refreshRegisteredTiles()
+        return ok
+    }
+
+    fun clearAllTiles(): Boolean {
+        val ok = dbHelper.clearAllTiles()
+        refreshRegisteredTiles()
+        return ok
+    }
+
     var autoReconnectEnabled = true
 
     private var activeGatt: BluetoothGatt? = null
@@ -315,6 +335,25 @@ class BleManager private constructor(private val context: Context) {
             BleProtocol.CHAR_BOARD_STATE_UUID -> {
                 val parsed = BleProtocol.parseBoardState(value)
                 _boardState.value = parsed
+
+                // Auto-ingest: If active channel has recognized letter ('A'..'Z') and telemetry has UID, persist to local DB
+                val tele = _scanTelemetry.value
+                val uid = tele.tagUid
+                val ch = tele.activeChannel
+                if (ch != null && !uid.isNullOrBlank() && tele.status == BleProtocol.STATUS_TAG_DETECTED) {
+                    val boardChar = parsed[ch]
+                    if (boardChar != null && boardChar in 'A'..'Z') {
+                        scope.launch(Dispatchers.IO) {
+                            val local = dbHelper.getTile(uid)
+                            if (local == null || local.letter != boardChar) {
+                                val points = BleProtocol.getLetterPoints(boardChar)
+                                dbHelper.saveTile(uid, boardChar, points)
+                                refreshRegisteredTiles()
+                                Log.i(TAG, "📥 Ingested recognized board tile $uid -> '$boardChar' ($points pts) into local DB")
+                            }
+                        }
+                    }
+                }
             }
             BleProtocol.CHAR_SCAN_TELEMETRY_UUID -> {
                 val telemetry = BleProtocol.parseScanTelemetry(value)
@@ -335,12 +374,24 @@ class BleManager private constructor(private val context: Context) {
                     lastAutoHealedUid = null
                 }
 
-                // Auto-heal: If tag detected with UID, and board has it as '?' or unregistered, check local DB
+                // Ingest or Auto-heal:
                 val uid = resolved.tagUid
                 val ch = resolved.activeChannel
                 if (resolved.status == BleProtocol.STATUS_TAG_DETECTED && !uid.isNullOrBlank() && ch != null) {
                     val boardChar = _boardState.value[ch]
-                    if (boardChar == null || boardChar == '?') {
+                    if (boardChar != null && boardChar in 'A'..'Z') {
+                        // 1. Board recognizes this tile: Ingest into local SQLite DB if missing or updated
+                        scope.launch(Dispatchers.IO) {
+                            val localTile = dbHelper.getTile(uid)
+                            if (localTile == null || localTile.letter != boardChar) {
+                                val points = BleProtocol.getLetterPoints(boardChar)
+                                dbHelper.saveTile(uid, boardChar, points)
+                                refreshRegisteredTiles()
+                                Log.i(TAG, "📥 Ingested recognized board tile $uid -> '$boardChar' ($points pts) into local DB")
+                            }
+                        }
+                    } else if (boardChar == null || boardChar == '?') {
+                        // 2. Board has tag as unassigned '?': Auto-heal down to board if present in local DB
                         val now = System.currentTimeMillis()
                         if (uid != lastAutoHealedUid || now - lastAutoHealedTime > 2000L) {
                             lastAutoHealedUid = uid
@@ -495,6 +546,7 @@ class BleManager private constructor(private val context: Context) {
         if (!uid.isNullOrBlank()) {
             val points = BleProtocol.getLetterPoints(letter)
             dbHelper.saveTile(uid, letter.uppercaseChar(), points)
+            refreshRegisteredTiles()
             Log.i(TAG, "💾 Persisted enrolled tile $uid -> '$letter' ($points pts) to local DB")
         }
         return success

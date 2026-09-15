@@ -94,6 +94,11 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Wrapping helper methods in Kotlin's `writableDatabase.use { db -> ... }` or `readableDatabase.use { db -> ... }`. In Android's `SQLiteOpenHelper`, calling `close()` on the database closes the single shared connection pool for the entire application. When background coroutines (e.g. `BleManager` in `Dispatchers.IO`) perform concurrent tile lookups during BLE packet processing while another thread finishes a query, the closed pool throws an uncatchable runtime exception.
   * *Reliable Mitigation*: Only close the `Cursor` (via `cursor.use { ... }`). Never call `.use` or `.close()` on `readableDatabase` or `writableDatabase` within individual DAO methods; leave the database connection lifecycle management to `SQLiteOpenHelper` and Android's Application context.
 
+* **LESSON-AND-017 (Bidirectional Tag Synchronization & Reactive StateFlow Invariant)**:
+  * *Symptom/Error*: Board recognizes previously registered NFC tiles and shows their letters in serial/ESP32, but the phone's Local App Tile Database shows "0 Saved".
+  * *Root Cause*: Tile synchronization was implemented as strictly one-way (Phone -> Board via `syncAllTilesToBoard()`), with no inbound ingestion path when the board recognizes a tag. Additionally, `localTiles` in `HardwareDebugScreen` was a static `remember { mutableStateOf(...) }` instead of an active `StateFlow` observer.
+  * *Reliable Mitigation*: 1) Implement passive auto-ingest in `BleManager` across both telemetry (`CHAR_SCAN_TELEMETRY_UUID`) and board state updates (`CHAR_BOARD_STATE_UUID`): whenever a recognized letter ('A'..'Z') is detected with a tag UID, automatically insert/upsert into local SQLite; 2) Expose `val registeredTiles: StateFlow<List<TileRecord>>` from `BleManager` and collect it in Compose (`collectAsState()`) so that newly recognized or swept tiles immediately render in the UI without requiring manual screen refreshes.
+
 
 
 
