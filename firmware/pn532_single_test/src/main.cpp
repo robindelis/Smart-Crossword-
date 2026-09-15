@@ -277,8 +277,8 @@ bool tryConnectPN532() {
 
     // Configure Secure Access Module (SAM) to normal mode
     nfc.SAMConfig();
-    // Fast retries so polling does not block user console interaction
-    nfc.setPassiveActivationRetries(0x01);
+    // Allow standard retries so tag has time to harvest RF power and respond
+    nfc.setPassiveActivationRetries(0xFF);
 
     Serial.println("\n--------------------------------------------------");
     Serial.print("🎉 [PN532 CONNECTED] Found chip PN5");
@@ -350,8 +350,8 @@ void loop() {
             uint8_t uid[7] = {0};
             uint8_t uidLen = 0;
 
-            // Poll with a fast 40ms timeout so the console remains smooth
-            bool success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLen, 40);
+            // Poll with 150ms timeout (allows tag time to energize while keeping console responsive)
+            bool success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLen, 150);
 
             if (success) {
                 // Check if new or different tag
@@ -391,13 +391,10 @@ void loop() {
         }
     }
 
-    // 3. Periodic heartbeat in single-channel mode so terminal never freezes
-    if (!continuousSweep && !autoStep && (millis() - lastHeartbeat >= 3000)) {
+    // 3. Periodic dashboard refresh every 10 seconds if idle (no spammy single-line heartbeat)
+    if (!continuousSweep && !autoStep && (millis() - lastHeartbeat >= 10000)) {
         lastHeartbeat = millis();
-        Serial.printf("[HEARTBEAT] Channel %2d (R%d,C%d) | MUX: %s | NFC: %s | Press [SPACE]=Next, [s]=Sweep, [?]=Help\n",
-                      currentChannel, currentChannel / 4, currentChannel % 4,
-                      muxEnabled ? "ON " : "OFF",
-                      pn532Ready ? "ACTIVE" : "SEARCHING");
+        printDashboard();
     }
 
     // 4. Handle Terminal Commands
