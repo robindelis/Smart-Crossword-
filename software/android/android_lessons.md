@@ -74,5 +74,11 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Instantiating `BleManager` inside a screen Composable with `remember` and calling `bleManager.disconnect()` inside a `DisposableEffect { onDispose { ... } }` tears down the GATT link whenever the Composable leaves composition during navigation.
   * *Reliable Mitigation*: Hoist `BleManager` to a singleton (`getInstance(context)`) owned by `MainActivity` or the Application lifecycle. Screen Composables observe StateFlows (`connectionState`, `scanTelemetry`, `boardState`) without owning the connection lifecycle. Implement an auto-reconnect loop in `BleManager` that retries every 3 seconds if disconnected unexpectedly.
 
+* **LESSON-AND-013 (Hardware Registration State Guarding & In-App Disabling)**:
+  * *Symptom/Error*: User accidentally registers a blank square or links a letter to a previous tag's cached UID if the registration button remains clickable while no tag is present.
+  * *Root Cause*: Relying only on `connectionState` to enable hardware mutation actions without binding the button's `enabled` state to live RF telemetry (`telemetry.status == STATUS_TAG_DETECTED && !telemetry.tagUid.isNullOrBlank()`).
+  * *Reliable Mitigation*: Gate physical hardware write actions with composite preconditions (`val canEnroll = isConnected && hasTagDetected`). Provide contextual button labeling ("No Tag Detected on Square X" vs "Register Tag ...") and explicit disabled styling (`disabledContainerColor = Color(0xFFCFD8DC)`).
+
+
 
 

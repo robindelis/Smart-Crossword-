@@ -375,7 +375,7 @@ fun HardwareDebugScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // Tag presence card
-                val hasTagDetected = telemetry.status == BleProtocol.STATUS_TAG_DETECTED || telemetry.tagUid != null
+                val hasTagDetected = (telemetry.status == BleProtocol.STATUS_TAG_DETECTED) && !telemetry.tagUid.isNullOrBlank()
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -401,7 +401,7 @@ fun HardwareDebugScreen(
                                 fontSize = 13.sp,
                                 color = if (hasTagDetected) Color(0xFF2E7D32) else Color(0xFFE65100)
                             )
-                            if (telemetry.tagUid != null) {
+                            if (hasTagDetected && telemetry.tagUid != null) {
                                 Text(
                                     text = "UID: ${telemetry.tagUid}",
                                     fontWeight = FontWeight.SemiBold,
@@ -410,7 +410,7 @@ fun HardwareDebugScreen(
                                 )
                             } else {
                                 Text(
-                                    text = "Place an NFC sticker or Scrabble tile on the active square.",
+                                    text = "Place an NFC sticker or Scrabble tile on the active square to enable registration.",
                                     fontSize = 11.sp,
                                     color = Color(0xFF78909C)
                                 )
@@ -506,8 +506,12 @@ fun HardwareDebugScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Enroll Button
+                val isConnected = connectionState is BleConnectionState.Connected
+                val canEnroll = isConnected && hasTagDetected
+
                 Button(
                     onClick = {
+                        if (!canEnroll) return@Button
                         val success = bleManager.enrollTag(activeChannel, selectedLetter)
                         if (success) {
                             lastEnrolledUid = telemetry.tagUid
@@ -516,13 +520,21 @@ fun HardwareDebugScreen(
                             enrollmentMessage = "⚠️ Could not send enrollment command (board not connected)."
                         }
                     },
-                    enabled = connectionState is BleConnectionState.Connected,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                    enabled = canEnroll,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2E7D32),
+                        disabledContainerColor = Color(0xFFCFD8DC),
+                        disabledContentColor = Color(0xFF78909C)
+                    ),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Register Tag on Square $activeChannel as '$selectedLetter' (${getScrabbleLetterPoints(selectedLetter)} pts)",
+                        text = when {
+                            !isConnected -> "Connect Board to Register"
+                            !hasTagDetected -> "No Tag Detected on Square $activeChannel"
+                            else -> "Register Tag on Square $activeChannel as '$selectedLetter' (${getScrabbleLetterPoints(selectedLetter)} pts)"
+                        },
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
                     )

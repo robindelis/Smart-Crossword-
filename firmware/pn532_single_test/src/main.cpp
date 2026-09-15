@@ -231,14 +231,14 @@ class CommandCallbacks : public BLECharacteristicCallbacks {
                 uint8_t ch = data[1];
                 char letter = (char)data[2];
                 if (ch < 16) {
-                    const uint8_t *enrollUid = grid[ch].hasTag ? grid[ch].uid : lastUid;
-                    uint8_t enrollUidLen = grid[ch].hasTag ? grid[ch].uidLen : lastUidLen;
+                    if (!grid[ch].hasTag) {
+                        Serial.printf("\n⚠️ [BLE ENROLL] Rejected: No active tag detected on Square %d!\n", ch);
+                    } else {
+                        const uint8_t *enrollUid = grid[ch].uid;
+                        uint8_t enrollUidLen = grid[ch].uidLen;
 
-                    if (enrollUidLen > 0) {
                         enrollTag(enrollUid, enrollUidLen, letter);
-                        if (grid[ch].hasTag) {
-                            grid[ch].assignedLetter = lookupLetter(enrollUid, enrollUidLen);
-                        }
+                        grid[ch].assignedLetter = lookupLetter(enrollUid, enrollUidLen);
                         notifyBoardState();
                         notifyTelemetry(ch, 0x02, enrollUid, enrollUidLen);
                         Serial.printf("\n🏷️ [BLE ENROLL] Square %d enrolled as Letter '%c' (%d pts) for UID: ",
@@ -249,8 +249,6 @@ class CommandCallbacks : public BLECharacteristicCallbacks {
                         }
                         Serial.println();
                         printDashboard();
-                    } else {
-                        Serial.println("\n⚠️ [BLE ENROLL] No tag detected on square to enroll!");
                     }
                 }
             } else if (cmd == 0x10) {
