@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,19 +29,10 @@ import androidx.core.content.ContextCompat
 import com.example.crosswordcompanion.bluetooth.BleConnectionState
 import com.example.crosswordcompanion.bluetooth.BleManager
 import com.example.crosswordcompanion.bluetooth.BleProtocol
+import com.example.crosswordcompanion.data.TileRecord
+import kotlinx.coroutines.launch
 
-private fun getScrabbleLetterPoints(c: Char): Int {
-    return when (c.uppercaseChar()) {
-        'A', 'E', 'I', 'O', 'U', 'L', 'N', 'S', 'T', 'R' -> 1
-        'D', 'G' -> 2
-        'B', 'C', 'M', 'P' -> 3
-        'F', 'H', 'V', 'W', 'Y' -> 4
-        'K' -> 5
-        'J', 'X' -> 8
-        'Q', 'Z' -> 10
-        else -> 0
-    }
-}
+private fun getScrabbleLetterPoints(c: Char): Int = BleProtocol.getLetterPoints(c)
 
 @Composable
 fun HardwareDebugScreen(
@@ -51,11 +43,25 @@ fun HardwareDebugScreen(
     val connectionState by bleManager.connectionState.collectAsState()
     val telemetry by bleManager.scanTelemetry.collectAsState()
     val boardState by bleManager.boardState.collectAsState()
+    val isConnected = connectionState is BleConnectionState.Connected
 
     var autoReconnect by remember { mutableStateOf(bleManager.autoReconnectEnabled) }
     var selectedLetter by remember { mutableStateOf('A') }
     var enrollmentMessage by remember { mutableStateOf<String?>(null) }
     var lastEnrolledUid by remember { mutableStateOf<String?>(null) }
+
+    val coroutineScope = rememberCoroutineScope()
+    var localTiles by remember { mutableStateOf(bleManager.dbHelper.getAllTiles()) }
+    var syncMessage by remember { mutableStateOf<String?>(null) }
+    var isSyncing by remember { mutableStateOf(false) }
+
+    fun reloadTiles() {
+        localTiles = bleManager.dbHelper.getAllTiles()
+    }
+
+    LaunchedEffect(Unit) {
+        reloadTiles()
+    }
 
     val activeChannel = telemetry.activeChannel ?: 0
 
@@ -512,16 +518,17 @@ fun HardwareDebugScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Enroll Button
-                val isConnected = connectionState is BleConnectionState.Connected
                 val canEnroll = isConnected && hasTagDetected
 
                 Button(
                     onClick = {
                         if (!canEnroll) return@Button
-                        val success = bleManager.enrollTag(activeChannel, selectedLetter)
+                        val currentUid = telemetry.tagUid
+                        val success = bleManager.enrollTag(activeChannel, selectedLetter, currentUid)
                         if (success) {
-                            lastEnrolledUid = telemetry.tagUid
-                            enrollmentMessage = "✅ Enrolled Tag on Square $activeChannel as Letter '$selectedLetter' (${getScrabbleLetterPoints(selectedLetter)} pts)!"
+                            lastEnrolledUid = currentUid
+                            enrollmentMessage = "✅ Enrolled Tag on Square $activeChannel as Letter '$selectedLetter' (${getScrabbleLetterPoints(selectedLetter)} pts) — Saved to board & local database!"
+                            reloadTiles()
                         } else {
                             enrollmentMessage = "⚠️ Could not send enrollment command (board not connected)."
                         }
@@ -544,6 +551,248 @@ fun HardwareDebugScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
                     )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // --- 4. Local App Tile Database ---
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        ) {
+            Column(modifier = Modifier.padding(14.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "💾 Local App Tile Database",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color(0xFF3E2723)
+                        )
+                        Text(
+                            text = "Survives ESP32 reflash & power cycle",
+                            fontSize = 11.sp,
+                            color = Color(0xFF6D4C41)
+                        )
+                    }
+                    Badge(containerColor = Color(0xFFE0F2F1)) {
+                        Text(
+                            text = "${localTiles.size} Saved",
+                            color = Color(0xFF004D40),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Info banner explaining offline persistence
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F8E9)),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("🛡️", fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
+                        Text(
+                            text = "All registered tiles are stored in the phone's SQLite database. When the board reconnects or after reflashing, tiles automatically restore to the board.",
+                            fontSize = 11.sp,
+                            color = Color(0xFF33691E),
+                            lineHeight = 15.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Action buttons: Sync All & Clear All
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            if (isSyncing) return@Button
+                            isSyncing = true
+                            syncMessage = null
+                            coroutineScope.launch {
+                                val count = bleManager.syncAllTilesToBoard()
+                                syncMessage = "✅ Synced $count/${localTiles.size} tiles to board!"
+                                isSyncing = false
+                            }
+                        },
+                        enabled = !isSyncing && isConnected && localTiles.isNotEmpty(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF0288D1),
+                            disabledContainerColor = Color(0xFFCFD8DC),
+                            disabledContentColor = Color(0xFF78909C)
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = if (isSyncing) "⏳ Syncing..." else "🔄 Sync All Tiles to Board",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    }
+
+                    if (localTiles.isNotEmpty()) {
+                        OutlinedButton(
+                            onClick = {
+                                bleManager.dbHelper.clearAllTiles()
+                                reloadTiles()
+                                syncMessage = "Cleared all local tile records."
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFC62828))
+                        ) {
+                            Text("Clear All", fontSize = 11.sp)
+                        }
+                    }
+                }
+
+                if (syncMessage != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = syncMessage!!,
+                        color = Color(0xFF1B5E20),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                    text = "Enrolled Physical Tiles (${localTiles.size}):",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    color = Color(0xFF37474F)
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                if (localTiles.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No tiles saved yet. Place a tag on a square and tap 'Register Tag' above.",
+                            color = Color(0xFF90A4AE),
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        for (tile in localTiles) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA)),
+                                shape = RoundedCornerShape(8.dp),
+                                border = BorderStroke(1.dp, Color(0xFFE0E0E0))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    // Tile Avatar & Details
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(36.dp)
+                                                .clip(RoundedCornerShape(6.dp))
+                                                .background(Color(0xFFFFE0B2))
+                                                .border(1.5.dp, Color(0xFFE65100), RoundedCornerShape(6.dp)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Text(
+                                                    text = tile.letter.toString(),
+                                                    fontWeight = FontWeight.Black,
+                                                    fontSize = 15.sp,
+                                                    color = Color(0xFF2C1810)
+                                                )
+                                                Text(
+                                                    text = "${tile.points}pt",
+                                                    fontSize = 7.sp,
+                                                    color = Color(0xFF5D4037)
+                                                )
+                                            }
+                                        }
+
+                                        Column {
+                                            Text(
+                                                text = "UID: ${tile.uid}",
+                                                fontWeight = FontWeight.SemiBold,
+                                                fontSize = 11.sp,
+                                                color = Color(0xFF263238)
+                                            )
+                                            Text(
+                                                text = "Letter '${tile.letter}' • ${tile.points} points",
+                                                fontSize = 10.sp,
+                                                color = Color(0xFF546E7A)
+                                            )
+                                        }
+                                    }
+
+                                    // Action buttons (Push single tile to board & Delete)
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        if (isConnected) {
+                                            OutlinedButton(
+                                                onClick = {
+                                                    val ok = bleManager.syncTile(tile.uid, tile.letter, tile.points)
+                                                    syncMessage = if (ok) "Sent '${tile.letter}' to board!" else "Failed to send tile."
+                                                },
+                                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp),
+                                                modifier = Modifier.height(28.dp),
+                                                shape = RoundedCornerShape(6.dp)
+                                            ) {
+                                                Text("Push", fontSize = 10.sp)
+                                            }
+                                        }
+
+                                        IconButton(
+                                            onClick = {
+                                                bleManager.dbHelper.deleteTile(tile.uid)
+                                                reloadTiles()
+                                            },
+                                            modifier = Modifier.size(32.dp)
+                                        ) {
+                                            Text("🗑️", fontSize = 14.sp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

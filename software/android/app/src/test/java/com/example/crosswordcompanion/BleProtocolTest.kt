@@ -94,7 +94,85 @@ class BleProtocolTest {
         assertEquals(0x03.toByte(), BleProtocol.CMD_SELECT_CHANNEL)
         assertEquals(0x04.toByte(), BleProtocol.CMD_TOGGLE_MUX)
         assertEquals(0x05.toByte(), BleProtocol.CMD_ENROLL_TAG)
+        assertEquals(0x06.toByte(), BleProtocol.CMD_SYNC_TILE)
         assertEquals(0x10.toByte(), BleProtocol.CMD_COMMIT_TURN)
+    }
+
+    @Test
+    fun testParseHexUid_validFormats() {
+        val uidColon = "04:A1:B2:C3:D4:E5:10"
+        val bytes = BleProtocol.parseHexUid(uidColon)
+        assertEquals(7, bytes.size)
+        assertEquals(0x04.toByte(), bytes[0])
+        assertEquals(0xA1.toByte(), bytes[1])
+        assertEquals(0xB2.toByte(), bytes[2])
+        assertEquals(0xC3.toByte(), bytes[3])
+        assertEquals(0xD4.toByte(), bytes[4])
+        assertEquals(0xE5.toByte(), bytes[5])
+        assertEquals(0x10.toByte(), bytes[6])
+
+        // Without colons, mixed case
+        val uidNoColon = "04a1b2c3d4e510"
+        val bytes2 = BleProtocol.parseHexUid(uidNoColon)
+        assertArrayEquals(bytes, bytes2)
+
+        // 4-byte UID
+        val uid4Byte = "A1:B2:C3:D4"
+        val bytes4 = BleProtocol.parseHexUid(uid4Byte)
+        assertEquals(4, bytes4.size)
+        assertEquals(0xA1.toByte(), bytes4[0])
+    }
+
+    @Test
+    fun testParseHexUid_invalidInputs() {
+        assertTrue("Empty string should return empty byte array", BleProtocol.parseHexUid("").isEmpty())
+        assertTrue("Odd length string should return empty byte array", BleProtocol.parseHexUid("04:A").isEmpty())
+        assertTrue("Invalid hex characters should return empty byte array", BleProtocol.parseHexUid("04:ZZ:10").isEmpty())
+    }
+
+    @Test
+    fun testFormatHexUid() {
+        val bytes = byteArrayOf(0x04.toByte(), 0xA1.toByte(), 0xB2.toByte())
+        val formatted = BleProtocol.formatHexUid(bytes)
+        assertEquals("04:A1:B2", formatted)
+    }
+
+    @Test
+    fun testGetLetterPoints() {
+        assertEquals(1, BleProtocol.getLetterPoints('A'))
+        assertEquals(1, BleProtocol.getLetterPoints('e'))
+        assertEquals(2, BleProtocol.getLetterPoints('D'))
+        assertEquals(3, BleProtocol.getLetterPoints('B'))
+        assertEquals(4, BleProtocol.getLetterPoints('F'))
+        assertEquals(5, BleProtocol.getLetterPoints('K'))
+        assertEquals(8, BleProtocol.getLetterPoints('J'))
+        assertEquals(10, BleProtocol.getLetterPoints('Q'))
+        assertEquals(10, BleProtocol.getLetterPoints('Z'))
+        assertEquals(0, BleProtocol.getLetterPoints('?'))
+    }
+
+    @Test
+    fun testBuildSyncTilePayload() {
+        val payload = BleProtocol.buildSyncTilePayload("04:A1:B2:C3:D4:E5:10", 'Z', 10)
+        assertNotNull(payload)
+        assertEquals(11, payload!!.size)
+        assertEquals(BleProtocol.CMD_SYNC_TILE, payload[0])
+        assertEquals(7.toByte(), payload[1])
+        assertEquals(0x04.toByte(), payload[2])
+        assertEquals(0xA1.toByte(), payload[3])
+        assertEquals(0xB2.toByte(), payload[4])
+        assertEquals(0xC3.toByte(), payload[5])
+        assertEquals(0xD4.toByte(), payload[6])
+        assertEquals(0xE5.toByte(), payload[7])
+        assertEquals(0x10.toByte(), payload[8])
+        assertEquals('Z'.code.toByte(), payload[9])
+        assertEquals(10.toByte(), payload[10])
+    }
+
+    @Test
+    fun testBuildSyncTilePayload_invalidUidReturnsNull() {
+        assertNull(BleProtocol.buildSyncTilePayload("invalid", 'A', 1))
+        assertNull(BleProtocol.buildSyncTilePayload("", 'A', 1))
     }
 }
 

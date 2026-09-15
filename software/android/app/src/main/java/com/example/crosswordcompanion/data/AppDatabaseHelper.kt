@@ -24,11 +24,19 @@ data class GameRecord(
     val lastUpdated: Long
 )
 
+data class TileRecord(
+    val uid: String,
+    val letter: Char,
+    val points: Int,
+    val registeredAt: Long,
+    val notes: String? = null
+)
+
 class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         const val DATABASE_NAME = "crossword_companion.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
 
         // Table Users
         const val TABLE_USERS = "users"
@@ -55,6 +63,14 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         const val COL_GAME_OPP_SCORE = "opponent_score"
         const val COL_GAME_TURN = "current_turn"
         const val COL_GAME_UPDATED = "last_updated"
+
+        // Table Tiles
+        const val TABLE_TILES = "tiles"
+        const val COL_TILE_UID = "uid"
+        const val COL_TILE_LETTER = "letter"
+        const val COL_TILE_POINTS = "points"
+        const val COL_TILE_REGISTERED_AT = "registered_at"
+        const val COL_TILE_NOTES = "notes"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -90,6 +106,16 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             )
         """.trimIndent())
 
+        db.execSQL("""
+            CREATE TABLE $TABLE_TILES (
+                $COL_TILE_UID TEXT PRIMARY KEY,
+                $COL_TILE_LETTER TEXT NOT NULL,
+                $COL_TILE_POINTS INTEGER NOT NULL,
+                $COL_TILE_REGISTERED_AT INTEGER NOT NULL,
+                $COL_TILE_NOTES TEXT
+            )
+        """.trimIndent())
+
         // Seed initial friend: Grandma Betty's Physical Smart Board
         val cv = ContentValues().apply {
             put(COL_FRIEND_ID, "board_scb8492")
@@ -102,7 +128,17 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Future migrations handle schema evolution without wiping user records
+        if (oldVersion < 2) {
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS $TABLE_TILES (
+                    $COL_TILE_UID TEXT PRIMARY KEY,
+                    $COL_TILE_LETTER TEXT NOT NULL,
+                    $COL_TILE_POINTS INTEGER NOT NULL,
+                    $COL_TILE_REGISTERED_AT INTEGER NOT NULL,
+                    $COL_TILE_NOTES TEXT
+                )
+            """.trimIndent())
+        }
     }
 
     // User Operations
@@ -136,6 +172,7 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             db.delete(TABLE_USERS, null, null)
             db.delete(TABLE_GAMES, null, null)
             db.delete(TABLE_FRIENDS, null, null)
+            db.delete(TABLE_TILES, null, null)
             // Re-seed initial board friend
             val cv = ContentValues().apply {
                 put(COL_FRIEND_ID, "board_scb8492")
@@ -207,5 +244,111 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             val res = db.insertWithOnConflict(TABLE_FRIENDS, null, cv, SQLiteDatabase.CONFLICT_IGNORE)
             return res != -1L
         }
+    }
+
+    // Tile Persistence Operations (Survives ESP32 reflash)
+    fun saveTile(uid: String, letter: Char, points: Int, notes: String? = null): Boolean {
+        return try {
+            writableDatabase.use { db ->
+                val cv = ContentValues().apply {
+                    put(COL_TILE_UID, uid)
+                    put(COL_TILE_LETTER, letter.uppercaseChar().toString())
+                    put(COL_TILE_POINTS, points)
+                    put(COL_TILE_REGISTERED_AT, System.currentTimeMillis())
+                    put(COL_TILE_NOTES, notes)
+                }
+                val res = db.insertWithOnConflict(TABLE_TILES, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
+                res != -1L
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun getAllTiles(): List<TileRecord> {
+        val list = mutableListOf<TileRecord>()
+        readableDatabase.use { db ->
+            val cursor = db.query(
+                TABLE_TILES,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "$COL_TILE_LETTER ASC, $COL_TILE_REGISTERED_AT DESC"
+            )
+            cursor.use {
+                while (it.moveToNext()) {
+                    val uid = it.getString(it.getColumnIndexOrThrow(COL_TILE_UID))
+                    val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
+                    val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
+                    val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
+                    val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
+                    val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
+                    list.add(TileRecord(uid, letterChar, points, regAt, notes))
+                }
+            }
+        }
+        return list
+    }
+
+    fun getTile(uid: String): TileRecord? {
+        readableDatabase.use { db ->
+            val cursor = db.query(
+                TABLE_TILES,
+                null,
+                "$COL_TILE_UID = ?",
+                arrayOf(uid),
+                null,
+                null,
+                null,
+                "1"
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
+                    val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
+                    val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
+                    val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
+                    val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
+                    return TileRecord(uid, letterChar, points, regAt, notes)
+                }
+            }
+        }
+        return null
+    }
+
+    fun deleteTile(uid: String): Boolean {
+        return try {
+            writableDatabase.use { db ->
+                val count = db.delete(TABLE_TILES, "$COL_TILE_UID = ?", arrayOf(uid))
+                count > 0
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun clearAllTiles(): Boolean {
+        return try {
+            writableDatabase.use { db ->
+                db.delete(TABLE_TILES, null, null)
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun getTileCount(): Int {
+        readableDatabase.use { db ->
+            val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_TILES", null)
+            cursor.use {
+                if (it.moveToFirst()) {
+                    return it.getInt(0)
+                }
+            }
+        }
+        return 0
     }
 }

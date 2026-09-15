@@ -117,5 +117,63 @@ class AppDatabaseDeviceTest {
         val friends = dbHelper.getAllFriends()
         assertEquals("Friends must be reset to initial seed (1 board)", 1, friends.size)
         assertEquals("board_scb8492", friends[0].id)
+        assertEquals("Tiles must be cleared by clearAllData", 0, dbHelper.getTileCount())
+    }
+
+    @Test
+    fun testSaveAndRetrieveTiles() {
+        assertEquals("Initial tile count must be 0", 0, dbHelper.getTileCount())
+
+        val saved = dbHelper.saveTile("04:A1:B2:C3:D4:E5:10", 'A', 1, "Tile 1")
+        assertTrue("Saving tile must return true", saved)
+        assertEquals(1, dbHelper.getTileCount())
+
+        val retrieved = dbHelper.getTile("04:A1:B2:C3:D4:E5:10")
+        assertNotNull("Retrieved tile must not be null", retrieved)
+        assertEquals("04:A1:B2:C3:D4:E5:10", retrieved?.uid)
+        assertEquals('A', retrieved?.letter)
+        assertEquals(1, retrieved?.points)
+        assertEquals("Tile 1", retrieved?.notes)
+        assertTrue(retrieved!!.registeredAt > 0)
+    }
+
+    @Test
+    fun testTileUpdateConflictReplace() {
+        dbHelper.saveTile("04:A1:B2:C3:D4:E5:10", 'A', 1)
+        // Update to 'Z' (10 points) with same UID
+        dbHelper.saveTile("04:A1:B2:C3:D4:E5:10", 'Z', 10, "Updated to Z")
+
+        assertEquals(1, dbHelper.getTileCount())
+        val tile = dbHelper.getTile("04:A1:B2:C3:D4:E5:10")
+        assertNotNull(tile)
+        assertEquals('Z', tile?.letter)
+        assertEquals(10, tile?.points)
+        assertEquals("Updated to Z", tile?.notes)
+    }
+
+    @Test
+    fun testDeleteTile() {
+        dbHelper.saveTile("04:11:22:33:44:55:66", 'B', 3)
+        dbHelper.saveTile("04:AA:BB:CC:DD:EE:FF", 'C', 3)
+        assertEquals(2, dbHelper.getTileCount())
+
+        val deleted = dbHelper.deleteTile("04:11:22:33:44:55:66")
+        assertTrue("Deleting tile should succeed", deleted)
+        assertEquals(1, dbHelper.getTileCount())
+        assertNull(dbHelper.getTile("04:11:22:33:44:55:66"))
+        assertNotNull(dbHelper.getTile("04:AA:BB:CC:DD:EE:FF"))
+    }
+
+    @Test
+    fun testClearAllTiles() {
+        dbHelper.saveTile("UID_1", 'A', 1)
+        dbHelper.saveTile("UID_2", 'B', 3)
+        dbHelper.saveTile("UID_3", 'C', 3)
+        assertEquals(3, dbHelper.getTileCount())
+
+        val cleared = dbHelper.clearAllTiles()
+        assertTrue("clearAllTiles should return true", cleared)
+        assertEquals(0, dbHelper.getTileCount())
+        assertTrue(dbHelper.getAllTiles().isEmpty())
     }
 }

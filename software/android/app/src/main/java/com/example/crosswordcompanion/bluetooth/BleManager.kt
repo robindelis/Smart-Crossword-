@@ -10,6 +10,7 @@ import android.content.Context
 import android.os.Build
 import android.os.ParcelUuid
 import android.util.Log
+import com.example.crosswordcompanion.data.AppDatabaseHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,6 +46,7 @@ object BleProtocol {
     const val CMD_SELECT_CHANNEL: Byte = 0x03
     const val CMD_TOGGLE_MUX: Byte = 0x04
     const val CMD_ENROLL_TAG: Byte = 0x05
+    const val CMD_SYNC_TILE: Byte = 0x06
     const val CMD_COMMIT_TURN: Byte = 0x10
 
     // Telemetry Status Codes
@@ -99,6 +101,63 @@ object BleProtocol {
         }
         return ScanTelemetry(activeChannel = channel, status = status, tagUid = uidString)
     }
+
+    /**
+     * Parses a hex UID string like "04:A1:B2:C3:D4:E5:10" or "04A1B2C3D4E510" into a ByteArray.
+     */
+    fun parseHexUid(uidHex: String): ByteArray {
+        val clean = uidHex.replace(":", "").replace(" ", "").trim()
+        if (clean.isEmpty() || clean.length % 2 != 0) return ByteArray(0)
+        val bytes = ByteArray(clean.length / 2)
+        for (i in bytes.indices) {
+            val byteStr = clean.substring(i * 2, i * 2 + 2)
+            val intVal = byteStr.toIntOrNull(16) ?: return ByteArray(0)
+            bytes[i] = intVal.toByte()
+        }
+        return bytes
+    }
+
+    /**
+     * Formats raw UID bytes to colon-delimited hex string e.g. "04:A1:B2:C3:D4:E5:10".
+     */
+    fun formatHexUid(bytes: ByteArray): String {
+        val hexList = mutableListOf<String>()
+        for (b in bytes) {
+            hexList.add(String.format("%02X", b))
+        }
+        return hexList.joinToString(":")
+    }
+
+    /**
+     * Standard Scrabble letter point values.
+     */
+    fun getLetterPoints(c: Char): Int {
+        return when (c.uppercaseChar()) {
+            'A', 'E', 'I', 'O', 'U', 'L', 'N', 'S', 'T', 'R' -> 1
+            'D', 'G' -> 2
+            'B', 'C', 'M', 'P' -> 3
+            'F', 'H', 'V', 'W', 'Y' -> 4
+            'K' -> 5
+            'J', 'X' -> 8
+            'Q', 'Z' -> 10
+            else -> 0
+        }
+    }
+
+    /**
+     * Builds packet for CMD_SYNC_TILE: [CMD_SYNC_TILE, uidLen, uidBytes..., letter, points].
+     */
+    fun buildSyncTilePayload(uidHex: String, letter: Char, points: Int): ByteArray? {
+        val uidBytes = parseHexUid(uidHex)
+        if (uidBytes.isEmpty() || uidBytes.size > 10) return null
+        val payload = ByteArray(2 + uidBytes.size + 2)
+        payload[0] = CMD_SYNC_TILE
+        payload[1] = uidBytes.size.toByte()
+        System.arraycopy(uidBytes, 0, payload, 2, uidBytes.size)
+        payload[2 + uidBytes.size] = letter.uppercaseChar().code.toByte()
+        payload[3 + uidBytes.size] = points.toByte()
+        return payload
+    }
 }
 
 class BleManager private constructor(private val context: Context) {
@@ -114,6 +173,8 @@ class BleManager private constructor(private val context: Context) {
             }
         }
     }
+
+    val dbHelper = AppDatabaseHelper(context)
 
     private val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
     private val bluetoothAdapter = bluetoothManager?.adapter
@@ -134,6 +195,8 @@ class BleManager private constructor(private val context: Context) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var scanTimeoutJob: Job? = null
     private var reconnectJob: Job? = null
+    private var lastAutoHealedUid: String? = null
+    private var lastAutoHealedTime: Long = 0L
 
     private val descriptorQueue = mutableListOf<BluetoothGattDescriptor>()
     private var isWritingDescriptor = false
@@ -217,6 +280,12 @@ class BleManager private constructor(private val context: Context) {
             enableNotification(gatt, service, BleProtocol.CHAR_SCAN_TELEMETRY_UUID)
 
             writeNextDescriptor(gatt)
+
+            // Auto-sync all local tiles to board after connection and notifications initialized
+            scope.launch {
+                delay(600)
+                syncAllTilesToBoard()
+            }
         }
 
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
@@ -261,6 +330,31 @@ class BleManager private constructor(private val context: Context) {
                     telemetry
                 }
                 _scanTelemetry.value = resolved
+
+                if (resolved.status == BleProtocol.STATUS_IDLE) {
+                    lastAutoHealedUid = null
+                }
+
+                // Auto-heal: If tag detected with UID, and board has it as '?' or unregistered, check local DB
+                val uid = resolved.tagUid
+                val ch = resolved.activeChannel
+                if (resolved.status == BleProtocol.STATUS_TAG_DETECTED && !uid.isNullOrBlank() && ch != null) {
+                    val boardChar = _boardState.value[ch]
+                    if (boardChar == null || boardChar == '?') {
+                        val now = System.currentTimeMillis()
+                        if (uid != lastAutoHealedUid || now - lastAutoHealedTime > 2000L) {
+                            lastAutoHealedUid = uid
+                            lastAutoHealedTime = now
+                            scope.launch(Dispatchers.IO) {
+                                val localTile = dbHelper.getTile(uid)
+                                if (localTile != null) {
+                                    Log.i(TAG, "🩹 Auto-healing tag $uid as '${localTile.letter}' on square $ch from local DB")
+                                    syncTile(localTile.uid, localTile.letter, localTile.points)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -393,10 +487,37 @@ class BleManager private constructor(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun enrollTag(channel: Int, letter: Char): Boolean {
+    fun enrollTag(channel: Int, letter: Char, explicitUid: String? = null): Boolean {
         if (channel !in 0..15) return false
         val letCode = letter.uppercaseChar().code.toByte()
-        return sendCommand(byteArrayOf(BleProtocol.CMD_ENROLL_TAG, channel.toByte(), letCode))
+        val success = sendCommand(byteArrayOf(BleProtocol.CMD_ENROLL_TAG, channel.toByte(), letCode))
+        val uid = explicitUid ?: _scanTelemetry.value.tagUid
+        if (!uid.isNullOrBlank()) {
+            val points = BleProtocol.getLetterPoints(letter)
+            dbHelper.saveTile(uid, letter.uppercaseChar(), points)
+            Log.i(TAG, "💾 Persisted enrolled tile $uid -> '$letter' ($points pts) to local DB")
+        }
+        return success
+    }
+
+    @SuppressLint("MissingPermission")
+    fun syncTile(uidHex: String, letter: Char, points: Int): Boolean {
+        val payload = BleProtocol.buildSyncTilePayload(uidHex, letter, points) ?: return false
+        return sendCommand(payload)
+    }
+
+    suspend fun syncAllTilesToBoard(): Int = withContext(Dispatchers.IO) {
+        val tiles = dbHelper.getAllTiles()
+        var count = 0
+        for (tile in tiles) {
+            val success = syncTile(tile.uid, tile.letter, tile.points)
+            if (success) {
+                count++
+            }
+            delay(40)
+        }
+        Log.i(TAG, "Synced $count/${tiles.size} tiles from local DB to board")
+        count
     }
 
     @SuppressLint("MissingPermission")

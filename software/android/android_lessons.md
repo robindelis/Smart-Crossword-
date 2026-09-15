@@ -84,6 +84,12 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: The embedded board streams periodic lightweight telemetry pulses (e.g. `[channel, STATUS_ENERGIZED]`) without payload bytes to drive the UI radar animation. When the client deserializes this into `ScanTelemetry`, it assigns `tagUid = null`, inadvertently destroying persistent tag identity on every heartbeat frame.
   * *Reliable Mitigation*: In `BleManager`, latch previously detected `tagUid` for the active channel when an incoming packet is a probing pulse (`STATUS_ENERGIZED`). Only clear the latch when `STATUS_IDLE (0)` (explicit removal) is received or when the user switches to a different channel.
 
+* **LESSON-AND-015 (Persistent Local Tag Identity & ESP32 Reflash Auto-Healing)**:
+  * *Symptom/Error*: Physical NFC tile registrations are lost whenever the ESP32 MCU is reflashed or factory-reset during development, reverting registered letters to `'?'`.
+  * *Root Cause*: Relying solely on microcontroller NVS storage for physical hardware inventory without a companion phone-side persistent anchor.
+  * *Reliable Mitigation*: Store physical tile records (`TileRecord(uid, letter, points, registeredAt)`) in the phone's local SQLite database (`crossword_companion.db`). On BLE service discovery and whenever incoming telemetry reports a tag with `'?'` status, query local SQLite by UID and dispatch `CMD_SYNC_TILE (0x06)` to seamlessly auto-heal and sync the tile mapping to the hardware with zero user friction.
+
+
 
 
 
