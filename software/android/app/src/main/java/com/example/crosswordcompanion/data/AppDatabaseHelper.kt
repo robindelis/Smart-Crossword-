@@ -143,68 +143,64 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
 
     // User Operations
     fun saveUserProfile(profile: UserProfile, isLoggedIn: Boolean = true) {
-        writableDatabase.use { db ->
-            if (isLoggedIn) {
-                // Ensure only one active user is marked as logged in
-                val resetCv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
-                db.update(TABLE_USERS, resetCv, null, null)
-            }
-            val cv = ContentValues().apply {
-                put(COL_USER_ID, profile.id)
-                put(COL_USER_NAME, profile.displayName)
-                put(COL_USER_HANDLE, profile.uniqueUsername)
-                put(COL_USER_EMAIL, profile.email)
-                put(COL_USER_LOGGED_IN, if (isLoggedIn) 1 else 0)
-            }
-            db.insertWithOnConflict(TABLE_USERS, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
+        val db = writableDatabase
+        if (isLoggedIn) {
+            // Ensure only one active user is marked as logged in
+            val resetCv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
+            db.update(TABLE_USERS, resetCv, null, null)
         }
+        val cv = ContentValues().apply {
+            put(COL_USER_ID, profile.id)
+            put(COL_USER_NAME, profile.displayName)
+            put(COL_USER_HANDLE, profile.uniqueUsername)
+            put(COL_USER_EMAIL, profile.email)
+            put(COL_USER_LOGGED_IN, if (isLoggedIn) 1 else 0)
+        }
+        db.insertWithOnConflict(TABLE_USERS, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
     }
 
     fun logoutAllUsers() {
-        writableDatabase.use { db ->
-            val cv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
-            db.update(TABLE_USERS, cv, null, null)
-        }
+        val db = writableDatabase
+        val cv = ContentValues().apply { put(COL_USER_LOGGED_IN, 0) }
+        db.update(TABLE_USERS, cv, null, null)
     }
 
     fun clearAllData() {
-        writableDatabase.use { db ->
-            db.delete(TABLE_USERS, null, null)
-            db.delete(TABLE_GAMES, null, null)
-            db.delete(TABLE_FRIENDS, null, null)
-            db.delete(TABLE_TILES, null, null)
-            // Re-seed initial board friend
-            val cv = ContentValues().apply {
-                put(COL_FRIEND_ID, "board_scb8492")
-                put(COL_FRIEND_NAME, "Grandma Betty (Physical Board)")
-                put(COL_FRIEND_HANDLE, "board_scb8492")
-                put(COL_FRIEND_IS_BOARD, 1)
-                put(COL_FRIEND_STATUS, "online")
-            }
-            db.insert(TABLE_FRIENDS, null, cv)
+        val db = writableDatabase
+        db.delete(TABLE_USERS, null, null)
+        db.delete(TABLE_GAMES, null, null)
+        db.delete(TABLE_FRIENDS, null, null)
+        db.delete(TABLE_TILES, null, null)
+        // Re-seed initial board friend
+        val cv = ContentValues().apply {
+            put(COL_FRIEND_ID, "board_scb8492")
+            put(COL_FRIEND_NAME, "Grandma Betty (Physical Board)")
+            put(COL_FRIEND_HANDLE, "board_scb8492")
+            put(COL_FRIEND_IS_BOARD, 1)
+            put(COL_FRIEND_STATUS, "online")
         }
+        db.insert(TABLE_FRIENDS, null, cv)
     }
 
     fun getActiveUserProfile(): UserProfile? {
-        readableDatabase.use { db ->
-            val cursor = db.query(
-                TABLE_USERS,
-                null,
-                "$COL_USER_LOGGED_IN = 1",
-                null,
-                null,
-                null,
-                null,
-                "1"
-            )
-            cursor.use {
-                if (it.moveToFirst()) {
-                    val id = it.getString(it.getColumnIndexOrThrow(COL_USER_ID))
-                    val name = it.getString(it.getColumnIndexOrThrow(COL_USER_NAME))
-                    val handle = it.getString(it.getColumnIndexOrThrow(COL_USER_HANDLE))
-                    val email = it.getString(it.getColumnIndexOrThrow(COL_USER_EMAIL))
-                    return UserProfile(id, name, handle, email)
-                }
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_USERS,
+            null,
+            "$COL_USER_LOGGED_IN = 1",
+            null,
+            null,
+            null,
+            null,
+            "1"
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                val id = it.getString(it.getColumnIndexOrThrow(COL_USER_ID))
+                val name = it.getString(it.getColumnIndexOrThrow(COL_USER_NAME))
+                val handle = it.getString(it.getColumnIndexOrThrow(COL_USER_HANDLE))
+                val email = it.getString(it.getColumnIndexOrThrow(COL_USER_EMAIL))
+                return UserProfile(id, name, handle, email)
             }
         }
         return null
@@ -213,53 +209,50 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
     // Friends Operations
     fun getAllFriends(): List<FriendRecord> {
         val list = mutableListOf<FriendRecord>()
-        readableDatabase.use { db ->
-            val cursor = db.query(TABLE_FRIENDS, null, null, null, null, null, "$COL_FRIEND_NAME ASC")
-            cursor.use {
-                while (it.moveToNext()) {
-                    list.add(
-                        FriendRecord(
-                            id = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_ID)),
-                            displayName = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_NAME)),
-                            uniqueUsername = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_HANDLE)),
-                            isBoard = it.getInt(it.getColumnIndexOrThrow(COL_FRIEND_IS_BOARD)) == 1,
-                            status = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_STATUS))
-                        )
+        val db = readableDatabase
+        val cursor = db.query(TABLE_FRIENDS, null, null, null, null, null, "$COL_FRIEND_NAME ASC")
+        cursor.use {
+            while (it.moveToNext()) {
+                list.add(
+                    FriendRecord(
+                        id = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_ID)),
+                        displayName = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_NAME)),
+                        uniqueUsername = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_HANDLE)),
+                        isBoard = it.getInt(it.getColumnIndexOrThrow(COL_FRIEND_IS_BOARD)) == 1,
+                        status = it.getString(it.getColumnIndexOrThrow(COL_FRIEND_STATUS))
                     )
-                }
+                )
             }
         }
         return list
     }
 
     fun addFriend(displayName: String, uniqueUsername: String, isBoard: Boolean): Boolean {
-        writableDatabase.use { db ->
-            val cv = ContentValues().apply {
-                put(COL_FRIEND_ID, uniqueUsername.lowercase())
-                put(COL_FRIEND_NAME, displayName)
-                put(COL_FRIEND_HANDLE, uniqueUsername.lowercase())
-                put(COL_FRIEND_IS_BOARD, if (isBoard) 1 else 0)
-                put(COL_FRIEND_STATUS, "online")
-            }
-            val res = db.insertWithOnConflict(TABLE_FRIENDS, null, cv, SQLiteDatabase.CONFLICT_IGNORE)
-            return res != -1L
+        val db = writableDatabase
+        val cv = ContentValues().apply {
+            put(COL_FRIEND_ID, uniqueUsername.lowercase())
+            put(COL_FRIEND_NAME, displayName)
+            put(COL_FRIEND_HANDLE, uniqueUsername.lowercase())
+            put(COL_FRIEND_IS_BOARD, if (isBoard) 1 else 0)
+            put(COL_FRIEND_STATUS, "online")
         }
+        val res = db.insertWithOnConflict(TABLE_FRIENDS, null, cv, SQLiteDatabase.CONFLICT_IGNORE)
+        return res != -1L
     }
 
     // Tile Persistence Operations (Survives ESP32 reflash)
     fun saveTile(uid: String, letter: Char, points: Int, notes: String? = null): Boolean {
         return try {
-            writableDatabase.use { db ->
-                val cv = ContentValues().apply {
-                    put(COL_TILE_UID, uid)
-                    put(COL_TILE_LETTER, letter.uppercaseChar().toString())
-                    put(COL_TILE_POINTS, points)
-                    put(COL_TILE_REGISTERED_AT, System.currentTimeMillis())
-                    put(COL_TILE_NOTES, notes)
-                }
-                val res = db.insertWithOnConflict(TABLE_TILES, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
-                res != -1L
+            val db = writableDatabase
+            val cv = ContentValues().apply {
+                put(COL_TILE_UID, uid)
+                put(COL_TILE_LETTER, letter.uppercaseChar().toString())
+                put(COL_TILE_POINTS, points)
+                put(COL_TILE_REGISTERED_AT, System.currentTimeMillis())
+                put(COL_TILE_NOTES, notes)
             }
+            val res = db.insertWithOnConflict(TABLE_TILES, null, cv, SQLiteDatabase.CONFLICT_REPLACE)
+            res != -1L
         } catch (e: Exception) {
             false
         }
@@ -267,52 +260,50 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
 
     fun getAllTiles(): List<TileRecord> {
         val list = mutableListOf<TileRecord>()
-        readableDatabase.use { db ->
-            val cursor = db.query(
-                TABLE_TILES,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "$COL_TILE_LETTER ASC, $COL_TILE_REGISTERED_AT DESC"
-            )
-            cursor.use {
-                while (it.moveToNext()) {
-                    val uid = it.getString(it.getColumnIndexOrThrow(COL_TILE_UID))
-                    val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
-                    val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
-                    val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
-                    val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
-                    val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
-                    list.add(TileRecord(uid, letterChar, points, regAt, notes))
-                }
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_TILES,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "$COL_TILE_LETTER ASC, $COL_TILE_REGISTERED_AT DESC"
+        )
+        cursor.use {
+            while (it.moveToNext()) {
+                val uid = it.getString(it.getColumnIndexOrThrow(COL_TILE_UID))
+                val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
+                val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
+                val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
+                val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
+                val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
+                list.add(TileRecord(uid, letterChar, points, regAt, notes))
             }
         }
         return list
     }
 
     fun getTile(uid: String): TileRecord? {
-        readableDatabase.use { db ->
-            val cursor = db.query(
-                TABLE_TILES,
-                null,
-                "$COL_TILE_UID = ?",
-                arrayOf(uid),
-                null,
-                null,
-                null,
-                "1"
-            )
-            cursor.use {
-                if (it.moveToFirst()) {
-                    val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
-                    val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
-                    val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
-                    val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
-                    val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
-                    return TileRecord(uid, letterChar, points, regAt, notes)
-                }
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_TILES,
+            null,
+            "$COL_TILE_UID = ?",
+            arrayOf(uid),
+            null,
+            null,
+            null,
+            "1"
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                val letterStr = it.getString(it.getColumnIndexOrThrow(COL_TILE_LETTER))
+                val points = it.getInt(it.getColumnIndexOrThrow(COL_TILE_POINTS))
+                val regAt = it.getLong(it.getColumnIndexOrThrow(COL_TILE_REGISTERED_AT))
+                val notes = it.getString(it.getColumnIndexOrThrow(COL_TILE_NOTES))
+                val letterChar = if (letterStr.isNotEmpty()) letterStr[0] else '?'
+                return TileRecord(uid, letterChar, points, regAt, notes)
             }
         }
         return null
@@ -320,10 +311,9 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
 
     fun deleteTile(uid: String): Boolean {
         return try {
-            writableDatabase.use { db ->
-                val count = db.delete(TABLE_TILES, "$COL_TILE_UID = ?", arrayOf(uid))
-                count > 0
-            }
+            val db = writableDatabase
+            val count = db.delete(TABLE_TILES, "$COL_TILE_UID = ?", arrayOf(uid))
+            count > 0
         } catch (e: Exception) {
             false
         }
@@ -331,22 +321,20 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
 
     fun clearAllTiles(): Boolean {
         return try {
-            writableDatabase.use { db ->
-                db.delete(TABLE_TILES, null, null)
-                true
-            }
+            val db = writableDatabase
+            db.delete(TABLE_TILES, null, null)
+            true
         } catch (e: Exception) {
             false
         }
     }
 
     fun getTileCount(): Int {
-        readableDatabase.use { db ->
-            val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_TILES", null)
-            cursor.use {
-                if (it.moveToFirst()) {
-                    return it.getInt(0)
-                }
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_TILES", null)
+        cursor.use {
+            if (it.moveToFirst()) {
+                return it.getInt(0)
             }
         }
         return 0

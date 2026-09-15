@@ -89,6 +89,11 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: Relying solely on microcontroller NVS storage for physical hardware inventory without a companion phone-side persistent anchor.
   * *Reliable Mitigation*: Store physical tile records (`TileRecord(uid, letter, points, registeredAt)`) in the phone's local SQLite database (`crossword_companion.db`). On BLE service discovery and whenever incoming telemetry reports a tag with `'?'` status, query local SQLite by UID and dispatch `CMD_SYNC_TILE (0x06)` to seamlessly auto-heal and sync the tile mapping to the hardware with zero user friction.
 
+* **LESSON-AND-016 (SQLiteOpenHelper Connection Pool Lifecycle & Concurrency Invariant)**:
+  * *Symptom/Error*: Intermittent fatal crashes: `java.lang.IllegalStateException: Cannot perform this operation because the connection pool has been closed` or `attempt to re-open an already-closed object: SQLiteDatabase`.
+  * *Root Cause*: Wrapping helper methods in Kotlin's `writableDatabase.use { db -> ... }` or `readableDatabase.use { db -> ... }`. In Android's `SQLiteOpenHelper`, calling `close()` on the database closes the single shared connection pool for the entire application. When background coroutines (e.g. `BleManager` in `Dispatchers.IO`) perform concurrent tile lookups during BLE packet processing while another thread finishes a query, the closed pool throws an uncatchable runtime exception.
+  * *Reliable Mitigation*: Only close the `Cursor` (via `cursor.use { ... }`). Never call `.use` or `.close()` on `readableDatabase` or `writableDatabase` within individual DAO methods; leave the database connection lifecycle management to `SQLiteOpenHelper` and Android's Application context.
+
 
 
 
