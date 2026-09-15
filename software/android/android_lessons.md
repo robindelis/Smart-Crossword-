@@ -69,4 +69,10 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: 1) In Android GATT client, calling `writeDescriptor()` before the previous descriptor write completes drops subsequent subscriptions silently; 2) Standard ESP32 default partition table allocates only 1.25MB for app code, while BLE + SPI consumes ~960KB+, leaving negligible headroom for OTA.
   * *Reliable Mitigation*: 1) Queue all `BluetoothGattDescriptor` write operations in a FIFO list and trigger each next write strictly inside `onDescriptorWrite`; 2) Configure `board_build.partitions = huge_app.csv` in `platformio.ini` to allocate 3MB for app code.
 
+* **LESSON-AND-012 (GATT Connection Hoisting Across Compose Nav Tabs)**:
+  * *Symptom/Error*: BLE connection drops immediately whenever the user taps "Friends" or "Account" and navigates away from the game screen.
+  * *Root Cause*: Instantiating `BleManager` inside a screen Composable with `remember` and calling `bleManager.disconnect()` inside a `DisposableEffect { onDispose { ... } }` tears down the GATT link whenever the Composable leaves composition during navigation.
+  * *Reliable Mitigation*: Hoist `BleManager` to a singleton (`getInstance(context)`) owned by `MainActivity` or the Application lifecycle. Screen Composables observe StateFlows (`connectionState`, `scanTelemetry`, `boardState`) without owning the connection lifecycle. Implement an auto-reconnect loop in `BleManager` that retries every 3 seconds if disconnected unexpectedly.
+
+
 

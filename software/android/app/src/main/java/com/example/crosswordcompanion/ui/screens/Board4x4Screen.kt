@@ -51,13 +51,14 @@ private fun getScrabbleLetterPoints(c: Char): Int {
 fun Board4x4Screen(
     playerName: String = "Sarah",
     opponentName: String = "Grandma Betty (Board)",
+    bleManager: BleManager? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val bleManager = remember { BleManager(context) }
-    val bleConnectionState by bleManager.connectionState.collectAsState()
-    val scanTelemetry by bleManager.scanTelemetry.collectAsState()
-    val physicalTiles by bleManager.boardState.collectAsState()
+    val activeBleManager = bleManager ?: remember { BleManager.getInstance(context) }
+    val bleConnectionState by activeBleManager.connectionState.collectAsState()
+    val scanTelemetry by activeBleManager.scanTelemetry.collectAsState()
+    val physicalTiles by activeBleManager.boardState.collectAsState()
 
     var cells by remember { mutableStateOf(Board4x4.createDefaultLayout()) }
     var playerScore by remember { mutableIntStateOf(0) }
@@ -113,7 +114,7 @@ fun Board4x4Screen(
     ) { permissions ->
         val granted = permissions.values.all { it }
         if (granted) {
-            bleManager.startScan()
+            activeBleManager.startScan()
         }
     }
 
@@ -122,7 +123,7 @@ fun Board4x4Screen(
             val hasScan = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
             val hasConnect = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
             if (hasScan && hasConnect) {
-                bleManager.startScan()
+                activeBleManager.startScan()
             } else {
                 permissionLauncher.launch(
                     arrayOf(
@@ -134,17 +135,10 @@ fun Board4x4Screen(
         } else {
             val hasLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             if (hasLocation) {
-                bleManager.startScan()
+                activeBleManager.startScan()
             } else {
                 permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
             }
-        }
-    }
-
-    // Clean up BLE on dispose
-    DisposableEffect(Unit) {
-        onDispose {
-            bleManager.disconnect()
         }
     }
 
@@ -279,7 +273,7 @@ fun Board4x4Screen(
                     when (bleConnectionState) {
                         is BleConnectionState.Connected -> {
                             Button(
-                                onClick = { bleManager.triggerSweep() },
+                                onClick = { activeBleManager.triggerSweep() },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00897B)),
                                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
                                 shape = RoundedCornerShape(6.dp),
@@ -289,7 +283,7 @@ fun Board4x4Screen(
                             }
                             Spacer(modifier = Modifier.width(6.dp))
                             IconButton(
-                                onClick = { bleManager.disconnect() },
+                                onClick = { activeBleManager.disconnect() },
                                 modifier = Modifier.size(26.dp)
                             ) {
                                 Text("✕", fontSize = 13.sp, color = Color.Gray)
@@ -658,7 +652,7 @@ fun Board4x4Screen(
                         }
                         isFirstMove = false
                         selectedTileIndex = null
-                        bleManager.sendCommand(BleProtocol.CMD_COMMIT_TURN)
+                        activeBleManager.sendCommand(BleProtocol.CMD_COMMIT_TURN)
                         refereeResult = RefereeResult(
                             false,
                             0,

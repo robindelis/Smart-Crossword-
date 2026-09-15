@@ -107,6 +107,13 @@
   - [x] Local-first SQLite database with session exclusivity and ADB inspector script
   - [x] Firebase Authentication and Google Play Services Sign-In integration
   - [x] 15 JVM unit tests and 6 on-device hardware instrumented tests
+- [x] Android BLE GATT Server & Client Integration (`BleManager.kt`, `firmware/pn532_single_test/src/main.cpp`)
+  - [x] Hoisted `BleManager` singleton to `MainActivity` with persistent connection across tabs
+  - [x] Auto-reconnect background retry loop with in-app toggle
+  - [x] Real-time radar visual scanning feedback in `Board4x4Screen.kt`
+  - [x] 4x4 coil power manual debug matrix (Channels 0..15, toggle MUX, step Prev/Next, sweep)
+  - [x] Piece Registration Studio with live UID readout and A–Z Scrabble point assignment
+  - [x] 100% automated test pass (`BleProtocolTest.kt`, over-the-air Python Bleak test suite)
 - [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
 - [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
 - [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)

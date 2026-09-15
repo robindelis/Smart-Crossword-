@@ -145,11 +145,27 @@ void enrollTag(const uint8_t *uid, uint8_t len, char letter) {
     }
 }
 
+// --- Forward Declarations ---
+void setMuxChannel(uint8_t ch, bool enable);
+void printDashboard();
+
 // --- BLE Notification Helpers ---
-void notifyTelemetry(uint8_t channel, uint8_t status) {
+void notifyTelemetry(uint8_t channel, uint8_t status, const uint8_t *uid = nullptr, uint8_t uidLen = 0) {
     if (bleClientConnected && pTelemetryChar) {
-        uint8_t packet[2] = { channel, status };
-        pTelemetryChar->setValue(packet, 2);
+        uint8_t packet[11];
+        packet[0] = channel;
+        packet[1] = status;
+        uint8_t len = 2;
+        if (uid != nullptr && uidLen > 0) {
+            uint8_t copyLen = (uidLen > 7) ? 7 : uidLen;
+            packet[2] = copyLen;
+            memcpy(&packet[3], uid, copyLen);
+            len = 3 + copyLen;
+        } else {
+            packet[2] = 0;
+            len = 3;
+        }
+        pTelemetryChar->setValue(packet, len);
         pTelemetryChar->notify();
     }
 }
@@ -193,6 +209,50 @@ class CommandCallbacks : public BLECharacteristicCallbacks {
             } else if (cmd == 0x02) {
                 continuousSweep = !continuousSweep;
                 Serial.printf("\n⚡ [BLE CMD] Continuous Sweep toggled: %s\n", continuousSweep ? "ON" : "OFF");
+            } else if (cmd == 0x03 && len >= 2) {
+                uint8_t ch = data[1];
+                if (ch < 16) {
+                    currentChannel = ch;
+                    setMuxChannel(currentChannel, muxEnabled);
+                    notifyTelemetry(currentChannel,
+                                    grid[currentChannel].hasTag ? 0x02 : 0x01,
+                                    grid[currentChannel].hasTag ? grid[currentChannel].uid : nullptr,
+                                    grid[currentChannel].hasTag ? grid[currentChannel].uidLen : 0);
+                    Serial.printf("\n⚡ [BLE CMD] Active Channel set to %d (Row %d, Col %d)\n",
+                                  currentChannel, currentChannel / 4, currentChannel % 4);
+                    printDashboard();
+                }
+            } else if (cmd == 0x04) {
+                muxEnabled = !muxEnabled;
+                setMuxChannel(currentChannel, muxEnabled);
+                Serial.printf("\n⚡ [BLE CMD] MUX %s\n", muxEnabled ? "ENABLED" : "DISABLED (High-Z)");
+                printDashboard();
+            } else if (cmd == 0x05 && len >= 3) {
+                uint8_t ch = data[1];
+                char letter = (char)data[2];
+                if (ch < 16) {
+                    const uint8_t *enrollUid = grid[ch].hasTag ? grid[ch].uid : lastUid;
+                    uint8_t enrollUidLen = grid[ch].hasTag ? grid[ch].uidLen : lastUidLen;
+
+                    if (enrollUidLen > 0) {
+                        enrollTag(enrollUid, enrollUidLen, letter);
+                        if (grid[ch].hasTag) {
+                            grid[ch].assignedLetter = lookupLetter(enrollUid, enrollUidLen);
+                        }
+                        notifyBoardState();
+                        notifyTelemetry(ch, 0x02, enrollUid, enrollUidLen);
+                        Serial.printf("\n🏷️ [BLE ENROLL] Square %d enrolled as Letter '%c' (%d pts) for UID: ",
+                                      ch, (letter >= 'a' && letter <= 'z') ? letter - 32 : letter,
+                                      getLetterPoints(letter));
+                        for (int i = 0; i < enrollUidLen; i++) {
+                            Serial.printf("%02X%s", enrollUid[i], (i + 1 < enrollUidLen) ? ":" : "");
+                        }
+                        Serial.println();
+                        printDashboard();
+                    } else {
+                        Serial.println("\n⚠️ [BLE ENROLL] No tag detected on square to enroll!");
+                    }
+                }
             } else if (cmd == 0x10) {
                 Serial.println("\n⚡ [BLE CMD] Move submitted & locked by phone!");
             }
@@ -313,7 +373,7 @@ void performMatrixSweep() {
             grid[ch].uidLen = uidLen;
             memcpy(grid[ch].uid, uid, uidLen);
             grid[ch].assignedLetter = lookupLetter(uid, uidLen);
-            notifyTelemetry(ch, 0x02); // 0x02 = tag detected
+            notifyTelemetry(ch, 0x02, uid, uidLen); // 0x02 = tag detected with UID
 
             Serial.printf("  [TAG FOUND] Square %2d (R%d,C%d): Letter '%c' | UID=", ch, ch / 4, ch % 4, grid[ch].assignedLetter);
             for (uint8_t i = 0; i < uidLen; i++) {
@@ -474,11 +534,14 @@ void loop() {
             uint8_t uid[7] = {0};
             uint8_t uidLen = 0;
 
-            // Notify telemetry pulse every 400ms to keep app radar effect synced
+            // Notify telemetry pulse every 400ms to keep app radar effect and UID synced
             static unsigned long lastTelePulse = 0;
             if (millis() - lastTelePulse > 400) {
                 lastTelePulse = millis();
-                notifyTelemetry(currentChannel, 0x01);
+                notifyTelemetry(currentChannel,
+                                grid[currentChannel].hasTag ? 0x02 : 0x01,
+                                grid[currentChannel].hasTag ? grid[currentChannel].uid : nullptr,
+                                grid[currentChannel].hasTag ? grid[currentChannel].uidLen : 0);
             }
 
             // Poll with 150ms timeout (energy harvesting dwell time)
@@ -501,8 +564,8 @@ void loop() {
                     memcpy(grid[currentChannel].uid, uid, uidLen);
                     grid[currentChannel].assignedLetter = lookupLetter(uid, uidLen);
 
-                    notifyTelemetry(currentChannel, 0x02); // 0x02 = tag hit
-                    notifyBoardState();                    // Send updated board
+                    notifyTelemetry(currentChannel, 0x02, uid, uidLen); // 0x02 = tag hit with UID
+                    notifyBoardState();                                 // Send updated board
 
                     Serial.println();
                     Serial.println("**************************************************");

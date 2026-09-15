@@ -16,16 +16,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import com.example.crosswordcompanion.bluetooth.BleManager
 import com.example.crosswordcompanion.data.AppDatabaseHelper
 import com.example.crosswordcompanion.model.UserProfile
 import com.example.crosswordcompanion.theme.CrosswordCompanionTheme
 import com.example.crosswordcompanion.ui.screens.AuthScreen
 import com.example.crosswordcompanion.ui.screens.Board4x4Screen
 import com.example.crosswordcompanion.ui.screens.FriendsScreen
+import com.example.crosswordcompanion.ui.screens.HardwareDebugScreen
 
 enum class AppTab(val title: String) {
     BOARD_4X4("4x4 Board"),
     FRIENDS("Friends & Boards"),
+    DEBUG("Hardware Debug"),
     PROFILE("Profile")
 }
 
@@ -39,9 +48,37 @@ class MainActivity : ComponentActivity() {
             CrosswordCompanionTheme {
                 val context = LocalContext.current
                 val dbHelper = remember { AppDatabaseHelper(context) }
+                val bleManager = remember { BleManager.getInstance(context) }
                 var currentUser by remember { mutableStateOf<UserProfile?>(dbHelper.getActiveUserProfile()) }
                 var selectedTab by remember { mutableStateOf(AppTab.BOARD_4X4) }
                 var activeOpponent by remember { mutableStateOf("Grandma Betty (Board)") }
+
+                val permissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()
+                ) { permissions ->
+                    if (permissions.values.all { it }) {
+                        bleManager.startScan()
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        val hasScan = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+                        val hasConnect = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+                        if (hasScan && hasConnect) {
+                            bleManager.startScan()
+                        } else {
+                            permissionLauncher.launch(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT))
+                        }
+                    } else {
+                        val hasLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        if (hasLocation) {
+                            bleManager.startScan()
+                        } else {
+                            permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+                        }
+                    }
+                }
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -97,6 +134,12 @@ class MainActivity : ComponentActivity() {
                                         icon = { Text("👥", fontSize = 18.sp) }
                                     )
                                     NavigationBarItem(
+                                        selected = selectedTab == AppTab.DEBUG,
+                                        onClick = { selectedTab = AppTab.DEBUG },
+                                        label = { Text("Debug") },
+                                        icon = { Text("🛠️", fontSize = 18.sp) }
+                                    )
+                                    NavigationBarItem(
                                         selected = selectedTab == AppTab.PROFILE,
                                         onClick = { selectedTab = AppTab.PROFILE },
                                         label = { Text("Account") },
@@ -110,6 +153,7 @@ class MainActivity : ComponentActivity() {
                                     Board4x4Screen(
                                         playerName = currentUser!!.displayName,
                                         opponentName = activeOpponent,
+                                        bleManager = bleManager,
                                         modifier = Modifier.padding(innerPadding)
                                     )
                                 }
@@ -121,6 +165,12 @@ class MainActivity : ComponentActivity() {
                                             activeOpponent = opponent
                                             selectedTab = AppTab.BOARD_4X4
                                         },
+                                        modifier = Modifier.padding(innerPadding)
+                                    )
+                                }
+                                AppTab.DEBUG -> {
+                                    HardwareDebugScreen(
+                                        bleManager = bleManager,
                                         modifier = Modifier.padding(innerPadding)
                                     )
                                 }

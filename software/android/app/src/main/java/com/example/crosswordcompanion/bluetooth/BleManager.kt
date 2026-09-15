@@ -26,7 +26,8 @@ sealed interface BleConnectionState {
 
 data class ScanTelemetry(
     val activeChannel: Int? = null, // 0..15, or null when idle
-    val status: Int = 0             // 1 = scanning/energized, 2 = tag hit, 0 = idle
+    val status: Int = 0,            // 1 = scanning/energized, 2 = tag hit, 0 = idle
+    val tagUid: String? = null      // e.g. "04:A1:B2:C3:D4:E5:10"
 )
 
 object BleProtocol {
@@ -41,6 +42,9 @@ object BleProtocol {
     // Command Codes sent from Phone to Board
     const val CMD_TRIGGER_SWEEP: Byte = 0x01
     const val CMD_TOGGLE_CONTINUOUS: Byte = 0x02
+    const val CMD_SELECT_CHANNEL: Byte = 0x03
+    const val CMD_TOGGLE_MUX: Byte = 0x04
+    const val CMD_ENROLL_TAG: Byte = 0x05
     const val CMD_COMMIT_TURN: Byte = 0x10
 
     // Telemetry Status Codes
@@ -68,22 +72,45 @@ object BleProtocol {
     }
 
     /**
-     * Parses 2-byte telemetry packet: [channel, status].
+     * Parses telemetry packet: [channel, status, (optional) uidLen, (optional) uid bytes...].
      * Byte 0: 0..15 (channel), or 0xFF (idle/sweep complete).
      * Byte 1: status (1 = scanning/probing, 2 = hit, 0 = idle).
+     * Byte 2: uidLen (e.g. 7 or 4)
+     * Bytes 3..3+uidLen: Raw UID bytes
      */
     fun parseScanTelemetry(bytes: ByteArray): ScanTelemetry {
         if (bytes.size < 2) return ScanTelemetry()
         val rawCh = bytes[0].toInt() and 0xFF
         val status = bytes[1].toInt() and 0xFF
         val channel = if (rawCh in 0..15) rawCh else null
-        return ScanTelemetry(activeChannel = channel, status = status)
+
+        var uidString: String? = null
+        if (bytes.size >= 3) {
+            val uidLen = bytes[2].toInt() and 0xFF
+            if (uidLen in 1..7 && bytes.size >= 3 + uidLen) {
+                val hexList = mutableListOf<String>()
+                for (i in 0 until uidLen) {
+                    hexList.add(String.format("%02X", bytes[3 + i]))
+                }
+                uidString = hexList.joinToString(":")
+            }
+        }
+        return ScanTelemetry(activeChannel = channel, status = status, tagUid = uidString)
     }
 }
 
-class BleManager(private val context: Context) {
+class BleManager private constructor(private val context: Context) {
     companion object {
         private const val TAG = "SmartCrossword_BLE"
+
+        @Volatile
+        private var instance: BleManager? = null
+
+        fun getInstance(context: Context): BleManager {
+            return instance ?: synchronized(this) {
+                instance ?: BleManager(context.applicationContext).also { instance = it }
+            }
+        }
     }
 
     private val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
@@ -98,10 +125,13 @@ class BleManager(private val context: Context) {
     private val _boardState = MutableStateFlow<Map<Int, Char>>(emptyMap())
     val boardState: StateFlow<Map<Int, Char>> = _boardState.asStateFlow()
 
+    var autoReconnectEnabled = true
+
     private var activeGatt: BluetoothGatt? = null
     private var isScanning = false
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var scanTimeoutJob: Job? = null
+    private var reconnectJob: Job? = null
 
     private val descriptorQueue = mutableListOf<BluetoothGattDescriptor>()
     private var isWritingDescriptor = false
@@ -111,7 +141,6 @@ class BleManager(private val context: Context) {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             val device = result.device
             val name = device.name ?: result.scanRecord?.deviceName
-            Log.d(TAG, "Found BLE device: $name (${device.address})")
 
             if (name == BleProtocol.DEVICE_NAME ||
                 result.scanRecord?.serviceUuids?.any { it.uuid == BleProtocol.SERVICE_UUID } == true
@@ -126,6 +155,7 @@ class BleManager(private val context: Context) {
             Log.e(TAG, "BLE Scan failed with error code: $errorCode")
             _connectionState.value = BleConnectionState.Error("Scan failed: code $errorCode")
             isScanning = false
+            scheduleAutoReconnect()
         }
     }
 
@@ -145,6 +175,7 @@ class BleManager(private val context: Context) {
                     _connectionState.value = BleConnectionState.Disconnected
                     _scanTelemetry.value = ScanTelemetry()
                     cleanupGatt()
+                    scheduleAutoReconnect()
                 }
             }
         }
@@ -160,6 +191,7 @@ class BleManager(private val context: Context) {
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 Log.e(TAG, "Service discovery failed with status $status")
                 _connectionState.value = BleConnectionState.Error("Service discovery failed ($status)")
+                scheduleAutoReconnect()
                 return
             }
 
@@ -167,6 +199,7 @@ class BleManager(private val context: Context) {
             if (service == null) {
                 Log.e(TAG, "Board Service UUID not found on device!")
                 _connectionState.value = BleConnectionState.Error("Smart Crossword Service not found")
+                scheduleAutoReconnect()
                 return
             }
 
@@ -210,7 +243,6 @@ class BleManager(private val context: Context) {
         when (uuid) {
             BleProtocol.CHAR_BOARD_STATE_UUID -> {
                 val parsed = BleProtocol.parseBoardState(value)
-                Log.d(TAG, "📥 Board State received: ${parsed.size} tiles: $parsed")
                 _boardState.value = parsed
             }
             BleProtocol.CHAR_SCAN_TELEMETRY_UUID -> {
@@ -246,6 +278,18 @@ class BleManager(private val context: Context) {
         }
     }
 
+    private fun scheduleAutoReconnect() {
+        if (!autoReconnectEnabled) return
+        reconnectJob?.cancel()
+        reconnectJob = scope.launch {
+            delay(3500)
+            if (autoReconnectEnabled && _connectionState.value is BleConnectionState.Disconnected) {
+                Log.d(TAG, "🔄 Auto-reconnecting to SmartCrossword board...")
+                startScan()
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun startScan() {
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
@@ -253,18 +297,13 @@ class BleManager(private val context: Context) {
             return
         }
 
-        if (isScanning) return
+        if (isScanning || _connectionState.value is BleConnectionState.Connected) return
 
         val scanner = bluetoothAdapter.bluetoothLeScanner
         if (scanner == null) {
             _connectionState.value = BleConnectionState.Error("BLE Scanner not available")
             return
         }
-
-        val filters = listOf(
-            ScanFilter.Builder().setDeviceName(BleProtocol.DEVICE_NAME).build(),
-            ScanFilter.Builder().setServiceUuid(ParcelUuid(BleProtocol.SERVICE_UUID)).build()
-        )
 
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -274,11 +313,10 @@ class BleManager(private val context: Context) {
         isScanning = true
 
         try {
-            // Also scan unfiltered as some BLE boards advertise name only in scan response
             scanner.startScan(null, settings, scanCallback)
             Log.i(TAG, "BLE scan started for ${BleProtocol.DEVICE_NAME}...")
 
-            // Auto-stop scan after 12 seconds
+            // Auto-stop scan after 12 seconds, then schedule retry
             scanTimeoutJob?.cancel()
             scanTimeoutJob = scope.launch {
                 delay(12000)
@@ -286,6 +324,7 @@ class BleManager(private val context: Context) {
                     stopScan()
                     _connectionState.value = BleConnectionState.Disconnected
                     Log.d(TAG, "Scan timed out without finding board.")
+                    scheduleAutoReconnect()
                 }
             }
         } catch (e: SecurityException) {
@@ -321,21 +360,43 @@ class BleManager(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     fun triggerSweep(): Boolean {
-        return sendCommand(BleProtocol.CMD_TRIGGER_SWEEP)
+        return sendCommand(byteArrayOf(BleProtocol.CMD_TRIGGER_SWEEP))
     }
 
     @SuppressLint("MissingPermission")
     fun toggleContinuous(): Boolean {
-        return sendCommand(BleProtocol.CMD_TOGGLE_CONTINUOUS)
+        return sendCommand(byteArrayOf(BleProtocol.CMD_TOGGLE_CONTINUOUS))
     }
 
     @SuppressLint("MissingPermission")
-    fun sendCommand(commandByte: Byte): Boolean {
+    fun selectChannel(channel: Int): Boolean {
+        if (channel !in 0..15) return false
+        return sendCommand(byteArrayOf(BleProtocol.CMD_SELECT_CHANNEL, channel.toByte()))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun toggleMux(): Boolean {
+        return sendCommand(byteArrayOf(BleProtocol.CMD_TOGGLE_MUX))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun enrollTag(channel: Int, letter: Char): Boolean {
+        if (channel !in 0..15) return false
+        val letCode = letter.uppercaseChar().code.toByte()
+        return sendCommand(byteArrayOf(BleProtocol.CMD_ENROLL_TAG, channel.toByte(), letCode))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun commitTurn(): Boolean {
+        return sendCommand(byteArrayOf(BleProtocol.CMD_COMMIT_TURN))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun sendCommand(payload: ByteArray): Boolean {
         val gatt = activeGatt ?: return false
         val service = gatt.getService(BleProtocol.SERVICE_UUID) ?: return false
         val char = service.getCharacteristic(BleProtocol.CHAR_BOARD_COMMAND_UUID) ?: return false
 
-        val payload = byteArrayOf(commandByte)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             gatt.writeCharacteristic(char, payload, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) == BluetoothStatusCodes.SUCCESS
         } else {
@@ -349,7 +410,14 @@ class BleManager(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
+    fun sendCommand(commandByte: Byte): Boolean {
+        return sendCommand(byteArrayOf(commandByte))
+    }
+
+    @SuppressLint("MissingPermission")
     fun disconnect() {
+        autoReconnectEnabled = false
+        reconnectJob?.cancel()
         stopScan()
         try {
             activeGatt?.disconnect()
@@ -367,7 +435,7 @@ class BleManager(private val context: Context) {
         try {
             activeGatt?.close()
         } catch (e: Exception) {
-            // Ignore close exceptions
+            // Ignore
         }
         activeGatt = null
         descriptorQueue.clear()

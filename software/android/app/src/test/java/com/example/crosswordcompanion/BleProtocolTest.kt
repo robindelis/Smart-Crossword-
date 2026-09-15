@@ -63,5 +63,38 @@ class BleProtocolTest {
         val telemetry = BleProtocol.parseScanTelemetry(packet)
         assertNull(telemetry.activeChannel)
         assertEquals(BleProtocol.STATUS_IDLE, telemetry.status)
+        assertNull(telemetry.tagUid)
+    }
+
+    @Test
+    fun testParseScanTelemetry_with7ByteUid() {
+        // Channel 0, tag detected, 7-byte UID: 04:A1:B2:C3:D4:E5:10
+        val packet = byteArrayOf(
+            0.toByte(),
+            BleProtocol.STATUS_TAG_DETECTED.toByte(),
+            7.toByte(),
+            0x04.toByte(),
+            0xA1.toByte(),
+            0xB2.toByte(),
+            0xC3.toByte(),
+            0xD4.toByte(),
+            0xE5.toByte(),
+            0x10.toByte()
+        )
+        val telemetry = BleProtocol.parseScanTelemetry(packet)
+        assertEquals(0, telemetry.activeChannel)
+        assertEquals(BleProtocol.STATUS_TAG_DETECTED, telemetry.status)
+        assertEquals("04:A1:B2:C3:D4:E5:10", telemetry.tagUid)
+    }
+
+    @Test
+    fun testCommandConstants() {
+        assertEquals(0x01.toByte(), BleProtocol.CMD_TRIGGER_SWEEP)
+        assertEquals(0x02.toByte(), BleProtocol.CMD_TOGGLE_CONTINUOUS)
+        assertEquals(0x03.toByte(), BleProtocol.CMD_SELECT_CHANNEL)
+        assertEquals(0x04.toByte(), BleProtocol.CMD_TOGGLE_MUX)
+        assertEquals(0x05.toByte(), BleProtocol.CMD_ENROLL_TAG)
+        assertEquals(0x10.toByte(), BleProtocol.CMD_COMMIT_TURN)
     }
 }
+
