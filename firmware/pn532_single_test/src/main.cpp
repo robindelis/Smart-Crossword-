@@ -1,11 +1,15 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <Adafruit_PN532.h>
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
 
 /*
  * ============================================================================
- *   SMART CROSSWORD BOARD - UNIFIED 4x4 HARDWARE BENCH TESTER
- *   Subsystems: CD74HC4067 (16-Channel MUX) + PN532 (NFC Transceiver via SPI)
+ *   SMART CROSSWORD BOARD - UNIFIED 4x4 HARDWARE BENCH TESTER + BLE SERVER
+ *   Subsystems: CD74HC4067 (16-Channel MUX) + PN532 (NFC SPI) + BLE GATT
  * ============================================================================
  *
  * Hardware Pin Connections on ESP32-S3 DevKit:
@@ -45,17 +49,30 @@
 #define PIN_PN532_SS      14
 #define PIN_PN532_RST     11
 
+// --- BLE GATT Protocol Definitions ---
+#define SERVICE_UUID              "19B10000-E8F2-537E-4F6C-D104768A1214"
+#define CHAR_BOARD_STATE_UUID     "19B10001-E8F2-537E-4F6C-D104768A1214"
+#define CHAR_SCAN_TELEMETRY_UUID  "19B10002-E8F2-537E-4F6C-D104768A1214"
+#define CHAR_BOARD_COMMAND_UUID   "19B10003-E8F2-537E-4F6C-D104768A1214"
+
+#define BLE_DEVICE_NAME           "SmartCrossword_4x4"
+
 // --- PN532 Software SPI Instance ---
 Adafruit_PN532 nfc(PIN_PN532_SCK, PIN_PN532_MISO, PIN_PN532_MOSI, PIN_PN532_SS);
+
+// --- BLE Pointers and State ---
+BLEServer *pBleServer = nullptr;
+BLECharacteristic *pBoardStateChar = nullptr;
+BLECharacteristic *pTelemetryChar = nullptr;
+BLECharacteristic *pCommandChar = nullptr;
+bool bleClientConnected = false;
+volatile bool triggerSweepRequested = false;
 
 // --- State Variables ---
 int currentChannel = 0;
 bool muxEnabled = true;
 bool pn532Ready = false;
 uint32_t lastPn532Retry = 0;
-unsigned long lastHeartbeat = 0;
-bool autoStep = false;
-unsigned long lastAutoStep = 0;
 bool continuousSweep = false;
 
 // Last detected tag info
@@ -128,6 +145,61 @@ void enrollTag(const uint8_t *uid, uint8_t len, char letter) {
     }
 }
 
+// --- BLE Notification Helpers ---
+void notifyTelemetry(uint8_t channel, uint8_t status) {
+    if (bleClientConnected && pTelemetryChar) {
+        uint8_t packet[2] = { channel, status };
+        pTelemetryChar->setValue(packet, 2);
+        pTelemetryChar->notify();
+    }
+}
+
+void notifyBoardState() {
+    if (bleClientConnected && pBoardStateChar) {
+        uint8_t payload[16];
+        for (int i = 0; i < 16; i++) {
+            payload[i] = grid[i].hasTag ? (uint8_t)grid[i].assignedLetter : (uint8_t)'.';
+        }
+        pBoardStateChar->setValue(payload, 16);
+        pBoardStateChar->notify();
+    }
+}
+
+// --- BLE Server Callbacks ---
+class ServerCallbacks : public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) {
+        bleClientConnected = true;
+        Serial.println("\n📱 [BLE] Android App Connected! Streaming telemetry & board state.");
+        notifyBoardState();
+    }
+
+    void onDisconnect(BLEServer* pServer) {
+        bleClientConnected = false;
+        Serial.println("\n📱 [BLE] Android App Disconnected. Resuming BLE advertising...");
+        BLEDevice::startAdvertising();
+    }
+};
+
+// --- BLE Command Ingest Callback ---
+class CommandCallbacks : public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+        uint8_t* data = pCharacteristic->getData();
+        size_t len = pCharacteristic->getLength();
+        if (len > 0) {
+            uint8_t cmd = data[0];
+            if (cmd == 0x01) {
+                Serial.println("\n⚡ [BLE CMD] Matrix Sweep requested by phone!");
+                triggerSweepRequested = true;
+            } else if (cmd == 0x02) {
+                continuousSweep = !continuousSweep;
+                Serial.printf("\n⚡ [BLE CMD] Continuous Sweep toggled: %s\n", continuousSweep ? "ON" : "OFF");
+            } else if (cmd == 0x10) {
+                Serial.println("\n⚡ [BLE CMD] Move submitted & locked by phone!");
+            }
+        }
+    }
+};
+
 // --- Multiplexer Control ---
 void setMuxChannel(uint8_t ch, bool enable) {
     if (!enable) {
@@ -143,7 +215,7 @@ void setMuxChannel(uint8_t ch, bool enable) {
 
     // Enable MUX (Active-Low)
     digitalWrite(PIN_MUX_EN, LOW);
-    delayMicroseconds(50); // Small settling time
+    delayMicroseconds(50); // Settling time
 }
 
 // --- Dashboard & Visual Display ---
@@ -189,8 +261,9 @@ void printDashboard() {
         Serial.println("  MUX STATUS     : DISABLED (EN / GPIO 6 = HIGH, 3.3V - All channels open)");
     }
 
-    // PN532 Status
+    // Subsystems Status
     Serial.printf("  NFC TRANSCEIVER: %s\n", pn532Ready ? "🟢 CONNECTED (PN532 v1.6 SPI)" : "🟡 SEARCHING (Check SPI & Power)...");
+    Serial.printf("  BLE CONNECTION : %s ('%s')\n", bleClientConnected ? "🟢 APP CONNECTED" : "📡 ADVERTISING", BLE_DEVICE_NAME);
 
     if (lastUidLen > 0 && (millis() - lastTagDetectTime < 10000)) {
         Serial.printf("  LAST TAG SCANNED: UID=");
@@ -223,8 +296,9 @@ void performMatrixSweep() {
 
     for (uint8_t ch = 0; ch < 16; ch++) {
         setMuxChannel(ch, true);
+        notifyTelemetry(ch, 0x01); // 0x01 = energized/probing
 
-        // Fast poll with 20ms timeout
+        // Fast poll with 25ms timeout
         uint8_t uid[7] = {0};
         uint8_t uidLen = 0;
         bool found = false;
@@ -239,6 +313,7 @@ void performMatrixSweep() {
             grid[ch].uidLen = uidLen;
             memcpy(grid[ch].uid, uid, uidLen);
             grid[ch].assignedLetter = lookupLetter(uid, uidLen);
+            notifyTelemetry(ch, 0x02); // 0x02 = tag detected
 
             Serial.printf("  [TAG FOUND] Square %2d (R%d,C%d): Letter '%c' | UID=", ch, ch / 4, ch % 4, grid[ch].assignedLetter);
             for (uint8_t i = 0; i < uidLen; i++) {
@@ -253,6 +328,8 @@ void performMatrixSweep() {
     unsigned long sweepTime = micros() - sweepStart;
     // Restore current channel
     setMuxChannel(currentChannel, muxEnabled);
+    notifyTelemetry(0xFF, 0x00); // 0x00 = sweep complete / idle
+    notifyBoardState();          // Push full board state to phone
 
     Serial.printf("<<< Sweep Finished: %d tiles detected across 16 squares in %lu µs (%.2f ms)\n",
                   foundCount, sweepTime, sweepTime / 1000.0);
@@ -261,7 +338,6 @@ void performMatrixSweep() {
 
 // --- Initialize or Reconnect PN532 ---
 bool tryConnectPN532() {
-    // Hardware reset pulse
     pinMode(PIN_PN532_RST, OUTPUT);
     digitalWrite(PIN_PN532_RST, LOW);
     delay(10);
@@ -275,9 +351,7 @@ bool tryConnectPN532() {
         return false;
     }
 
-    // Configure Secure Access Module (SAM) to normal mode
     nfc.SAMConfig();
-    // Allow standard retries so tag has time to harvest RF power and respond
     nfc.setPassiveActivationRetries(0xFF);
 
     Serial.println("\n--------------------------------------------------");
@@ -288,6 +362,48 @@ bool tryConnectPN532() {
                   (versiondata >> 8) & 0xFF);
     Serial.println("--------------------------------------------------");
     return true;
+}
+
+// --- Initialize Bluetooth Low Energy GATT Server ---
+void setupBleServer() {
+    BLEDevice::init(BLE_DEVICE_NAME);
+    pBleServer = BLEDevice::createServer();
+    pBleServer->setCallbacks(new ServerCallbacks());
+
+    BLEService *pService = pBleServer->createService(SERVICE_UUID);
+
+    // 1. Board State Characteristic (Read + Notify)
+    pBoardStateChar = pService->createCharacteristic(
+        CHAR_BOARD_STATE_UUID,
+        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
+    );
+    pBoardStateChar->addDescriptor(new BLE2902());
+
+    // 2. Scan Telemetry Characteristic (Notify)
+    pTelemetryChar = pService->createCharacteristic(
+        CHAR_SCAN_TELEMETRY_UUID,
+        BLECharacteristic::PROPERTY_NOTIFY
+    );
+    pTelemetryChar->addDescriptor(new BLE2902());
+
+    // 3. Command Characteristic (Write)
+    pCommandChar = pService->createCharacteristic(
+        CHAR_BOARD_COMMAND_UUID,
+        BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR
+    );
+    pCommandChar->setCallbacks(new CommandCallbacks());
+
+    pService->start();
+
+    // Start advertising
+    BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+    pAdvertising->addServiceUUID(SERVICE_UUID);
+    pAdvertising->setScanResponse(true);
+    pAdvertising->setMinPreferred(0x06);
+    pAdvertising->setMinPreferred(0x12);
+    BLEDevice::startAdvertising();
+
+    Serial.println("📡 [BLE] Bluetooth Low Energy Server online ('SmartCrossword_4x4')");
 }
 
 void setup() {
@@ -309,7 +425,7 @@ void setup() {
         grid[i].assignedLetter = '.';
     }
 
-    // Pre-populate some dummy mappings for demo
+    // Pre-populate some demo mappings
     uint8_t demo_uid_p[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x10};
     uint8_t demo_uid_l[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x11};
     uint8_t demo_uid_a[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x12};
@@ -319,8 +435,10 @@ void setup() {
     enrollTag(demo_uid_a, 7, 'A');
     enrollTag(demo_uid_y, 7, 'Y');
 
-    // Wait briefly for native USB CDC
     delay(1000);
+
+    // Initialize BLE GATT Server
+    setupBleServer();
 
     // Attempt PN532 connection
     pn532Ready = tryConnectPN532();
@@ -329,7 +447,13 @@ void setup() {
 }
 
 void loop() {
-    // 1. Retry PN532 connection periodically if not ready
+    // 1. Handle BLE command trigger
+    if (triggerSweepRequested) {
+        triggerSweepRequested = false;
+        performMatrixSweep();
+    }
+
+    // 2. Retry PN532 connection periodically if not ready
     if (!pn532Ready) {
         if (millis() - lastPn532Retry >= 2000) {
             lastPn532Retry = millis();
@@ -340,7 +464,7 @@ void loop() {
         }
     }
 
-    // 2. If in continuous sweep mode, run sweeps
+    // 3. Sweep or single channel scan
     if (continuousSweep) {
         performMatrixSweep();
         delay(300);
@@ -350,11 +474,17 @@ void loop() {
             uint8_t uid[7] = {0};
             uint8_t uidLen = 0;
 
-            // Poll with 150ms timeout (allows tag time to energize while keeping console responsive)
+            // Notify telemetry pulse every 400ms to keep app radar effect synced
+            static unsigned long lastTelePulse = 0;
+            if (millis() - lastTelePulse > 400) {
+                lastTelePulse = millis();
+                notifyTelemetry(currentChannel, 0x01);
+            }
+
+            // Poll with 150ms timeout (energy harvesting dwell time)
             bool success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLen, 150);
 
             if (success) {
-                // Check if this is a newly placed tag or different tag
                 bool isNew = !grid[currentChannel].hasTag ||
                              (lastTagChannel != currentChannel) ||
                              (lastUidLen != uidLen) ||
@@ -370,6 +500,9 @@ void loop() {
                     grid[currentChannel].uidLen = uidLen;
                     memcpy(grid[currentChannel].uid, uid, uidLen);
                     grid[currentChannel].assignedLetter = lookupLetter(uid, uidLen);
+
+                    notifyTelemetry(currentChannel, 0x02); // 0x02 = tag hit
+                    notifyBoardState();                    // Send updated board
 
                     Serial.println();
                     Serial.println("**************************************************");
@@ -388,9 +521,10 @@ void loop() {
                     Serial.print("> ");
                 }
             } else {
-                // If tag was previously present on this channel and is now gone
                 if (grid[currentChannel].hasTag) {
                     grid[currentChannel].hasTag = false;
+                    notifyTelemetry(currentChannel, 0x00);
+                    notifyBoardState();
                     Serial.printf("\n  💨 [TAG REMOVED from Channel %d (Row %d, Col %d)]\n> ",
                                   currentChannel, currentChannel / 4, currentChannel % 4);
                 }
@@ -398,19 +532,19 @@ void loop() {
         }
     }
 
-    // 3. Completely silent while idle (no unsolicited background prints)
-
-    // 4. Handle Terminal Commands
+    // 4. Handle Terminal Commands over USB Serial
     while (Serial.available() > 0) {
         char c = Serial.read();
 
         if (c == ' ' || c == '\n' || c == '\r' || c == 'n' || c == 'N') {
             currentChannel = (currentChannel + 1) % 16;
             setMuxChannel(currentChannel, muxEnabled);
+            notifyTelemetry(currentChannel, 0x01);
             printDashboard();
         } else if (c == 'p' || c == 'P') {
             currentChannel = (currentChannel + 15) % 16;
             setMuxChannel(currentChannel, muxEnabled);
+            notifyTelemetry(currentChannel, 0x01);
             printDashboard();
         } else if (c == 's' || c == 'S') {
             performMatrixSweep();
@@ -424,7 +558,6 @@ void loop() {
             Serial.printf("\n>>> MUX: %s <<<\n", muxEnabled ? "ENABLED" : "DISABLED (High-Z)");
             printDashboard();
         } else if (c == 't' || c == 'T') {
-            // Enroll tag
             if (lastUidLen == 0) {
                 Serial.println("\n⚠️ No tag scanned yet! Scan a tag first, then press [t].");
             } else {
@@ -441,6 +574,10 @@ void loop() {
                     Serial.printf("✅ Successfully enrolled Tag as Letter '%c' (%d pts)!\n",
                                   (letter >= 'a' && letter <= 'z') ? letter - 32 : letter,
                                   getLetterPoints(letter));
+                    if (grid[currentChannel].hasTag) {
+                        grid[currentChannel].assignedLetter = lookupLetter(grid[currentChannel].uid, grid[currentChannel].uidLen);
+                        notifyBoardState();
+                    }
                 } else {
                     Serial.println("❌ Invalid character. Enrollment cancelled.");
                 }
@@ -449,7 +586,6 @@ void loop() {
         } else if (c == '?' || c == 'h' || c == 'H') {
             printDashboard();
         } else if (c >= '0' && c <= '9') {
-            // Check if there is a second digit
             delay(10);
             int val = c - '0';
             if (Serial.available() > 0) {
@@ -461,6 +597,7 @@ void loop() {
             if (val >= 0 && val < 16) {
                 currentChannel = val;
                 setMuxChannel(currentChannel, muxEnabled);
+                notifyTelemetry(currentChannel, 0x01);
                 printDashboard();
             } else {
                 Serial.printf("\n⚠️ Invalid channel %d! Choose 0 to 15.\n> ", val);

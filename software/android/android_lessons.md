@@ -64,5 +64,9 @@ This document records technical invariants, Gradle/AGP compatibility rules, Jetp
   * *Root Cause*: OEM distributions (e.g. OnePlus OxygenOS) restrict `adb shell pm clear` for third-party packages on unrooted devices.
   * *Reliable Mitigation*: Use `adb shell "run-as <package> rm -f databases/<dbname>*"` to clear local database files reliably without root permissions.
 
+* **LESSON-AND-011 (Android BLE Descriptor Write Sequencing & ESP32 Partition Size)**:
+  * *Symptom/Error*: 1) Second BLE notification subscription (e.g. `SCAN_TELEMETRY`) never triggers callbacks; 2) ESP32 PlatformIO upload fails with flash overflow.
+  * *Root Cause*: 1) In Android GATT client, calling `writeDescriptor()` before the previous descriptor write completes drops subsequent subscriptions silently; 2) Standard ESP32 default partition table allocates only 1.25MB for app code, while BLE + SPI consumes ~960KB+, leaving negligible headroom for OTA.
+  * *Reliable Mitigation*: 1) Queue all `BluetoothGattDescriptor` write operations in a FIFO list and trigger each next write strictly inside `onDescriptorWrite`; 2) Configure `board_build.partitions = huge_app.csv` in `platformio.ini` to allocate 3MB for app code.
 
 

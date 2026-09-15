@@ -1,5 +1,11 @@
 package com.example.crosswordcompanion.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,10 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import com.example.crosswordcompanion.bluetooth.BleConnectionState
+import com.example.crosswordcompanion.bluetooth.BleManager
+import com.example.crosswordcompanion.bluetooth.BleProtocol
 import com.example.crosswordcompanion.game.EnglishReferee
 import com.example.crosswordcompanion.game.RefereeResult
 import com.example.crosswordcompanion.model.Board4x4
@@ -23,12 +34,31 @@ import com.example.crosswordcompanion.model.BoardCell
 import com.example.crosswordcompanion.model.SquareType
 import com.example.crosswordcompanion.model.Tile
 
+private fun getScrabbleLetterPoints(c: Char): Int {
+    return when (c.uppercaseChar()) {
+        'A', 'E', 'I', 'O', 'U', 'L', 'N', 'S', 'T', 'R' -> 1
+        'D', 'G' -> 2
+        'B', 'C', 'M', 'P' -> 3
+        'F', 'H', 'V', 'W', 'Y' -> 4
+        'K' -> 5
+        'J', 'X' -> 8
+        'Q', 'Z' -> 10
+        else -> 0
+    }
+}
+
 @Composable
 fun Board4x4Screen(
     playerName: String = "Sarah",
     opponentName: String = "Grandma Betty (Board)",
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val bleManager = remember { BleManager(context) }
+    val bleConnectionState by bleManager.connectionState.collectAsState()
+    val scanTelemetry by bleManager.scanTelemetry.collectAsState()
+    val physicalTiles by bleManager.boardState.collectAsState()
+
     var cells by remember { mutableStateOf(Board4x4.createDefaultLayout()) }
     var playerScore by remember { mutableIntStateOf(0) }
     var opponentScore by remember { mutableIntStateOf(0) }
@@ -57,9 +87,68 @@ fun Board4x4Screen(
     }
 
     val referee = remember { EnglishReferee() }
-    val context = androidx.compose.ui.platform.LocalContext.current
     var dictionaryCount by remember { mutableIntStateOf(referee.wordCount) }
 
+    // Pulse animation for active scanning square
+    val infiniteTransition = rememberInfiniteTransition(label = "scannerPulse")
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 1.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(350, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseAlpha"
+    )
+
+    // Helper to evaluate uncommitted tiles
+    fun updateRefereeEvaluation() {
+        val uncommitted = cells.filter { it.tile != null && !it.isCommitted }
+        refereeResult = referee.evaluateMove(cells, uncommitted, isFirstMove)
+    }
+
+    // Permission launcher for BLE
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions.values.all { it }
+        if (granted) {
+            bleManager.startScan()
+        }
+    }
+
+    fun requestBlePermissionsAndScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val hasScan = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+            val hasConnect = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+            if (hasScan && hasConnect) {
+                bleManager.startScan()
+            } else {
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    )
+                )
+            }
+        } else {
+            val hasLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            if (hasLocation) {
+                bleManager.startScan()
+            } else {
+                permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+            }
+        }
+    }
+
+    // Clean up BLE on dispose
+    DisposableEffect(Unit) {
+        onDispose {
+            bleManager.disconnect()
+        }
+    }
+
+    // Load Scrabble dictionary
     LaunchedEffect(Unit) {
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             try {
@@ -78,35 +167,170 @@ fun Board4x4Screen(
                     }
                 }
             } catch (e: Exception) {
-                // Falls back cleanly to pre-loaded ENABLE1 dictionary
+                // Fall back cleanly
             }
         }
     }
 
-    // Helper to evaluate uncommitted tiles
-    fun updateRefereeEvaluation() {
-        val uncommitted = cells.filter { it.tile != null && !it.isCommitted }
-        refereeResult = referee.evaluateMove(cells, uncommitted, isFirstMove)
+    // Synchronize physical tiles reported by ESP32 over BLE
+    LaunchedEffect(physicalTiles) {
+        var changed = false
+        val updated = cells.map { cell ->
+            val ch = cell.row * 4 + cell.col
+            if (physicalTiles.containsKey(ch)) {
+                val letter = physicalTiles[ch]!!
+                if (cell.tile?.letter != letter || !cell.isPhysical) {
+                    changed = true
+                    cell.copy(
+                        tile = Tile(letter, getScrabbleLetterPoints(letter)),
+                        isPhysical = true,
+                        isCommitted = false
+                    )
+                } else cell
+            } else if (cell.isPhysical && !cell.isCommitted) {
+                // Tile lifted from physical board
+                changed = true
+                cell.copy(tile = null, isPhysical = false)
+            } else {
+                cell
+            }
+        }
+        if (changed) {
+            cells = updated
+            updateRefereeEvaluation()
+        }
     }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF9F6F0))
-            .padding(16.dp),
+            .padding(14.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Scoreboard Card
+        // --- 1. Board Connection & Scan Telemetry Bar ---
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF3E2723)),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            colors = CardDefaults.cardColors(
+                containerColor = when (bleConnectionState) {
+                    is BleConnectionState.Connected -> Color(0xFFE8F5E9)
+                    is BleConnectionState.Scanning, is BleConnectionState.Connecting -> Color(0xFFFFF8E1)
+                    is BleConnectionState.Error -> Color(0xFFFFEBEE)
+                    else -> Color(0xFFECEFF1)
+                }
+            ),
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = when (bleConnectionState) {
+                            is BleConnectionState.Connected -> "🟢"
+                            is BleConnectionState.Scanning -> "🟡"
+                            is BleConnectionState.Connecting -> "⏳"
+                            is BleConnectionState.Error -> "⚠️"
+                            else -> "⚪"
+                        },
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Column {
+                        Text(
+                            text = when (bleConnectionState) {
+                                is BleConnectionState.Connected -> "Physical Board Linked"
+                                is BleConnectionState.Scanning -> "Searching for Board..."
+                                is BleConnectionState.Connecting -> "Connecting to Board..."
+                                is BleConnectionState.Error -> "Connection Error"
+                                else -> "Physical Board Disconnected"
+                            },
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            color = Color(0xFF263238)
+                        )
+                        Text(
+                            text = when (bleConnectionState) {
+                                is BleConnectionState.Connected -> {
+                                    if (scanTelemetry.activeChannel != null) {
+                                        val ch = scanTelemetry.activeChannel!!
+                                        "⚡ Energizing Coil $ch (Row ${ch / 4}, Col ${ch % 4})"
+                                    } else {
+                                        "Live BLE Sync Active (SmartCrossword_4x4)"
+                                    }
+                                }
+                                is BleConnectionState.Error -> (bleConnectionState as BleConnectionState.Error).message
+                                is BleConnectionState.Scanning -> "Scanning BLE nearby..."
+                                is BleConnectionState.Connecting -> "Handshaking GATT..."
+                                else -> "Tap to connect physical wooden board"
+                            },
+                            fontSize = 11.sp,
+                            color = Color(0xFF546E7A)
+                        )
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    when (bleConnectionState) {
+                        is BleConnectionState.Connected -> {
+                            Button(
+                                onClick = { bleManager.triggerSweep() },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00897B)),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                shape = RoundedCornerShape(6.dp),
+                                modifier = Modifier.height(30.dp)
+                            ) {
+                                Text("⚡ Sweep", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                            Spacer(modifier = Modifier.width(6.dp))
+                            IconButton(
+                                onClick = { bleManager.disconnect() },
+                                modifier = Modifier.size(26.dp)
+                            ) {
+                                Text("✕", fontSize = 13.sp, color = Color.Gray)
+                            }
+                        }
+                        is BleConnectionState.Scanning, is BleConnectionState.Connecting -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                                color = Color(0xFFF57C00)
+                            )
+                        }
+                        else -> {
+                            Button(
+                                onClick = { requestBlePermissionsAndScan() },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF455A64)),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                shape = RoundedCornerShape(6.dp),
+                                modifier = Modifier.height(30.dp)
+                            ) {
+                                Text("Connect", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // --- 2. Scoreboard Card ---
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF3E2723)),
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -115,41 +339,41 @@ fun Board4x4Screen(
                         text = playerName,
                         color = Color(0xFFFFCC80),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 15.sp
                     )
                     Text(
                         text = "$playerScore pts",
                         color = Color.White,
                         fontWeight = FontWeight.Black,
-                        fontSize = 22.sp
+                        fontSize = 20.sp
                     )
                 }
                 Text(
                     text = "VS",
                     color = Color(0xFFBCAAA4),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 13.sp
                 )
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = opponentName,
                         color = Color(0xFFD7CCC8),
                         fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
+                        fontSize = 13.sp
                     )
                     Text(
                         text = "$opponentScore pts",
                         color = Color.White,
                         fontWeight = FontWeight.Black,
-                        fontSize = 22.sp
+                        fontSize = 20.sp
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Referee Announcement Banner
+        // --- 3. Referee Announcement Banner ---
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -163,7 +387,7 @@ fun Board4x4Screen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -171,8 +395,8 @@ fun Board4x4Screen(
                         refereeResult?.isValid == true -> "✅"
                         else -> "ℹ️"
                     },
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(end = 8.dp)
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(end = 6.dp)
                 )
                 Text(
                     text = refereeResult?.message ?: "Place tiles on the board.",
@@ -181,14 +405,14 @@ fun Board4x4Screen(
                         else -> Color(0xFFE65100)
                     },
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp
+                    fontSize = 12.sp
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // 4x4 Grid Board
+        // --- 4. 4x4 Grid Board with Live Radar Scanning Effect ---
         Box(
             modifier = Modifier
                 .size(310.dp)
@@ -209,33 +433,54 @@ fun Board4x4Screen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         for (c in 0 until Board4x4.SIZE) {
+                            val ch = r * 4 + c
                             val cell = cells.find { it.row == r && it.col == c }!!
+                            val isEnergized = scanTelemetry.activeChannel == ch && scanTelemetry.status == BleProtocol.STATUS_ENERGIZED
+                            val isTagHit = scanTelemetry.activeChannel == ch && scanTelemetry.status == BleProtocol.STATUS_TAG_DETECTED
+
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxHeight()
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(Color(cell.squareType.badgeColor))
+                                    .background(
+                                        when {
+                                            isTagHit -> Color(0xFFC8E6C9)
+                                            isEnergized -> Color(0xFFB2EBF2).copy(alpha = pulseAlpha)
+                                            else -> Color(cell.squareType.badgeColor)
+                                        }
+                                    )
                                     .border(
-                                        width = if (cell.tile != null && !cell.isCommitted) 2.dp else 1.dp,
-                                        color = if (cell.tile != null && !cell.isCommitted) Color(0xFF4CAF50) else Color(0x33000000),
+                                        width = when {
+                                            isEnergized -> 3.dp
+                                            isTagHit -> 3.dp
+                                            cell.tile != null && !cell.isCommitted -> 2.dp
+                                            else -> 1.dp
+                                        },
+                                        color = when {
+                                            isTagHit -> Color(0xFF00E676)
+                                            isEnergized -> Color(0xFF00E5FF).copy(alpha = pulseAlpha)
+                                            cell.tile != null && cell.isPhysical -> Color(0xFF2E7D32)
+                                            cell.tile != null && !cell.isCommitted -> Color(0xFF4CAF50)
+                                            else -> Color(0x33000000)
+                                        },
                                         shape = RoundedCornerShape(6.dp)
                                     )
                                     .clickable {
-                                        if (cell.tile != null && !cell.isCommitted) {
-                                            // Recall uncommitted tile back to rack
+                                        if (cell.tile != null && !cell.isCommitted && !cell.isPhysical) {
+                                            // Recall uncommitted touch tile back to rack
                                             rackTiles = rackTiles + cell.tile
                                             cells = cells.map {
                                                 if (it.row == r && it.col == c) it.copy(tile = null) else it
                                             }
                                             updateRefereeEvaluation()
                                         } else if (cell.tile == null && selectedTileIndex != null) {
-                                            // Place selected tile
+                                            // Place selected touch tile
                                             val tileToPlace = rackTiles[selectedTileIndex!!]
                                             rackTiles = rackTiles.toMutableList().also { it.removeAt(selectedTileIndex!!) }
                                             selectedTileIndex = null
                                             cells = cells.map {
-                                                if (it.row == r && it.col == c) it.copy(tile = tileToPlace, isCommitted = false) else it
+                                                if (it.row == r && it.col == c) it.copy(tile = tileToPlace, isCommitted = false, isPhysical = false) else it
                                             }
                                             updateRefereeEvaluation()
                                         }
@@ -251,10 +496,27 @@ fun Board4x4Screen(
                                             .shadow(2.dp, RoundedCornerShape(4.dp))
                                             .clip(RoundedCornerShape(4.dp))
                                             .background(
-                                                if (cell.isCommitted) Color(0xFFD7CCC8) else Color(0xFFFFE0B2)
+                                                when {
+                                                    cell.isCommitted -> Color(0xFFD7CCC8)
+                                                    cell.isPhysical -> Color(0xFFFFD54F)
+                                                    else -> Color(0xFFFFE0B2)
+                                                }
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
+                                        // Physical tile badge indicator
+                                        if (cell.isPhysical) {
+                                            Text(
+                                                text = "⊚",
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Black,
+                                                color = Color(0xFF1B5E20),
+                                                modifier = Modifier
+                                                    .align(Alignment.TopStart)
+                                                    .padding(start = 3.dp, top = 1.dp)
+                                            )
+                                        }
+
                                         Text(
                                             text = cell.tile.letter.toString(),
                                             fontWeight = FontWeight.Bold,
@@ -272,8 +534,13 @@ fun Board4x4Screen(
                                         )
                                     }
                                 } else {
-                                    // Bonus badge label
-                                    if (cell.squareType.label.isNotEmpty()) {
+                                    // Bonus badge label or scanning indicator
+                                    if (isEnergized) {
+                                        Text(
+                                            text = "⚡",
+                                            fontSize = 16.sp
+                                        )
+                                    } else if (cell.squareType.label.isNotEmpty()) {
                                         Text(
                                             text = cell.squareType.label,
                                             fontWeight = FontWeight.ExtraBold,
@@ -289,26 +556,26 @@ fun Board4x4Screen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Tile Rack
+        // --- 5. Tile Rack ---
         Text(
             text = "Your Rack (Tap to Select):",
             fontWeight = FontWeight.Bold,
-            fontSize = 13.sp,
+            fontSize = 12.sp,
             color = Color(0xFF5D4037),
             modifier = Modifier.align(Alignment.Start)
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(3.dp, RoundedCornerShape(8.dp))
+                .shadow(2.dp, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color(0xFF8D6E63))
-                .padding(horizontal = 6.dp, vertical = 8.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             rackTiles.forEachIndexed { index, tile ->
@@ -348,20 +615,20 @@ fun Board4x4Screen(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Action Buttons
+        // --- 6. Action Buttons ---
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedButton(
                 onClick = {
-                    // Recall all uncommitted tiles
-                    val uncommitted = cells.filter { it.tile != null && !it.isCommitted }
-                    rackTiles = rackTiles + uncommitted.map { it.tile!! }
+                    // Recall all uncommitted touch tiles
+                    val uncommittedTouch = cells.filter { it.tile != null && !it.isCommitted && !it.isPhysical }
+                    rackTiles = rackTiles + uncommittedTouch.map { it.tile!! }
                     cells = cells.map {
-                        if (!it.isCommitted) it.copy(tile = null) else it
+                        if (!it.isCommitted && !it.isPhysical) it.copy(tile = null) else it
                     }
                     selectedTileIndex = null
                     updateRefereeEvaluation()
@@ -369,7 +636,7 @@ fun Board4x4Screen(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Recall", fontSize = 13.sp)
+                Text("Recall", fontSize = 12.sp)
             }
 
             OutlinedButton(
@@ -379,7 +646,7 @@ fun Board4x4Screen(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Shuffle", fontSize = 13.sp)
+                Text("Shuffle", fontSize = 12.sp)
             }
 
             Button(
@@ -391,6 +658,7 @@ fun Board4x4Screen(
                         }
                         isFirstMove = false
                         selectedTileIndex = null
+                        bleManager.sendCommand(BleProtocol.CMD_COMMIT_TURN)
                         refereeResult = RefereeResult(
                             false,
                             0,
@@ -404,7 +672,7 @@ fun Board4x4Screen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Submit Move", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Text("Submit Move", fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
     }

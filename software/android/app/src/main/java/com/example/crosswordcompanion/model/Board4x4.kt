@@ -20,7 +20,8 @@ data class BoardCell(
     val col: Int,
     val squareType: SquareType,
     val tile: Tile? = null,
-    val isCommitted: Boolean = false
+    val isCommitted: Boolean = false,
+    val isPhysical: Boolean = false
 )
 
 class Board4x4 {
