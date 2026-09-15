@@ -375,7 +375,7 @@ fun HardwareDebugScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // Tag presence card
-                val hasTagDetected = (telemetry.status == BleProtocol.STATUS_TAG_DETECTED) && !telemetry.tagUid.isNullOrBlank()
+                val hasTagDetected = (telemetry.status == BleProtocol.STATUS_TAG_DETECTED) || !telemetry.tagUid.isNullOrBlank() || boardState.containsKey(activeChannel)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -401,11 +401,17 @@ fun HardwareDebugScreen(
                                 fontSize = 13.sp,
                                 color = if (hasTagDetected) Color(0xFF2E7D32) else Color(0xFFE65100)
                             )
-                            if (hasTagDetected && telemetry.tagUid != null) {
+                            if (telemetry.tagUid != null) {
                                 Text(
                                     text = "UID: ${telemetry.tagUid}",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 12.sp,
+                                    color = Color(0xFF1B5E20)
+                                )
+                            } else if (hasTagDetected) {
+                                Text(
+                                    text = "Tag detected & ready for registration.",
+                                    fontSize = 11.sp,
                                     color = Color(0xFF1B5E20)
                                 )
                             } else {
@@ -418,7 +424,7 @@ fun HardwareDebugScreen(
                             val currentAssigned = boardState[activeChannel]
                             if (currentAssigned != null) {
                                 Text(
-                                    text = "Currently Enrolled: Letter '$currentAssigned' (${getScrabbleLetterPoints(currentAssigned)} pts)",
+                                    text = if (currentAssigned == '?') "Currently Enrolled: Unregistered tile ('?')" else "Currently Enrolled: Letter '$currentAssigned' (${getScrabbleLetterPoints(currentAssigned)} pts)",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = Color(0xFF37474F)

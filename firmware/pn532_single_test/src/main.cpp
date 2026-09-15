@@ -528,7 +528,7 @@ void loop() {
         delay(300);
     } else {
         // Continuous scan on the ACTIVE CHANNEL
-        if (pn532Ready && muxEnabled) {
+        if (pn532Ready) {
             uint8_t uid[7] = {0};
             uint8_t uidLen = 0;
 
@@ -545,7 +545,9 @@ void loop() {
             // Poll with 150ms timeout (energy harvesting dwell time)
             bool success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLen, 150);
 
+            static int consecutiveMisses = 0;
             if (success) {
+                consecutiveMisses = 0;
                 bool isNew = !grid[currentChannel].hasTag ||
                              (lastTagChannel != currentChannel) ||
                              (lastUidLen != uidLen) ||
@@ -583,11 +585,15 @@ void loop() {
                 }
             } else {
                 if (grid[currentChannel].hasTag) {
-                    grid[currentChannel].hasTag = false;
-                    notifyTelemetry(currentChannel, 0x00);
-                    notifyBoardState();
-                    Serial.printf("\n  💨 [TAG REMOVED from Channel %d (Row %d, Col %d)]\n> ",
-                                  currentChannel, currentChannel / 4, currentChannel % 4);
+                    consecutiveMisses++;
+                    if (consecutiveMisses >= 3) {
+                        grid[currentChannel].hasTag = false;
+                        consecutiveMisses = 0;
+                        notifyTelemetry(currentChannel, 0x00);
+                        notifyBoardState();
+                        Serial.printf("\n  💨 [TAG REMOVED from Channel %d (Row %d, Col %d)]\n> ",
+                                      currentChannel, currentChannel / 4, currentChannel % 4);
+                    }
                 }
             }
         }

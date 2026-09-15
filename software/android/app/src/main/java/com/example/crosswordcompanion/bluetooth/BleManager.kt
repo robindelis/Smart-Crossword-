@@ -66,6 +66,8 @@ object BleProtocol {
                 result[i] = charVal
             } else if (charVal in 'a'..'z') {
                 result[i] = charVal.uppercaseChar()
+            } else if (charVal == '?') {
+                result[i] = '?'
             }
         }
         return result
@@ -247,7 +249,18 @@ class BleManager private constructor(private val context: Context) {
             }
             BleProtocol.CHAR_SCAN_TELEMETRY_UUID -> {
                 val telemetry = BleProtocol.parseScanTelemetry(value)
-                _scanTelemetry.value = telemetry
+                val current = _scanTelemetry.value
+                val resolved = if (telemetry.tagUid == null &&
+                    telemetry.status == BleProtocol.STATUS_ENERGIZED &&
+                    telemetry.activeChannel != null &&
+                    telemetry.activeChannel == current.activeChannel &&
+                    current.tagUid != null
+                ) {
+                    telemetry.copy(tagUid = current.tagUid, status = BleProtocol.STATUS_TAG_DETECTED)
+                } else {
+                    telemetry
+                }
+                _scanTelemetry.value = resolved
             }
         }
     }
