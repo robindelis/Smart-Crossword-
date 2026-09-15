@@ -114,6 +114,13 @@
   - [x] 4x4 coil power manual debug matrix (Channels 0..15, toggle MUX, step Prev/Next, sweep)
   - [x] Piece Registration Studio with live UID readout and A–Z Scrabble point assignment
   - [x] 100% automated test pass (`BleProtocolTest.kt`, over-the-air Python Bleak test suite)
+- [x] Dual-Tier Persistent Tile Registration & Auto-Sync (ESP32 NVS + Android SQLite)
+  - [x] Embedded ESP32 NVS flash storage (`Preferences.h`, namespace "crossword") supporting up to 128 tags
+  - [x] Handled `CMD_SYNC_TILE (0x06)` BLE GATT packet to provision tiles directly by UID
+  - [x] Android local SQLite database (`TABLE_TILES` in `AppDatabaseHelper.kt` schema v2)
+  - [x] BLE auto-sync on connection and real-time auto-healing of unrecognized tiles (`'?'`)
+  - [x] Tile Database inventory card in `HardwareDebugScreen.kt` with per-tile and bulk sync controls
+  - [x] Added unit tests in `BleProtocolTest.kt` and instrumentation tests in `AppDatabaseDeviceTest.kt`
 - [x] Market research and competitor breakdown (`commercial/market_analysis.md`)
 - [x] Pre-launch $1 deposit plan and ad templates (`commercial/prelaunch_playbook.md`)
 - [x] Kickstarter video script (`commercial/kickstarter_video_script.md`)

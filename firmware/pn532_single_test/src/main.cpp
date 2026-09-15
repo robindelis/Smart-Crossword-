@@ -5,6 +5,7 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <Preferences.h>
 
 /*
  * ============================================================================
@@ -90,14 +91,18 @@ struct GridCell {
 };
 GridCell grid[16];
 
-// Simple Tag-to-Letter dictionary (up to 32 enrolled tags)
+// --- Tag-to-Letter Dictionary & Persistent Storage ---
+#define MAX_TAG_DB 128
+
+Preferences preferences;
+
 struct TagMapping {
     uint8_t uid[7];
     uint8_t uidLen;
     char letter;
     uint8_t points;
 };
-TagMapping tagDb[32];
+TagMapping tagDb[MAX_TAG_DB];
 int tagDbCount = 0;
 
 // Standard Scrabble letter score table
@@ -126,22 +131,83 @@ char lookupLetter(const uint8_t *uid, uint8_t len) {
     return '?'; // Unenrolled
 }
 
-// Enroll or update a tag mapping
-void enrollTag(const uint8_t *uid, uint8_t len, char letter) {
+// Persist tag database and count to NVS using Preferences
+void saveTagDbToNVS() {
+    preferences.putInt("tagDbCount", tagDbCount);
+    preferences.putInt("count", tagDbCount);
+    preferences.putBytes("tagDb", tagDb, tagDbCount * sizeof(TagMapping));
+    Serial.printf("💾 [NVS] Saved %d tag mappings to NVS (%u bytes).\n",
+                  tagDbCount, (unsigned int)(tagDbCount * sizeof(TagMapping)));
+}
+
+// Enroll or update a tag mapping and immediately persist to NVS
+void enrollTag(const uint8_t *uid, uint8_t len, char letter, uint8_t points = 0) {
     if (letter >= 'a' && letter <= 'z') letter -= 32;
+    uint8_t pts = (points > 0) ? points : getLetterPoints(letter);
+    if (len > 7) len = 7;
+
+    bool updated = false;
     for (int i = 0; i < tagDbCount; i++) {
         if (tagDb[i].uidLen == len && memcmp(tagDb[i].uid, uid, len) == 0) {
             tagDb[i].letter = letter;
-            tagDb[i].points = getLetterPoints(letter);
+            tagDb[i].points = pts;
+            updated = true;
+            break;
+        }
+    }
+    if (!updated) {
+        if (tagDbCount < MAX_TAG_DB) {
+            memcpy(tagDb[tagDbCount].uid, uid, len);
+            tagDb[tagDbCount].uidLen = len;
+            tagDb[tagDbCount].letter = letter;
+            tagDb[tagDbCount].points = pts;
+            tagDbCount++;
+            updated = true;
+        } else {
+            Serial.printf("⚠️ [TAG DB] Tag database full! Maximum %d tags reached.\n", MAX_TAG_DB);
             return;
         }
     }
-    if (tagDbCount < 32) {
-        memcpy(tagDb[tagDbCount].uid, uid, len);
-        tagDb[tagDbCount].uidLen = len;
-        tagDb[tagDbCount].letter = letter;
-        tagDb[tagDbCount].points = getLetterPoints(letter);
-        tagDbCount++;
+
+    if (updated) {
+        saveTagDbToNVS();
+    }
+}
+
+// Initialize Tag DB from persistent NVS storage or pre-seed defaults
+void initTagDb() {
+    preferences.begin("crossword", false);
+    size_t storedBytes = preferences.getBytesLength("tagDb");
+    if (storedBytes >= sizeof(TagMapping)) {
+        size_t bytesRead = preferences.getBytes("tagDb", tagDb, sizeof(tagDb));
+        tagDbCount = bytesRead / sizeof(TagMapping);
+        if (preferences.isKey("tagDbCount")) {
+            int savedCount = preferences.getInt("tagDbCount");
+            if (savedCount >= 0 && savedCount <= MAX_TAG_DB && savedCount <= tagDbCount) {
+                tagDbCount = savedCount;
+            }
+        } else if (preferences.isKey("count")) {
+            int savedCount = preferences.getInt("count");
+            if (savedCount >= 0 && savedCount <= MAX_TAG_DB && savedCount <= tagDbCount) {
+                tagDbCount = savedCount;
+            }
+        }
+        Serial.printf("💾 [NVS] Loaded %d tag mappings from persistent storage (%u bytes).\n",
+                      tagDbCount, (unsigned int)bytesRead);
+    } else {
+        Serial.println("💾 [NVS] No previous tags found in NVS. Pre-seeding 16 default test letters (P, L, A, Y, W, O, R, D, S, C, B, E, N, T, I, M)...");
+        tagDbCount = 0;
+        const char defaultLetters[16] = {
+            'P', 'L', 'A', 'Y',
+            'W', 'O', 'R', 'D',
+            'S', 'C', 'B', 'E',
+            'N', 'T', 'I', 'M'
+        };
+        for (int i = 0; i < 16; i++) {
+            uint8_t dummyUid[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, (uint8_t)(0x10 + i)};
+            enrollTag(dummyUid, 7, defaultLetters[i], getLetterPoints(defaultLetters[i]));
+        }
+        Serial.printf("💾 [NVS] Pre-seeded and saved %d default tag mappings.\n", tagDbCount);
     }
 }
 
@@ -251,6 +317,49 @@ class CommandCallbacks : public BLECharacteristicCallbacks {
                         printDashboard();
                     }
                 }
+            } else if (cmd == 0x06) {
+                // CMD_SYNC_TILE: [0x06, uidLen (1B), uid (uidLen B), letter (1B), points (1B)]
+                if (len < 3) {
+                    Serial.printf("\n⚠️ [BLE SYNC_TILE] Payload too short: %u bytes (minimum 3)\n", (unsigned int)len);
+                } else {
+                    uint8_t uidLen = data[1];
+                    if (len < (size_t)(3 + uidLen) || uidLen == 0 || uidLen > 7) {
+                        Serial.printf("\n⚠️ [BLE SYNC_TILE] Invalid uidLen (%u) or short payload (%u bytes)\n", uidLen, (unsigned int)len);
+                    } else {
+                        const uint8_t *uid = &data[2];
+                        char letter = (char)data[2 + uidLen];
+                        if (letter >= 'a' && letter <= 'z') letter -= 32;
+
+                        uint8_t points = 0;
+                        if (len >= (size_t)(4 + uidLen)) {
+                            points = data[3 + uidLen];
+                        }
+                        if (points == 0) {
+                            points = getLetterPoints(letter);
+                        }
+
+                        enrollTag(uid, uidLen, letter, points);
+
+                        // If any grid[ch] currently holds this UID, update grid[ch].assignedLetter = letter and call notifyBoardState()
+                        bool gridUpdated = false;
+                        for (int ch = 0; ch < 16; ch++) {
+                            if (grid[ch].hasTag && grid[ch].uidLen == uidLen && memcmp(grid[ch].uid, uid, uidLen) == 0) {
+                                grid[ch].assignedLetter = letter;
+                                gridUpdated = true;
+                            }
+                        }
+                        if (gridUpdated) {
+                            notifyBoardState();
+                        }
+
+                        Serial.printf("\n🔄 [BLE SYNC_TILE] Synced UID ");
+                        for (int i = 0; i < uidLen; i++) {
+                            Serial.printf("%02X%s", uid[i], (i + 1 < uidLen) ? ":" : "");
+                        }
+                        Serial.printf(" -> Letter '%c' (%d pts) [Total DB: %d tags]\n",
+                                      letter, points, tagDbCount);
+                    }
+                }
             } else if (cmd == 0x10) {
                 Serial.println("\n⚡ [BLE CMD] Move submitted & locked by phone!");
             }
@@ -322,6 +431,7 @@ void printDashboard() {
     // Subsystems Status
     Serial.printf("  NFC TRANSCEIVER: %s\n", pn532Ready ? "🟢 CONNECTED (PN532 v1.6 SPI)" : "🟡 SEARCHING (Check SPI & Power)...");
     Serial.printf("  BLE CONNECTION : %s ('%s')\n", bleClientConnected ? "🟢 APP CONNECTED" : "📡 ADVERTISING", BLE_DEVICE_NAME);
+    Serial.printf("  NVS TAG DB     : 💾 %d / %d tags registered in flash\n", tagDbCount, MAX_TAG_DB);
 
     if (lastUidLen > 0 && (millis() - lastTagDetectTime < 10000)) {
         Serial.printf("  LAST TAG SCANNED: UID=");
@@ -340,6 +450,7 @@ void printDashboard() {
     Serial.println("    [s]           : Full 16-channel Matrix Sweep (scans all 16 squares)");
     Serial.println("    [c]           : Toggle Continuous 16-Channel Sweep loop");
     Serial.println("    [t]           : Enroll last scanned tag as a Letter (A..Z)");
+    Serial.println("    [d]           : Dump all registered tags in NVS database");
     Serial.println("    [e]           : Toggle MUX Enable / High-Z");
     Serial.println("    [?]           : Show this dashboard");
     Serial.println("-------------------------------------------------------");
@@ -483,15 +594,8 @@ void setup() {
         grid[i].assignedLetter = '.';
     }
 
-    // Pre-populate some demo mappings
-    uint8_t demo_uid_p[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x10};
-    uint8_t demo_uid_l[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x11};
-    uint8_t demo_uid_a[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x12};
-    uint8_t demo_uid_y[7] = {0x04, 0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0x13};
-    enrollTag(demo_uid_p, 7, 'P');
-    enrollTag(demo_uid_l, 7, 'L');
-    enrollTag(demo_uid_a, 7, 'A');
-    enrollTag(demo_uid_y, 7, 'Y');
+    // Initialize Tag Database from persistent NVS storage (loads existing or pre-seeds 16 defaults)
+    initTagDb();
 
     delay(1000);
 
@@ -650,6 +754,19 @@ void loop() {
                 }
             }
             printDashboard();
+        } else if (c == 'd' || c == 'D') {
+            Serial.printf("\n=== Registered NFC Tile Mappings (%d / %d tags in NVS) ===\n", tagDbCount, MAX_TAG_DB);
+            Serial.println("| Index | UID                    | Letter | Points |");
+            Serial.println("| :---- | :--------------------- | :----- | :----- |");
+            for (int i = 0; i < tagDbCount; i++) {
+                Serial.printf("| %-5d | ", i + 1);
+                for (int u = 0; u < tagDb[i].uidLen; u++) {
+                    Serial.printf("%02X%s", tagDb[i].uid[u], (u + 1 < tagDb[i].uidLen) ? ":" : "");
+                }
+                for (int s = tagDb[i].uidLen * 3 - 1; s < 22; s++) Serial.print(" ");
+                Serial.printf("| '%c'    | %-6d |\n", tagDb[i].letter, tagDb[i].points);
+            }
+            Serial.println("=========================================================\n> ");
         } else if (c == '?' || c == 'h' || c == 'H') {
             printDashboard();
         } else if (c >= '0' && c <= '9') {
