@@ -501,11 +501,11 @@
     {
       "id": "node-bench-mux-verified",
       "type": "text",
-      "text": "## 4x4 Bench MUX Verification: SUCCESS\n\n* **CD74HC4067 SMT IC**: Footprint SOIC-24W verified 100% correct.\n* **Power & Control**: 3.3V rail & S0-S3 channel switching verified.\n* **Physical Channel Switching**: Channel 0 conducts (0.24V divider through coil inductor).\n* **Pinout Validated**: Header J1 horizontal pinout mapped.\n* **Next Step**: Connect IPEX RF pigtail & test tag reads across 16 matrix positions.",
+      "text": "## 4x4 Bench MUX & Tag Verification: SUCCESS\n\n* **CD74HC4067 SMT IC**: Footprint SOIC-24W verified 100% correct.\n* **Power & Control**: 3.3V rail & S0-S3 channel switching verified.\n* **Physical Channel Switching**: Channel 0 conducts (0.24V divider through coil inductor).\n* **NTAG213 Tag Reading**: 7-byte UID physical tag detection verified.\n* **Silent Firmware**: Event-driven tag detection and removal; zero background spam.\n* **Living Memory**: FAIL-015 & ISO14443A energy harvesting invariant recorded in `wise.md`.\n* **Next Step**: Connect IPEX RF pigtail & test tag reads across 16 PCB matrix positions.",
       "x": 3840,
       "y": 2980,
       "width": 800,
-      "height": 450,
+      "height": 550,
       "color": "4"
     }
   ],

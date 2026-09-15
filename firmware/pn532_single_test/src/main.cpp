@@ -354,11 +354,11 @@ void loop() {
             bool success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLen, 150);
 
             if (success) {
-                // Check if new or different tag
-                bool isNew = (lastTagChannel != currentChannel) ||
+                // Check if this is a newly placed tag or different tag
+                bool isNew = !grid[currentChannel].hasTag ||
+                             (lastTagChannel != currentChannel) ||
                              (lastUidLen != uidLen) ||
-                             (memcmp(lastUid, uid, uidLen) != 0) ||
-                             (millis() - lastTagDetectTime > 2000);
+                             (memcmp(lastUid, uid, uidLen) != 0);
 
                 if (isNew) {
                     memcpy(lastUid, uid, uidLen);
@@ -387,15 +387,18 @@ void loop() {
                     Serial.println("**************************************************");
                     Serial.print("> ");
                 }
+            } else {
+                // If tag was previously present on this channel and is now gone
+                if (grid[currentChannel].hasTag) {
+                    grid[currentChannel].hasTag = false;
+                    Serial.printf("\n  💨 [TAG REMOVED from Channel %d (Row %d, Col %d)]\n> ",
+                                  currentChannel, currentChannel / 4, currentChannel % 4);
+                }
             }
         }
     }
 
-    // 3. Periodic dashboard refresh every 10 seconds if idle (no spammy single-line heartbeat)
-    if (!continuousSweep && !autoStep && (millis() - lastHeartbeat >= 10000)) {
-        lastHeartbeat = millis();
-        printDashboard();
-    }
+    // 3. Completely silent while idle (no unsolicited background prints)
 
     // 4. Handle Terminal Commands
     while (Serial.available() > 0) {
