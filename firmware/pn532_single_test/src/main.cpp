@@ -211,6 +211,36 @@ void initTagDb() {
     }
 }
 
+// --- Onboard RGB LED Feedback (GPIO 48 / RGB_BUILTIN on ESP32-S3) ---
+void setStatusLed(uint8_t r, uint8_t g, uint8_t b) {
+#ifdef RGB_BUILTIN
+    neopixelWrite(RGB_BUILTIN, r, g, b);
+#endif
+}
+
+void updateStatusLed() {
+    if (!pn532Ready) {
+        // Blinking Amber/Red: PN532 disconnected or searching
+        if ((millis() / 500) % 2 == 0) {
+            setStatusLed(30, 8, 0); // Amber
+        } else {
+            setStatusLed(0, 0, 0);  // Off
+        }
+    } else {
+        // PN532 is Healthy & Connected
+        if (grid[currentChannel].hasTag) {
+            // Bright Cyan/White: Tag present on active square
+            setStatusLed(0, 50, 50);
+        } else if (bleClientConnected) {
+            // Soft Blue-Green: Board ready and Phone App connected
+            setStatusLed(0, 15, 25);
+        } else {
+            // Solid Calm Green: Board ready, scanning autonomously
+            setStatusLed(0, 20, 0);
+        }
+    }
+}
+
 // --- Forward Declarations ---
 void setMuxChannel(uint8_t ch, bool enable);
 void printDashboard();
@@ -455,6 +485,7 @@ void printDashboard() {
     Serial.println("    [?]           : Show this dashboard");
     Serial.println("-------------------------------------------------------");
     Serial.print("> ");
+    Serial.flush();
 }
 
 // --- Run a single sweep across all 16 channels ---
@@ -517,6 +548,14 @@ bool tryConnectPN532() {
     uint32_t versiondata = nfc.getFirmwareVersion();
 
     if (!versiondata) {
+        static unsigned long lastFailPrint = 0;
+        if (millis() - lastFailPrint > 4000) {
+            lastFailPrint = millis();
+            Serial.println("\n🟡 [PN532 SEARCHING] Waiting for PN532 over SPI...");
+            Serial.println("   -> Wiring: SCK=12, MISO=21 (Right Header), MOSI=13, SS=14, RST=11");
+            Serial.println("   -> DIP Switches: SET0=0 (L), SET1=1 (H)");
+            Serial.flush();
+        }
         return false;
     }
 
@@ -529,7 +568,9 @@ bool tryConnectPN532() {
     Serial.printf("   Firmware: v%d.%d (Support: ISO14443A Mifare / NTAG213)\n",
                   (versiondata >> 16) & 0xFF,
                   (versiondata >> 8) & 0xFF);
+    Serial.println("   Feedback: 🟢 RGB LED Solid Green");
     Serial.println("--------------------------------------------------");
+    Serial.flush();
     return true;
 }
 
@@ -573,10 +614,21 @@ void setupBleServer() {
     BLEDevice::startAdvertising();
 
     Serial.println("📡 [BLE] Bluetooth Low Energy Server online ('SmartCrossword_4x4')");
+    Serial.flush();
 }
 
 void setup() {
     Serial.begin(115200);
+    Serial.setTxTimeoutMs(0);
+
+    // On ESP32-S3 USB CDC, give monitor up to 1.5s to establish DTR connection
+    unsigned long startWait = millis();
+    while (!Serial && (millis() - startWait < 1500)) {
+        delay(10);
+    }
+
+    // Set initial Amber indicator while booting
+    setStatusLed(30, 8, 0);
 
     // Initialize Multiplexer control GPIOs
     pinMode(PIN_MUX_S0, OUTPUT);
@@ -597,18 +649,32 @@ void setup() {
     // Initialize Tag Database from persistent NVS storage (loads existing or pre-seeds 16 defaults)
     initTagDb();
 
-    delay(1000);
+    delay(200);
 
     // Initialize BLE GATT Server
     setupBleServer();
 
     // Attempt PN532 connection
     pn532Ready = tryConnectPN532();
+    updateStatusLed();
 
     printDashboard();
+    Serial.flush();
 }
 
 void loop() {
+    // 0. Update onboard RGB LED status and detect newly connected Serial Monitor
+    updateStatusLed();
+
+    static bool lastSerialState = false;
+    bool currentSerialState = bool(Serial);
+    if (currentSerialState && !lastSerialState) {
+        Serial.println("\n\n💻 [MONITOR ATTACHED] Terminal connected via USB CDC.");
+        printDashboard();
+        Serial.flush();
+    }
+    lastSerialState = currentSerialState;
+
     // 1. Handle BLE command trigger
     if (triggerSweepRequested) {
         triggerSweepRequested = false;
@@ -621,7 +687,9 @@ void loop() {
             lastPn532Retry = millis();
             pn532Ready = tryConnectPN532();
             if (pn532Ready) {
+                updateStatusLed();
                 printDashboard();
+                Serial.flush();
             }
         }
     }
@@ -670,6 +738,7 @@ void loop() {
 
                     notifyTelemetry(currentChannel, 0x02, uid, uidLen); // 0x02 = tag hit with UID
                     notifyBoardState();                                 // Send updated board
+                    updateStatusLed();
 
                     Serial.println();
                     Serial.println("**************************************************");
@@ -686,6 +755,7 @@ void loop() {
                     Serial.println("     -> Press [t] to assign/change this tag's letter!");
                     Serial.println("**************************************************");
                     Serial.print("> ");
+                    Serial.flush();
                 }
             } else {
                 if (grid[currentChannel].hasTag) {
@@ -695,8 +765,10 @@ void loop() {
                         consecutiveMisses = 0;
                         notifyTelemetry(currentChannel, 0x00);
                         notifyBoardState();
+                        updateStatusLed();
                         Serial.printf("\n  💨 [TAG REMOVED from Channel %d (Row %d, Col %d)]\n> ",
                                       currentChannel, currentChannel / 4, currentChannel % 4);
+                        Serial.flush();
                     }
                 }
             }
@@ -707,27 +779,35 @@ void loop() {
     while (Serial.available() > 0) {
         char c = Serial.read();
 
-        if (c == ' ' || c == '\n' || c == '\r' || c == 'n' || c == 'N') {
+        if (c == ' ' || c == 'n' || c == 'N') {
             currentChannel = (currentChannel + 1) % 16;
             setMuxChannel(currentChannel, muxEnabled);
             notifyTelemetry(currentChannel, 0x01);
             printDashboard();
+            Serial.flush();
+        } else if (c == '\r' || c == '\n') {
+            printDashboard();
+            Serial.flush();
         } else if (c == 'p' || c == 'P') {
             currentChannel = (currentChannel + 15) % 16;
             setMuxChannel(currentChannel, muxEnabled);
             notifyTelemetry(currentChannel, 0x01);
             printDashboard();
+            Serial.flush();
         } else if (c == 's' || c == 'S') {
             performMatrixSweep();
+            Serial.flush();
         } else if (c == 'c' || c == 'C') {
             continuousSweep = !continuousSweep;
             Serial.printf("\n>>> Continuous 16-Channel Sweep: %s <<<\n", continuousSweep ? "ENABLED" : "DISABLED");
             if (!continuousSweep) printDashboard();
+            Serial.flush();
         } else if (c == 'e' || c == 'E') {
             muxEnabled = !muxEnabled;
             setMuxChannel(currentChannel, muxEnabled);
             Serial.printf("\n>>> MUX: %s <<<\n", muxEnabled ? "ENABLED" : "DISABLED (High-Z)");
             printDashboard();
+            Serial.flush();
         } else if (c == 't' || c == 'T') {
             if (lastUidLen == 0) {
                 Serial.println("\n⚠️ No tag scanned yet! Scan a tag first, then press [t].");
