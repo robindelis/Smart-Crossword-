@@ -31,8 +31,10 @@ wheels/
 *-save.kicad_pcb
 *-save.kicad_sch
 _autosave-*
+_restore_backup*
 *.lck
 *.drl
+!**/gerbers/*.drl
 *.gbr
 *.gerber
 

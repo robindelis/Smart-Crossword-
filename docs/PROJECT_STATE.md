@@ -68,8 +68,7 @@ gantt
 | **ADL-032** | 2026-09-15 | Android SQLite Connection Pool & Concurrency Hardening | **Android SQLite Helper Concurrency Fix**: Resolved intermittent app crashes (`IllegalStateException: connection pool has been closed` / `attempt to re-open an already-closed object`) caused by Kotlin's `.use { db -> ... }` closing the shared `SQLiteDatabase` connection pool inside `AppDatabaseHelper.kt`. Left database lifecycle management to `SQLiteOpenHelper` while strictly closing `Cursor` instances via `cursor.use { ... }`. Verified 100% pass on 15 JVM unit tests and 10 on-device hardware instrumented tests on physical OnePlus 7T Pro. Documented LESSON-AND-016 and FAIL-022. |
 | **ADL-033** | 2026-09-15 | Bidirectional Tag Auto-Ingestion & Reactive StateFlow | **Bidirectional Dual-Tier Auto-Ingest**: Resolved missing tiles in companion app where tiles enrolled in ESP32 NVS were not imported into phone's SQLite DB: 1) Implemented inbound auto-ingest in `BleManager` across telemetry and board state updates: any recognized tile ('A'..'Z') scanned with a tag UID is automatically saved to SQLite; 2) Exposed `registeredTiles: StateFlow<List<TileRecord>>` to reactively drive Compose UI in real time; 3) Updated `inspect_db.sh` to display the `tiles` table. Documented LESSON-AND-017 and FAIL-023. |
 | **ADL-034** | 2026-09-16 | ESP32-S3 USB CDC Console Reliability & Onboard RGB LED Feedback | **Console DTR Fix & NeoPixel Status Visualizer**: Resolved silent console output in `pio monitor` and lack of hardware connection visibility: 1) Added `monitor_dtr = 1` and `monitor_rts = 0` to `platformio.ini` to assert CDC DTR line; 2) Added dynamic terminal attach detection (`bool(Serial)`) in `main.cpp` that automatically refreshes the ASCII dashboard whenever a monitor connects; 3) Integrated onboard WS2812 RGB LED (`RGB_BUILTIN` / GPIO 48) providing real-time hardware status: Solid Green = PN532 Connected, Blinking Amber = Searching/Offline, Soft Cyan = App Connected, Bright Cyan/White = Tag Detected on Square; 4) Fixed Enter key double-stepping on CRLF. Documented FAIL-024. |
-
-
+| **ADL-035** | 2026-09-16 | ST25R3916B 4x4 NFC Matrix Hardware Implementation & Zero-DRC Verification | **Monolithic 4-Layer KiCad 10 PCBA & Manufacturing Package**: Completed end-to-end design, placement, routing, and DRC verification for `hardware/kicad/st25r3916_grid_4x4`. Achieved strictly 0 DRC violations and 0 unconnected items across all 98 components and 69 nets. Features: single-sided SMT (`F.Cu` only) for <$40 PCBA BOM envelope, ST25R3916B-AQFT transceiver IC with thermal EP vias, 27.12 MHz crystal, CD74HC4067 multiplexer, 16 tuned planar antenna coils with net-ties, EMC filter, RX divider, complete power decoupling (South Bank, VDD_DR, East Ocean), monotonic SPI bus routing on `In2.Cu`, and RF ground cutouts on `In1.Cu`. Generated complete manufacturing Gerbers, drill files, JLCPCB `bom.csv` and `cpl.csv` with LCSC parts matching, 3D PNG renders, and educational guide `docs/KiCad_Learning_Guide_for_EasyEDA_Users.md`. |
 
 ---
 
@@ -78,5 +77,7 @@ gantt
 2. Receive 15mm NTAG213 stickers and test tile UID enrollment and letter mapping with the core dictionary engine.
 3. Bench test multi-channel 16-coil scanning latency (< 40ms) and tag read height through 3D printed / wood top faceplate.
 4. Field test native Android companion app against physical board moves.
+5. Order prototype batch of ST25R3916B 4x4 matrix boards via JLCPCB SMT using generated Gerbers, BOM, and CPL.
+
 
 
