@@ -1,0 +1,72 @@
+{
+  "image": "tests/data/vision/synthetic_4x4_ortho.png",
+  "grid_size": 4,
+  "latency_ms": 72.21,
+  "board_string": ". . . . H O R C J P K F . . . .",
+  "tiles": [
+    {
+      "row": 1,
+      "col": 0,
+      "letter": "H",
+      "confidence": 0.418,
+      "rotation": 180,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "letter": "O",
+      "confidence": 0.762,
+      "rotation": 180,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "letter": "R",
+      "confidence": 0.812,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "letter": "C",
+      "confidence": 0.486,
+      "rotation": 180,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "letter": "J",
+      "confidence": 0.512,
+      "rotation": 180,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "letter": "P",
+      "confidence": 0.617,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "letter": "K",
+      "confidence": 0.625,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "letter": "F",
+      "confidence": 0.504,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    }
+  ]
+}

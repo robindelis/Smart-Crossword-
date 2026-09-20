@@ -1,0 +1,72 @@
+{
+  "image": "tests/data/vision/synthetic_4x4_glare.png",
+  "grid_size": 4,
+  "latency_ms": 148.7,
+  "board_string": ". . . . W O R D C A R T . . . .",
+  "tiles": [
+    {
+      "row": 1,
+      "col": 0,
+      "letter": "W",
+      "confidence": 0.907,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "letter": "O",
+      "confidence": 0.941,
+      "rotation": 180,
+      "glare_ratio": 0.1422
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "letter": "R",
+      "confidence": 0.53,
+      "rotation": 0,
+      "glare_ratio": 0.3834
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "letter": "D",
+      "confidence": 0.905,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "letter": "C",
+      "confidence": 0.937,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "letter": "A",
+      "confidence": 0.907,
+      "rotation": 0,
+      "glare_ratio": 0.0924
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "letter": "R",
+      "confidence": 0.588,
+      "rotation": 0,
+      "glare_ratio": 0.2723
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "letter": "T",
+      "confidence": 0.97,
+      "rotation": 0,
+      "glare_ratio": 0.0
+    }
+  ]
+}

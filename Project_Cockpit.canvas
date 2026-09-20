@@ -28,6 +28,7 @@
 		{"id":"node-ideas","type":"file","file":"docs/Project_Ideas_Backlog.md","x":1360,"y":-2880,"width":1000,"height":1340,"color":"3"},
 		{"id":"102a3e5c110a1c00","type":"file","file":"docs/Potential_Issues.md","x":2560,"y":-2880,"width":1240,"height":760,"color":"3"},
 		{"id":"node-vision-eval","type":"file","file":"docs/Camera_Vision_Evaluation.md","x":2560,"y":-2040,"width":1240,"height":820,"color":"3"},
+		{"id":"node-vision-guide","type":"file","file":"docs/Bench_Vision_Testing_Guide.md","x":2560,"y":-1180,"width":1240,"height":780,"color":"3"},
 		{"id":"node-web-landing","type":"file","file":"software/web/README.md","x":0,"y":-4240,"width":1040,"height":2080,"color":"2"},
 		{"id":"node-android-companion","type":"text","text":"## Native Android Companion App\n\n* **Location**: `software/android/`\n* **Tech**: Kotlin, Jetpack Compose, Material 3, Gradle 9.1\n* **Board**: Interactive 4x4 test grid with 2W/3W/2L/3L & rack\n* **Referee**: Tournament English referee (168k words)\n* **Auth**: 1-Tap play & Google Sign-In with Firebase\n* **Persistence**: Local-first SQLite (`AppDatabaseHelper`)\n* **Pairing**: Unique handles (`sarah#4821`, `board_scb1234`)\n* **Living Memory**: `software/android/android_lessons.md`","x":11820,"y":-5520,"width":1600,"height":700,"color":"4"},
 		{"id":"node-android-readme","type":"file","file":"software/android/README.md","x":11820,"y":-4770,"width":1600,"height":900,"color":"4"},
@@ -108,6 +109,7 @@
 		{"id":"edge-mux-to-st25r3916","fromNode":"node-bench-mux-verified","fromSide":"right","toNode":"node-st25r3916-pcb-summary","toSide":"left","label":"Integrated Transceiver PCBA"},
 		{"id":"edge-st25r3916-to-render","fromNode":"node-st25r3916-pcb-summary","fromSide":"top","toNode":"node-st25r3916-render-3d","toSide":"bottom"},
 		{"id":"edge-st25r3916-to-guide","fromNode":"node-st25r3916-pcb-summary","fromSide":"bottom","toNode":"node-kicad-guide","toSide":"top","label":"EasyEDA -> KiCad Migration"},
-		{"id":"edge-ideas-vision","fromNode":"node-ideas","fromSide":"right","toNode":"node-vision-eval","toSide":"left","label":"Vision vs RFID Evaluation"}
+		{"id":"edge-ideas-vision","fromNode":"node-ideas","fromSide":"right","toNode":"node-vision-eval","toSide":"left","label":"Vision vs RFID Evaluation"},
+		{"id":"edge-vision-to-guide","fromNode":"node-vision-eval","fromSide":"bottom","toNode":"node-vision-guide","toSide":"top","label":"Bench Testing Guide"}
 	]
 }
