@@ -60,9 +60,11 @@
 		{"id":"node-proto-wiring-table","type":"file","file":"docs/Prototype_4x4_Wiring_Pinout.md","x":2540,"y":2980,"width":1100,"height":2200,"color":"5"},
 		{"id":"node-st25r3916-render-3d","type":"file","file":"hardware/kicad/st25r3916_grid_4x4/exports/st25r3916_grid_4x4_isometric_3d.png","x":6160,"y":2000,"width":964,"height":720},
 		{"id":"node-st25r3916-pcb-summary","type":"text","text":"## ST25R3916B 4x4 NFC Matrix PCBA\n\n* **Status**: 100% Routed, 0 DRC Errors, 0 Unconnected Items\n* **Board Dimensions**: 100mm × 100mm, 4-Layer Stackup\n* **Transceiver**: Onboard ST25R3916B-AQFT QFN-32 + 27.12 MHz Crystal\n* **Multiplexer**: CD74HC4067M 16-Channel Analog MUX\n* **Antenna Array**: 16 tuned planar coils (L = 1.26 uH, 7 turns, 19mm pitch) with Net-Ties\n* **Tuning Network**: Ca = 100pF, Cb = 22pF, Rd = 1.5R (Q ≈ 25)\n* **Single-Sided PCBA**: All 98 components on F.Cu (<$40 PCBA BOM envelope)\n* **Manufacturing Ready**: Gerbers, Excellon drill, JLCPCB bom.csv & cpl.csv with 100% matched LCSC Part Numbers","x":6160,"y":2800,"width":980,"height":720},
-		{"id":"node-kicad-guide","type":"file","file":"docs/KiCad_Learning_Guide_for_EasyEDA_Users.md","x":6160,"y":3600,"width":980,"height":800}
+		{"id":"node-kicad-guide","type":"file","file":"docs/KiCad_Learning_Guide_for_EasyEDA_Users.md","x":6160,"y":3600,"width":980,"height":800},
+		{"id":"node-pcb-rf-review","type":"file","file":"docs/PCB_Antenna_and_RF_Layout_Review.md","x":6160,"y":4450,"width":980,"height":850,"color":"1"}
 	],
 	"edges":[
+		{"id":"edge-pcb-rf-review","fromNode":"node-st25r3916-pcb-summary","fromSide":"bottom","toNode":"node-pcb-rf-review","toSide":"top","label":"RF & Antenna Review (FAIL-026/027)"},
 		{"id":"edge-wiring-mux-verified","fromNode":"node-proto-wiring-table","fromSide":"right","toNode":"node-bench-mux-verified","toSide":"left","label":"Bench Verified"},
 		{"id":"edge-pn532-test","fromNode":"node-esp32-driver","fromSide":"right","toNode":"node-pn532-single-test","toSide":"left","label":"Single Antenna Hardware Sanity Test"},
 		{"id":"edge-rfid-hall","fromNode":"node-rfid-strat","fromSide":"right","toNode":"node-hall-eval","toSide":"left","label":"Hall vs RFID Trade-off"},
