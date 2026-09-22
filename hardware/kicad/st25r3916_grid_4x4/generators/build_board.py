@@ -348,7 +348,8 @@ def build(out_path):
         trk(pcbnew.F_Cu, net_coil, p_ca1, p_cb1, 0.20)
         tank_vias[cell_id] = v_pos
 
-        v_gnd = (p_cb2[0], y_k - 1.905)
+        # Move Tank 14 and Tank 10 GND vias slightly east so they do not infringe on alley clearance
+        v_gnd = (p_cb2[0] + 0.5, y_k - 1.905) if cell_id in [14, 10] else (p_cb2[0], y_k - 1.905)
         via(get_net("GND"), v_gnd)
         trk(pcbnew.F_Cu, get_net("GND"), p_ca2, p_cb2, 0.20)
         trk(pcbnew.F_Cu, get_net("GND"), p_ca2, v_gnd, 0.20)
@@ -494,56 +495,84 @@ def build(out_path):
         trk(pcbnew.F_Cu, get_net("GND"), p_ca2, p_cb2, 0.20)
         trk(pcbnew.F_Cu, get_net("GND"), p_cb2, v_gnd, 0.20)
 
-    # 7. Column Feeder Lines
-    # Col A: lanes at X in [10.5, 11.0, 11.5, 12.0] mm (safely away from coil vias at 12.875 mm!)
-    col_a_lanes = {1: 10.2, 5: 10.8, 9: 11.4, 13: 12.0}
+    # 7. Column Feeder Lines (Strictly planar, outside coils)
+    # Col A: Left margin on In2.Cu with generous 0.55mm pitch, via to B.Cu at (lx, v_end[1])
+    col_a_lanes = {1: 10.45, 5: 11.00, 9: 11.55, 13: 12.10}
     for cell_id, lx in col_a_lanes.items():
         net = get_net(f"RF_COIL_{cell_id}")
         v_start = tank_vias[cell_id]
         v_end = coil_pad_vias[cell_id]
-        trk(pcbnew.In2_Cu, net, v_start, (lx, v_start[1]), 0.20)
-        trk(pcbnew.In2_Cu, net, (lx, v_start[1]), (lx, v_end[1]), 0.20)
+        trk(pcbnew.In2_Cu, net, v_start, (lx, v_start[1]), 0.16)
+        trk(pcbnew.In2_Cu, net, (lx, v_start[1]), (lx, v_end[1]), 0.16)
         via(net, (lx, v_end[1]))
-        trk(pcbnew.B_Cu, net, (lx, v_end[1]), v_end, 0.20)
+        trk(pcbnew.B_Cu, net, (lx, v_end[1]), v_end, 0.16)
 
-    # Col B: lanes at X in [26.5, 27.1, 27.7, 28.3]
-    col_b_lanes = {2: 26.5, 6: 27.1, 10: 27.7, 14: 28.3}
-    for cell_id, lx in col_b_lanes.items():
+    # Col B:
+    # Cell 2 runs on In2.Cu south at X=39.7 directly to Y=23.675, then west to coil_pad_vias[2]!
+    # (Completely outside alley, zero crossings!)
+    net_c2 = get_net("RF_COIL_2")
+    v2_start = tank_vias[2]
+    v2_end = coil_pad_vias[2]
+    trk(pcbnew.In2_Cu, net_c2, v2_start, (v2_start[0], v2_end[1]), 0.16)
+    trk(pcbnew.In2_Cu, net_c2, (v2_start[0], v2_end[1]), v2_end, 0.16)
+
+    # Cells 6, 10, 14 run down alley A-B (Strictly planar on In2.Cu, 0 vias, 0 crossings!):
+    # 14 goes south at X=tank_vias[14][0] to Y=19.0, jogs east to 30.55, then south to 80.675
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_14"), tank_vias[14], (tank_vias[14][0], 19.0), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_14"), (tank_vias[14][0], 19.0), (30.55, 19.0), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_14"), (30.55, 19.0), (30.55, coil_pad_vias[14][1]), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_14"), (30.55, coil_pad_vias[14][1]), coil_pad_vias[14], 0.16)
+
+    # 10 goes south at X=tank_vias[10][0] to Y=19.5, jogs west to 30.95, then south to 61.675
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_10"), tank_vias[10], (tank_vias[10][0], 19.5), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_10"), (tank_vias[10][0], 19.5), (30.95, 19.5), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_10"), (30.95, 19.5), (30.95, coil_pad_vias[10][1]), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_10"), (30.95, coil_pad_vias[10][1]), coil_pad_vias[10], 0.16)
+
+    # 6 goes south at X=tank_vias[6][0] to Y=20.0, jogs west to 31.35, then south to 42.675
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_6"), tank_vias[6], (tank_vias[6][0], 20.0), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_6"), (tank_vias[6][0], 20.0), (31.35, 20.0), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_6"), (31.35, 20.0), (31.35, coil_pad_vias[6][1]), 0.16)
+    trk(pcbnew.In2_Cu, get_net("RF_COIL_6"), (31.35, coil_pad_vias[6][1]), coil_pad_vias[6], 0.16)
+
+    # Col C: Corridor X in [72.0..73.8] above Y=22.0, jog west to alley C-D [68.45..69.50] at Y=[21.45..22.50] on In2.Cu
+    col_c_cfg = {
+        3:  (72.0, 68.45, 21.45),
+        7:  (72.6, 68.80, 21.80),
+        11: (73.2, 69.15, 22.15),
+        15: (73.8, 69.50, 22.50)
+    }
+    for cell_id, (x_top, x_corridor, y_jog) in col_c_cfg.items():
         net = get_net(f"RF_COIL_{cell_id}")
         v_start = tank_vias[cell_id]
         v_end = coil_pad_vias[cell_id]
-        trk(pcbnew.In2_Cu, net, v_start, (lx, v_start[1]), 0.20)
-        trk(pcbnew.In2_Cu, net, (lx, v_start[1]), (lx, v_end[1]), 0.20)
-        via(net, (lx, v_end[1]))
-        trk(pcbnew.B_Cu, net, (lx, v_end[1]), v_end, 0.20)
+        trk(pcbnew.In2_Cu, net, v_start, (x_top, v_start[1]), 0.16)
+        trk(pcbnew.In2_Cu, net, (x_top, v_start[1]), (x_top, y_jog), 0.16)
+        trk(pcbnew.In2_Cu, net, (x_top, y_jog), (x_corridor, y_jog), 0.16)
+        trk(pcbnew.In2_Cu, net, (x_corridor, y_jog), (x_corridor, v_end[1]), 0.16)
+        trk(pcbnew.In2_Cu, net, (x_corridor, v_end[1]), v_end, 0.16)
 
-    # Col C: on In2.Cu, lanes at X in [72.0, 72.6, 73.2, 73.8] (clear corridor between tanks and U2!)
-    col_c_lanes = {3: 72.0, 7: 72.6, 11: 73.2, 15: 73.8}
-    for cell_id, lx in col_c_lanes.items():
+    # Col D: Planar monotonic routing on B.Cu to right margin [87.125..89.0]
+    col_d_cfg = {
+        16: (21.50, 89.00),
+        12: (21.85, 88.40),
+        8:  (22.20, 87.80),
+        4:  (22.55, 87.125),
+    }
+    for cell_id, (y_h, x_margin) in col_d_cfg.items():
         net = get_net(f"RF_COIL_{cell_id}")
         v_start = tank_vias[cell_id]
         v_end = coil_pad_vias[cell_id]
-        trk(pcbnew.In2_Cu, net, v_start, (lx, v_start[1]), 0.20)
-        trk(pcbnew.In2_Cu, net, (lx, v_start[1]), (lx, v_end[1]), 0.20)
-        via(net, (lx, v_end[1]))
-        trk(pcbnew.B_Cu, net, (lx, v_end[1]), v_end, 0.20)
-
-    # Col D: on B.Cu!
-    # Tank 16 (Y=17.465) goes east to 85.8
-    # Tank 12 (Y=18.735) goes east to 85.2
-    # Tank 8  (Y=20.005) goes east to 84.6
-    # Tank 4  (Y=21.275) goes east to 84.0
-    # Then south on B.Cu to v_end[1].
-    # Drop via at (lx, v_end[1]) to In2.Cu, and route east on In2.Cu to v_end!
-    col_d_lanes = {16: 76.8, 12: 76.2, 8: 75.6, 4: 75.0}
-    for cell_id, lx in col_d_lanes.items():
-        net = get_net(f"RF_COIL_{cell_id}")
-        v_start = tank_vias[cell_id]
-        v_end = coil_pad_vias[cell_id]
-        trk(pcbnew.B_Cu, net, v_start, (lx, v_start[1]), 0.20)
-        trk(pcbnew.B_Cu, net, (lx, v_start[1]), (lx, v_end[1]), 0.20)
-        via(net, (lx, v_end[1]))
-        trk(pcbnew.In2_Cu, net, (lx, v_end[1]), v_end, 0.20)
+        # South to horizontal exit
+        trk(pcbnew.B_Cu, net, v_start, (v_start[0], y_h), 0.16)
+        # East to right margin
+        trk(pcbnew.B_Cu, net, (v_start[0], y_h), (x_margin, y_h), 0.16)
+        # South in right margin to coil pad Y
+        if cell_id == 4:
+            trk(pcbnew.B_Cu, net, (x_margin, y_h), v_end, 0.16)
+        else:
+            trk(pcbnew.B_Cu, net, (x_margin, y_h), (x_margin, v_end[1]), 0.16)
+            trk(pcbnew.B_Cu, net, (x_margin, v_end[1]), v_end, 0.16)
 
     # 8. Host Connector J1 (2x10) in Left Margin at (5.0, 28.0)
     fp_j1 = pcbnew.FootprintLoad('/usr/share/kicad/footprints/Connector_PinHeader_2.54mm.pretty', 'PinHeader_2x10_P2.54mm_Vertical')
@@ -801,18 +830,16 @@ def build(out_path):
     trk(pcbnew.F_Cu, get_net("RF_SIG"), p_c39_2, (89.0, 21.0), 0.30)
     trk(pcbnew.F_Cu, get_net("RF_SIG"), (89.0, 21.0), pad_pos(fp_j3, 1), 0.30)
 
-    # 14. 100% Collision-Free RF_SIG Track: U1 Pin 1 -> In2.Cu -> B.Cu (under Col C) -> In2.Cu (under Col D) -> F.Cu (J3/C39)
+    # 14. Direct 100% Top-Layer Microstrip RF_SIG Feedline (Zero Vias)
     p_u1_1 = pad_pos(fp_u1, 1) # (45.35, 6.015)
-    trk(pcbnew.F_Cu, get_net("RF_SIG"), p_u1_1, (44.5, 4.5), 0.25)
-    via(get_net("RF_SIG"), (44.5, 4.5))
-    trk(pcbnew.In2_Cu, get_net("RF_SIG"), (44.5, 4.5), (44.5, 23.0), 0.25)
-    trk(pcbnew.In2_Cu, get_net("RF_SIG"), (44.5, 23.0), (70.0, 23.0), 0.25)
-    via(get_net("RF_SIG"), (70.0, 23.0))
-    trk(pcbnew.B_Cu, get_net("RF_SIG"), (70.0, 23.0), (74.4, 23.0), 0.25)
-    via(get_net("RF_SIG"), (74.4, 23.0))
-    trk(pcbnew.In2_Cu, get_net("RF_SIG"), (74.4, 23.0), (89.0, 23.0), 0.25)
-    via(get_net("RF_SIG"), (89.0, 23.0))
-    trk(pcbnew.F_Cu, get_net("RF_SIG"), (89.0, 23.0), (89.0, 21.0), 0.30)
+    # Route east from Pin 1 into U1 centerline (X=50.0) with width 0.30mm (clear of GND via at (47.0, 5.4))
+    trk(pcbnew.F_Cu, get_net("RF_SIG"), p_u1_1, (50.0, p_u1_1[1]), 0.30)
+    # Route south down U1 centerline to Y=22.8
+    trk(pcbnew.F_Cu, get_net("RF_SIG"), (50.0, p_u1_1[1]), (50.0, 22.8), 0.38)
+    # Route east across board to X=89.0 on F.Cu
+    trk(pcbnew.F_Cu, get_net("RF_SIG"), (50.0, 22.8), (89.0, 22.8), 0.38)
+    # Route north to J3 / C39 junction
+    trk(pcbnew.F_Cu, get_net("RF_SIG"), (89.0, 22.8), (89.0, 21.0), 0.38)
 
 
     # 15. RX Divider & AGDC Decoupling: Monotonic Non-Crossing Planar Layout
@@ -973,9 +1000,9 @@ def build(out_path):
     trk(pcbnew.F_Cu, get_net("+5V"), (82.55, 13.5), pad_pos(fp_u2, 8), 0.25)
 
     # Connect to U2 Pin 10 (83.75, 11.95) on In2.Cu
-    via(get_net("+5V"), (82.10, 14.2))
-    trk(pcbnew.F_Cu, get_net("+5V"), (82.55, 13.5), (82.10, 14.2), 0.25)
-    trk(pcbnew.In2_Cu, get_net("+5V"), (82.10, 14.2), (83.75, 14.2), 0.25)
+    via(get_net("+5V"), (82.35, 14.2))
+    trk(pcbnew.F_Cu, get_net("+5V"), (82.55, 13.5), (82.35, 14.2), 0.25)
+    trk(pcbnew.In2_Cu, get_net("+5V"), (82.35, 14.2), (83.75, 14.2), 0.25)
     via(get_net("+5V"), (83.75, 14.2))
     trk(pcbnew.F_Cu, get_net("+5V"), (83.75, 14.2), pad_pos(fp_u2, 10), 0.15)
 
@@ -1075,30 +1102,29 @@ def build(out_path):
     trk(pcbnew.F_Cu, get_net("GND"), pad_pos(fps_ocean["C25"], 2), (96.5, 27.5), 0.20)
 
     # Power Routing:
-    # 1. VDD_D: Pin 3 (82.55, 8.75) -> via at (81.2, 8.60) -> B.Cu (81.2, 8.60) -> (77.8, 8.60) -> south at X=77.8 to Y=26.5 -> east to (91.225, 26.5) -> via to F.Cu -> C20.1 & C21.1
+    # 1. VDD_D: Pin 3 (82.55, 8.75) -> via at (81.2, 8.60) -> In2.Cu south at X=81.20 to Y=22.80 -> east to (91.225, 22.80) -> south to C20/C21
     p_c20_1 = pad_pos(fps_ocean["C20"], 1) # (91.225, 26.5)
     p_c21_1 = pad_pos(fps_ocean["C21"], 1) # (91.225, 28.5)
     trk(pcbnew.F_Cu, get_net("VDD_D"), p_c20_1, p_c21_1, 0.20)
 
     trk(pcbnew.F_Cu, get_net("VDD_D"), pad_pos(fp_u2, 3), (81.2, 8.60), 0.15)
     via(get_net("VDD_D"), (81.2, 8.60))
-    trk(pcbnew.B_Cu, get_net("VDD_D"), (81.2, 8.60), (77.8, 8.60), 0.18)
-    trk(pcbnew.B_Cu, get_net("VDD_D"), (77.8, 8.60), (77.8, 26.5), 0.18)
-    trk(pcbnew.B_Cu, get_net("VDD_D"), (77.8, 26.5), (91.225, 26.5), 0.18)
+    trk(pcbnew.In2_Cu, get_net("VDD_D"), (81.2, 8.60), (81.2, 22.80), 0.15)
+    trk(pcbnew.In2_Cu, get_net("VDD_D"), (81.2, 22.80), (91.225, 22.80), 0.16)
+    trk(pcbnew.In2_Cu, get_net("VDD_D"), (91.225, 22.80), (91.225, 26.5), 0.16)
     via(get_net("VDD_D"), (91.225, 26.5))
     trk(pcbnew.F_Cu, get_net("VDD_D"), (91.225, 26.5), p_c20_1, 0.18)
 
-    # 2. VDD_A: Pin 7 (82.55, 10.75) -> via at (81.8, 10.75) -> B.Cu (81.8, 10.75) -> (78.6, 10.75) -> south at X=78.6 to Y=25.5 -> east to (94.225, 25.5) -> via to F.Cu -> C24.1 & C25.1
+    # 2. VDD_A: Pin 7 (82.55, 10.75) -> via at (81.8, 10.75) -> In2.Cu south at X=81.80 to Y=22.40 -> east to (94.225, 22.40) -> south to C24/C25
     p_c24_1 = pad_pos(fps_ocean["C24"], 1) # (94.225, 26.5)
     p_c25_1 = pad_pos(fps_ocean["C25"], 1) # (94.225, 28.5)
     trk(pcbnew.F_Cu, get_net("VDD_A"), p_c24_1, p_c25_1, 0.20)
 
     trk(pcbnew.F_Cu, get_net("VDD_A"), pad_pos(fp_u2, 7), (81.8, 10.75), 0.15)
     via(get_net("VDD_A"), (81.8, 10.75))
-    trk(pcbnew.B_Cu, get_net("VDD_A"), (81.8, 10.75), (81.8, 11.5), 0.18)
-    trk(pcbnew.B_Cu, get_net("VDD_A"), (81.8, 11.5), (78.6, 11.5), 0.18)
-    trk(pcbnew.B_Cu, get_net("VDD_A"), (78.6, 11.5), (78.6, 25.5), 0.18)
-    trk(pcbnew.B_Cu, get_net("VDD_A"), (78.6, 25.5), (94.225, 25.5), 0.18)
+    trk(pcbnew.In2_Cu, get_net("VDD_A"), (81.8, 10.75), (81.8, 22.40), 0.15)
+    trk(pcbnew.In2_Cu, get_net("VDD_A"), (81.8, 22.40), (94.225, 22.40), 0.16)
+    trk(pcbnew.In2_Cu, get_net("VDD_A"), (94.225, 22.40), (94.225, 25.5), 0.16)
     via(get_net("VDD_A"), (94.225, 25.5))
     trk(pcbnew.F_Cu, get_net("VDD_A"), (94.225, 25.5), p_c24_1, 0.18)
     # 9. In1.Cu Ground Plane with Keepouts
@@ -1113,23 +1139,34 @@ def build(out_path):
     zone_gnd_in1.AddPolygon(poly_in1)
     board.Add(zone_gnd_in1)
 
-    cut_half = 18.5 / 2.0
+    cut_half = 18.0 / 2.0  # 18.0mm keepout leaves 1.0mm ground grid corridor between cells
     for ry in row_y:
         for cx in col_x:
-            cutout = pcbnew.ZONE(board)
-            cutout.SetLayer(pcbnew.In1_Cu)
-            cutout.SetIsRuleArea(True)
-            cutout.SetDoNotAllowZoneFills(True)
-            cutout.SetDoNotAllowTracks(False)
-            cutout.SetDoNotAllowVias(False)
-            cutout.SetDoNotAllowPads(False)
-            cut_poly = pcbnew.SHAPE_LINE_CHAIN()
-            for cdx, cdy in [(-cut_half, -cut_half), (cut_half, -cut_half),
-                             (cut_half, cut_half), (-cut_half, cut_half)]:
-                cut_poly.Append(pcbnew.VECTOR2I_MM(cx + cdx, ry + cdy))
-            cut_poly.SetClosed(True)
-            cutout.AddPolygon(cut_poly)
-            board.Add(cutout)
+            for lyr in [pcbnew.In1_Cu, pcbnew.B_Cu]:
+                cutout = pcbnew.ZONE(board)
+                cutout.SetLayer(lyr)
+                cutout.SetIsRuleArea(True)
+                cutout.SetDoNotAllowZoneFills(True)
+                cutout.SetDoNotAllowTracks(False)
+                cutout.SetDoNotAllowVias(False)
+                cutout.SetDoNotAllowPads(False)
+                cut_poly = pcbnew.SHAPE_LINE_CHAIN()
+                for cdx, cdy in [(-cut_half, -cut_half), (cut_half, -cut_half),
+                                 (cut_half, cut_half), (-cut_half, cut_half)]:
+                    cut_poly.Append(pcbnew.VECTOR2I_MM(cx + cdx, ry + cdy))
+                cut_poly.SetClosed(True)
+                cutout.AddPolygon(cut_poly)
+                board.Add(cutout)
+
+    # Radial Ground Return Tracks from Pad 2 (xc, yc) on B.Cu to Ground Mesh
+    for r_idx in range(4):
+        for c_idx in range(4):
+            xc, yc = col_x[c_idx], row_y[r_idx]
+            y_exit = yc + 9.5 if r_idx < 3 else yc - 9.5
+            trk(pcbnew.B_Cu, get_net("GND"), (xc, yc), (xc, y_exit), 0.25)
+            # Add stitching via at grid intersection (only once per unique intersection)
+            if r_idx < 3:
+                via(get_net("GND"), (xc, y_exit))
 
     # 10. B.Cu Ground Plane
     zone_bcu = pcbnew.ZONE(board)
