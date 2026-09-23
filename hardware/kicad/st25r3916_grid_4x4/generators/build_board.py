@@ -157,6 +157,8 @@ def build(out_path):
             p1.SetNet(get_net(f"RF_COIL_{cell_id}"))
             fp_l.Add(p1)
 
+            pad2_x = xc + 3.8 if is_feed_right else xc - 3.8
+            pad2_y = yc - 3.8
             p2 = pcbnew.PAD(fp_l)
             p2.SetNumber("2")
             p2.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
@@ -164,7 +166,7 @@ def build(out_path):
             p2.SetLayerSet(p2.PTHMask())
             p2.SetSize(pcbnew.VECTOR2I_MM(0.6, 0.6))
             p2.SetDrillSize(pcbnew.VECTOR2I_MM(0.3, 0.3))
-            p2.SetPosition(pcbnew.VECTOR2I_MM(xc, yc))
+            p2.SetPosition(pcbnew.VECTOR2I_MM(pad2_x, pad2_y))
             p2.SetNet(get_net("GND"))
             fp_l.Add(p2)
 
@@ -186,7 +188,7 @@ def build(out_path):
                     pts.append((xc + x, yc + y))
                     y = -r0 + (turn + 1) * pitch
                     pts.append((xc + x, yc + y))
-                pts.append((xc, yc))
+                pts.append((pad2_x, pad2_y))
             else:
                 x, y = -r0, -r0
                 pts = [(xc + x, yc + y)]
@@ -198,7 +200,7 @@ def build(out_path):
                     pts.append((xc + x, yc + y))
                     y = -r0 + (turn + 1) * pitch
                     pts.append((xc + x, yc + y))
-                pts.append((xc, yc))
+                pts.append((pad2_x, pad2_y))
 
             for seg_i in range(len(pts) - 1):
                 seg = pcbnew.PCB_SHAPE(fp_l)
@@ -508,13 +510,14 @@ def build(out_path):
         trk(pcbnew.B_Cu, net, (lx, v_end[1]), v_end, 0.16)
 
     # Col B:
-    # Cell 2 runs on In2.Cu south at X=39.7 directly to Y=23.675, then west to coil_pad_vias[2]!
-    # (Completely outside alley, zero crossings!)
+    # Cell 2 runs on In2.Cu south at X=39.7 to Y=22.80, west to X=31.875, then south to coil_pad_vias[2]!
+    # (Completely outside alley and clear of Pad 2 GND return via at (36.7, 23.5))
     net_c2 = get_net("RF_COIL_2")
     v2_start = tank_vias[2]
     v2_end = coil_pad_vias[2]
-    trk(pcbnew.In2_Cu, net_c2, v2_start, (v2_start[0], v2_end[1]), 0.16)
-    trk(pcbnew.In2_Cu, net_c2, (v2_start[0], v2_end[1]), v2_end, 0.16)
+    trk(pcbnew.In2_Cu, net_c2, v2_start, (v2_start[0], 22.80), 0.16)
+    trk(pcbnew.In2_Cu, net_c2, (v2_start[0], 22.80), (v2_end[0], 22.80), 0.16)
+    trk(pcbnew.In2_Cu, net_c2, (v2_end[0], 22.80), v2_end, 0.16)
 
     # Cells 6, 10, 14 run down alley A-B (Strictly planar on In2.Cu, 0 vias, 0 crossings!):
     # 14 goes south at X=tank_vias[14][0] to Y=19.0, jogs east to 30.55, then south to 80.675
@@ -1158,15 +1161,17 @@ def build(out_path):
                 cutout.AddPolygon(cut_poly)
                 board.Add(cutout)
 
-    # Radial Ground Return Tracks from Pad 2 (xc, yc) on B.Cu to Ground Mesh
+    # Direct Perpendicular Ground Return Tracks from Pad 2 (B.Cu) across turns to North Ground Mesh
     for r_idx in range(4):
         for c_idx in range(4):
             xc, yc = col_x[c_idx], row_y[r_idx]
-            y_exit = yc + 9.5 if r_idx < 3 else yc - 9.5
-            trk(pcbnew.B_Cu, get_net("GND"), (xc, yc), (xc, y_exit), 0.25)
-            # Add stitching via at grid intersection (only once per unique intersection)
-            if r_idx < 3:
-                via(get_net("GND"), (xc, y_exit))
+            is_feed_right = (c_idx >= 2)
+            pad2_x = xc + 3.8 if is_feed_right else xc - 3.8
+            pad2_y = yc - 3.8
+            y_exit = yc - 9.5
+            # Run straight north across the 7 turns (only 5.7mm distance!) into ground grid
+            trk(pcbnew.B_Cu, get_net("GND"), (pad2_x, pad2_y), (pad2_x, y_exit), 0.25)
+            via(get_net("GND"), (pad2_x, y_exit))
 
     # 10. B.Cu Ground Plane
     zone_bcu = pcbnew.ZONE(board)
