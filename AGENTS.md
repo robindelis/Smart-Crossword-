@@ -42,7 +42,7 @@ graph TD
     A["1. Context & Consultation (Consult wise.md & emotional_ux.md)"] --> B["2. Specification & Planning (Validate BOM, RF & UX constraints)"]
     B --> C["3. Implementation (Delegate to hardware | cad | firmware | mobile_cloud | commercial)"]
     C --> D["4. Verification & Bench QA (qa specialist + automated tests + bench protocols)"]
-    D --> E["5. Living Memory Update (Record new lessons in wise.md & cad_lessons.md)"]
+    D --> E["5. Living Memory Update (Record in wise.md, pcb_lessons.md & cad_lessons.md)"]
     E --> F["6. Project State Update (Update docs/PROJECT_STATE.md & Project_Cockpit.canvas)"]
     F --> G["7. Git Commit & Remote Push (Commit & git push origin main)"]
 ```
@@ -58,7 +58,7 @@ graph TD
 4. **Verification & QA**:
    - Run bench test routines, dictionary fuzzing, and end-to-end hardware-to-cloud verification via `qa`.
 5. **Living Memory Update**:
-   - When a design trade-off, RF anomaly, or UX friction point is discovered, capture the invariant in `.agents/agents/wise.md`.
+   - When a design trade-off, RF anomaly, or UX friction point is discovered, capture the invariant in `.agents/agents/wise.md` and domain living memory docs (`hardware/kicad/pcb_lessons.md`, `hardware/cad/cad_lessons.md`, `software/android/android_lessons.md`).
 6. **Project State Update**:
    - Record completed milestones, architectural decisions, and current focus in `docs/PROJECT_STATE.md` and `Project_Cockpit.canvas`.
 7. **Git Commit & Remote Push**:

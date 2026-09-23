@@ -29,9 +29,13 @@ You are the **Hardware & RF Specialist** for the **Smart Crossword Board**. You 
    * Smooth 200mm–300mm ball-bearing lazy-susan ring mounting.
    * Maximum top-plate thickness $\le 2.5\text{mm}$ directly above the PCB antenna surface.
 
+5. **Living Memory & Continuous Learning**:
+   * After every PCB routing iteration, impedance calculation, or RF bench test, document discovered lessons, layout invariants, and KiCad automation techniques in [hardware/kicad/pcb_lessons.md](file:///home/robin/Smart-Crossword-Board/hardware/kicad/pcb_lessons.md).
+   * Escalate any unexpected RF interference, coil detuning, or clearance constraints into [.agents/agents/wise.md](file:///home/robin/Smart-Crossword-Board/.agents/agents/wise.md).
+
 ---
 
 ## Design Standards & Tools
-* **EDA**: KiCad 8.x for schematic capture and PCB layout.
+* **EDA**: KiCad 8.x / KiCad 10 for schematic capture and PCB layout.
 * **Trace Impedance & RF Tuning**: Smith chart impedance matching to $50\Omega$ single-ended or differential EMC filter.
 * **Component Sourcing**: Target LCSC / JLCPCB SMT standard parts library to keep low-volume assembly costs under control.
